@@ -30,11 +30,12 @@ jobs:
         run: echo "GITHUB_SHA=${GITHUB_SHA}" >> $GITHUB_ENV
 
 
-      - name: Build and push Docker image with commit SHA
+      - name: Build and push Docker image with commit SHA and latest tag
         run: |
-          docker build -t andreyzuikov/mointerface:${GITHUB_SHA} .
-          docker push andreyzuikov/mointerface:latest .
-          docker push andreyzuikov/mointerface:${GITHUB_SHA}
+          docker build -t andreyzuikov/mointerface:${{ env.GITHUB_SHA }} .
+          docker tag andreyzuikov/mointerface:${{ env.GITHUB_SHA }} andreyzuikov/mointerface:latest
+          docker push andreyzuikov/mointerface:${{ env.GITHUB_SHA }}
+          docker push andreyzuikov/mointerface:latest
 
   deploy:
     runs-on: ubuntu-latest
