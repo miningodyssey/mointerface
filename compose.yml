@@ -1,0 +1,27 @@
+version: '3.9'
+services:
+  app:
+    image: andreyzuikov/mointerface:latest
+    container_name: mointerface
+    ports:
+      - '3000:3000'
+    restart: unless-stopped
+    networks:
+      - apinet
+      - gateway
+volumes:
+  cache:
+  chdata:
+  pgdata:
+  rdsdata:
+
+networks:
+  apinet:
+    name: apinet
+    driver: bridge
+    ipam:
+      config:
+        - subnet: "192.168.32.0/24"
+  gateway:
+    name: gateway
+    driver: bridge

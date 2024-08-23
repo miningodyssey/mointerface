@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mointerface-deployment
+  labels:
+    app: mointerface
+spec:
+  replicas: 2  # Увеличиваем количество реплик до 3
+  selector:
+    matchLabels:
+      app: mointerface
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0  # Указываем, что все поды должны быть доступны во время обновления
+      maxSurge: 1  # Можно запустить один дополнительный под во время обновления
+  template:
+    metadata:
+      labels:
+        app: mointerface
+    spec:
+      containers:
+        - name: mointerface
+          image: andreyzuikov/mointerface:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3000
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 60
+            periodSeconds: 20
+            failureThreshold: 3

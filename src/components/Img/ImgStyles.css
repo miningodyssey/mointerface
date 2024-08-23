@@ -1,0 +1,8 @@
+.Placeholder {
+    background-color: var(--tg-theme-bg-color);
+    opacity: 1;
+    transition: opacity 0.2s var(--tg-theme-bg-color);
+    box-shadow: inset 0 0 0 2px var(--tg-theme-bg-color);
+    user-select: none;          /* Запрещает выделение изображения */
+    -webkit-user-drag: none;    /* Запрещает перетаскивание изображения */
+}
