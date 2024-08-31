@@ -5,7 +5,6 @@ import axios from 'axios';
 import styles from './page.module.css';
 import { initInitData, initUtils } from '@telegram-apps/sdk';
 import { ProgressiveImage } from "@/components/Img";
-import { ProgressiveImageCont } from "@/components/ImgCont";
 import {Loader} from "@/components/Loader/loader";
 import {user} from "@/types/user.type";
 
@@ -106,14 +105,9 @@ export default function Home() {
         const images = [
             '/bg.svg',
             '/text.svg',
-            '/button.svg',
-            '/purpBtn.svg',
-            '/taskBoard.svg',
-            '/mail.svg',
+            'comingsoon.svg',
+            'getmoremoody.svg',
             '/coin.svg',
-            '/close.svg',
-            '/telegram.svg',
-            '/tipContainer.svg'
         ];
 
         preloadImages(images)
@@ -188,88 +182,18 @@ export default function Home() {
                         <p className={styles.balance}>Referals: {userData?.referals}</p>
                     </div>
                 </div>
-                <div>
+                <div className={styles.textContainer}>
                     <ProgressiveImage src="/text.svg" alt="text" className={styles.text} />
-                </div>
-                <button className={styles.openModalBtn} onClick={handleButtonClick} onTouchEnd={handleButtonClick}>
-                    <ProgressiveImage src="/button.svg" alt="Button Image" className={styles.ButtonImage} />
-                    <span className={styles.buttonText}>GET MORE MODY</span>
-                </button>
-            {isModalVisible && (
-                <div className={styles.modalOverlay}>
-                    <div className={styles.modal}>
-                        <div className={styles.taskBoardContainer}>
-                            <ProgressiveImageCont src="/taskBoard.svg" alt="taskboard" className={styles.taskBoard}>
-                                <div className={styles.taskBoardContent}>
-                                    <div className={styles.taskBoardTextContainer}>
-                                        <span className={styles.taskBoardText}>HOT TASK</span>
-                                        <span className={styles.taskBoardText}>WITH REWARD</span>
-                                    </div>
-                                    <ProgressiveImageCont src="/tipContainer.svg" alt="tip1" className={styles.taskBackground}>
-                                        <div className={styles.taskContent}>
-                                            <div className={styles.imageAndDescription}>
-                                                <ProgressiveImage alt='telegram' src="/telegram.svg" className={styles.taskIcon} />
-                                                <div className={styles.taskDescriptionContainer}>
-                                                    <span className={styles.taskDescription}>Invite your friends</span>
-                                                    <div className={styles.rewardDescription}>
-                                                        <span className={styles.taskDescription}>+500</span>
-                                                        <ProgressiveImage alt='coin' src="/coin.svg" className={styles.coinImage} />
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <button
-                                                className={styles.startBtn}
-                                                onClick={() => copyLinkToClipboard(userId)}>
-                                                <ProgressiveImage src="/purpBtn.svg" alt="Button Image" className={styles.StartButtonImage} />
-                                                <span className={styles.startButtonText}>{copyStatus}</span>
-                                            </button>
-                                        </div>
-                                    </ProgressiveImageCont>
-                                    <ProgressiveImageCont src="/tipContainer.svg" alt="tip2" className={styles.taskBackground}>
-                                        <div className={styles.taskContent}>
-                                            <div className={styles.imageAndDescription}>
-                                                <ProgressiveImage alt='telegram' src="/telegram.svg" className={styles.taskIcon} />
-                                                <div className={styles.taskDescriptionContainer}>
-                                                    <span className={styles.taskDescription}>Join Channel</span>
-                                                    <div className={styles.rewardDescription}>
-                                                        <span className={styles.taskDescription}>+500</span>
-                                                        <ProgressiveImage alt='coin' src="/coin.svg" className={styles.coinImage} />
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <button className={styles.startBtn} onClick={() => handleStartButtonClick("https://t.me/AndreyDurden")}>
-                                                <ProgressiveImage src="/purpBtn.svg" alt="Button Image" className={styles.StartButtonImage} />
-                                                <span className={styles.startButtonText}>START</span>
-                                            </button>
-                                        </div>
-                                    </ProgressiveImageCont>
-                                    <ProgressiveImageCont src="/tipContainer.svg" alt="tip3" className={styles.taskBackground}>
-                                        <div className={styles.taskContent}>
-                                            <div className={styles.imageAndDescription}>
-                                                <ProgressiveImage alt='telegram' src="/telegram.svg" className={styles.taskIcon} />
-                                                <div className={styles.taskDescriptionContainer}>
-                                                    <span className={styles.taskDescription}>Join Channel</span>
-                                                    <div className={styles.rewardDescription}>
-                                                        <span className={styles.taskDescription}>+500</span>
-                                                        <ProgressiveImage alt='coin' src="/coin.svg" className={styles.coinImage} />
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <button className={styles.startBtn} onClick={() => handleStartButtonClick("https://t.me/AndreyDurden")}>
-                                                <ProgressiveImage src="/purpBtn.svg" alt="Button Image" className={styles.StartButtonImage} />
-                                                <span className={styles.startButtonText}>START</span>
-                                            </button>
-                                        </div>
-                                    </ProgressiveImageCont>
-                                </div>
-                            </ProgressiveImageCont>
+                    <ProgressiveImage src="/comingsoon.svg" alt="text" className={styles.comingSoonText}/>
+                    <button className={styles.openModalBtn} onClick={handleButtonClick} onTouchEnd={handleButtonClick}>
+                        <div className={styles.ButtonBG} >
+                            <ProgressiveImage src="/getmoremoody.svg" alt="text" className={styles.ButtonText} />
                         </div>
-                        <button className={styles.closeButtonWrapper} onClick={handleCloseModal}>
-                            <ProgressiveImage src="/close.svg" alt="Close" className={styles.closeButton} />
-                        </button>
-                    </div>
+                    </button>
                 </div>
-            )}
+                <div>
+
+                </div>
         </div>
     );
 }

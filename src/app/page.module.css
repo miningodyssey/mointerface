@@ -14,25 +14,29 @@
   flex-direction: column;
 }
 
-.text {
+.textContainer {
   position: absolute;
-  top: 45%;
+  top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  border: none;
-  background: none;
-  z-index: 1;
-  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Выравнивает содержимое по горизонтали */
+}
+
+.text {
+  width: 100vw;
+}
+
+.comingSoonText {
+  max-width: 50vw;
+  margin-bottom: 2px;
 }
 
 .openModalBtn {
-  position: absolute;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  top: 80%;
   cursor: pointer;
   border: none;
   background: none;
@@ -41,7 +45,7 @@
 }
 
 .openModalBtn:active {
-  top: calc(80% + 2px);
+  padding-top: 2px;
 }
 
 .startBtn {
@@ -63,10 +67,28 @@
 }
 
 
+.ButtonBG {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(90deg, #E5C400 0%, #FE7500 100%);
+  min-width: 70vw;
+  min-height: 10vh;
+  border-radius: 20px;
+}
+
+.ButtonText {
+  min-width: 60vw;
+  max-width: 60vw;
+}
+
 .ButtonImage {
   display: block;
-  max-width: 50vmin;
+  max-width: 45vmin;
+  min-width: 60vw;
+  min-height: 15vh;
 }
+
 
 .StartButtonImage {
   width: 18vmin;
@@ -253,30 +275,66 @@
   align-items: center;
 }
 .balanceDescription, .referalsDescription {
+  position: relative;
   display: flex;
   flex-direction: row;
   align-items: center;
-  margin-right: 2px;
   justify-content: center;
-  background-color: rgba(0, 0, 0, 0.5); /* Полупрозрачный черный фон */
-  border-radius: 32px; /* Закругленные края */
-  padding: 10px 10px; /* Внутренние отступы */
+  border-radius: 32px; /* Скругленные края */
+  padding: 2px 20px;
+  background-color: transparent; /* Фон контейнера */
+  z-index: 1;
+  margin-bottom: 5px;
+  width: 20vw;
 }
 
-.userDescription {
-  top: 2%;
-  transform: translateX(-120%); /* Сдвиг на 50% для центрирования по горизонтали */
-  display: flex;
-  flex-direction: row;
+.balanceDescription::before, .referalsDescription::before {
+  content: "";
   position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 32px; /* Скругленные углы */
+  padding: 3px; /* Толщина границы */
+  background: linear-gradient(90deg, #E5C400 0%, #FE7500 100%);
+  -webkit-mask:
+          linear-gradient(#fff 0 0) content-box,
+          linear-gradient(#fff 0 0); /* Прозрачный центр и цветная граница */
+  -webkit-mask-composite: xor;
+  mask-composite: exclude; /* Совместимость с другими браузерами */
+  z-index: -1; /* Размещение за основным контентом */
+}
+
+.balanceDescription::after, .referalsDescription::after {
+  content: "";
+  border-radius: 29px; /* Немного меньший радиус, чтобы повторить внутренние границы */
+  background-color: transparent; /* Цвет внутреннего фона */
+  z-index: -2; /* Псевдоэлемент за градиентом */
+}
+
+
+
+
+.userDescription {
+  width: 99.9vw;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  transform: translate(-5%, -475%);
 }
 .coinImage {
-  width: 5vw;
-  padding-left: 2px;
+  position: absolute;
+  top: -2%;
+  width: 6.5vw;
+  left: 65%;
 }
 @media (min-width: 559px) {
   .closeButtonWrapper {
     right: -12.5%
+  }
+  .userDescription {
+    transform: translate(-5%, -580%);
   }
   .closeButton {
     width: 75%;
