@@ -325,9 +325,9 @@
 }
 .coinImage {
   position: absolute;
-  top: -2%;
-  width: 6.5vw;
-  left: 65%;
+  top: -60%;
+  width: 13vw;
+  left: 48%;
 }
 @media (min-width: 559px) {
   .closeButtonWrapper {
