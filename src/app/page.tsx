@@ -175,8 +175,8 @@ export default function Home() {
             <ProgressiveImage src="/bg.svg" alt="bgimage" className={styles.bgImage} />
                 <div className={styles.userDescription}>
                     <div className={styles.balanceDescription}>
-                        <p className={styles.balance}>{userData?.balance}</p>
                         <ProgressiveImage alt='coin' src="/coin.svg" className={styles.coinImage} />
+                        <p className={styles.balance}>{userData?.balance}</p>
                     </div>
                     <div className={styles.referalsDescription}>
                         <p className={styles.balance}>Referals: {userData?.referals}</p>
