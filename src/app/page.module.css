@@ -343,9 +343,6 @@
   .closeButton {
     width: 75%;
   }
-  .coinImage {
-    width: 3vw;
-  }
 }
 
 @media (min-width: 600px) {
