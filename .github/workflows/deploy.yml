@@ -34,8 +34,8 @@ jobs:
         run: |
           docker build -t andreyzuikov/mointerface:${{ env.GITHUB_SHA }} .
           docker tag andreyzuikov/mointerface:${{ env.GITHUB_SHA }} andreyzuikov/mointerface:latest
-          docker push andreyzuikov/mointerface:${{ env.GITHUB_SHA }}
           docker push andreyzuikov/mointerface:latest
+          docker push andreyzuikov/mointerface:${{ env.GITHUB_SHA }}
 
   deploy:
     runs-on: ubuntu-latest
