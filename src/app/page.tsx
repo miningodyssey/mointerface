@@ -35,7 +35,7 @@ async function fetchDataAndInitialize() {
             registrationDate: new Date(),
         };
 
-        const authResponse = await axios.post(`https://miningodyssey.pw/auth/register/${userId}`);
+        const authResponse = await axios.post(`https://miningodyssey.pw/auth/register/${userId}`, userData);
         const token = authResponse.data['access_token'];
 
         const userResponse = await axios.post(
@@ -131,31 +131,6 @@ export default function Home() {
         setIsModalVisible(false);
         setStatus('COPY');
     }, []);
-
-    const handleStartButtonClick = useCallback(async (link: string) => {
-        utils?.openTelegramLink(link);
-        console.log('Start button clicked!');
-
-        try {
-            const data = {
-                reward: 500,
-                taskDescription: "Bara",
-                imageLink: "Bere",
-                taskLink: "https://vk.com"
-            };
-
-            const response = await axios.post('https://miningodyssey.pw/tasks', data, {
-                headers: {
-                    'Authorization': `Bearer ${authKey}`,
-                    'Content-Type': 'application/json',
-                }
-            });
-
-            console.log('Response:', response.data);
-        } catch (error) {
-            console.error('Error:', error);
-        }
-    }, [authKey, utils]);
 
     const copyLinkToClipboard = useCallback((userId: number) => {
         const link = `https://t.me/MiningOdysseyBot/Game?startapp=${userId}`;
