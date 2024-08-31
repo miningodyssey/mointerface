@@ -334,7 +334,11 @@
     right: -12.5%
   }
   .userDescription {
-    transform: translate(-5%, -580%);
+    transform: translate(-5%, -380%);
+  }
+  .coinImage {
+    width: 13vw;
+    left: 47%;
   }
   .closeButton {
     width: 75%;
