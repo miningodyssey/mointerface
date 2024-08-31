@@ -176,16 +176,16 @@ export default function Home() {
                 <div className={styles.userDescription}>
                     <div className={styles.balanceDescription}>
                         <ProgressiveImage alt='coin' src="/coin.svg" className={styles.coinImage} />
-                        <p className={styles.balance}>{userData?.balance}</p>
+                        <p className={styles.balance}>{userData?.balance | 0}</p>
                     </div>
                     <div className={styles.referalsDescription}>
-                        <p className={styles.balance}>Referals: {userData?.referals}</p>
+                        <p className={styles.balance}>Referals: {userData?.referals | 0}</p>
                     </div>
                 </div>
                 <div className={styles.textContainer}>
                     <ProgressiveImage src="/text.svg" alt="text" className={styles.text} />
                     <ProgressiveImage src="/comingsoon.svg" alt="text" className={styles.comingSoonText}/>
-                    <button className={styles.openModalBtn} onClick={handleButtonClick} onTouchEnd={handleButtonClick}>
+                    <button className={styles.openModalBtn} onClick={() => copyLinkToClipboard(Number(userId))} onTouchEnd={() => copyLinkToClipboard(Number(userId))}>
                         <div className={styles.ButtonBG} >
                             <ProgressiveImage src="/getmoremoody.svg" alt="text" className={styles.ButtonText} />
                         </div>
