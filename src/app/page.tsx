@@ -105,8 +105,8 @@ export default function Home() {
         const images = [
             '/bg.svg',
             '/text.svg',
-            'comingsoon.svg',
-            'getmoremoody.svg',
+            '/comingsoon.svg',
+            '/getmoremoody.svg',
             '/coin.svg',
         ];
 
