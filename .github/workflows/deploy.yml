@@ -70,7 +70,7 @@ jobs:
             latest_tag=$(curl -s "https://hub.docker.com/v2/repositories/andreyzuikov/mointerface/tags/?page_size=100" | jq -r '.results[] | "\(.name) \(.last_updated)"' | sort -k2,2r | head -n1 | awk '{print $1}')
             # Update the deployment YAML with the new Docker image tag
             sed -i "s|image: andreyzuikov/mointerface:latest|image: andreyzuikov/mointerface:$latest_tag|" /home/andrey/mointerface/k8s/deployment.yaml
-            echo latest_tag
+            echo $latest_tag
       - name: Install kubectl
         uses: appleboy/ssh-action@v0.1.4
         with:
