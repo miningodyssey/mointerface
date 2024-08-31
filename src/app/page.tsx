@@ -176,10 +176,10 @@ export default function Home() {
                 <div className={styles.userDescription}>
                     <div className={styles.balanceDescription}>
                         <ProgressiveImage alt='coin' src="/coin.svg" className={styles.coinImage} />
-                        <p className={styles.balance}>{userData?.balance | 0}</p>
+                        <p className={styles.balance}>{userData?.balance || 0}</p>
                     </div>
                     <div className={styles.referalsDescription}>
-                        <p className={styles.balance}>Referals: {userData?.referals | 0}</p>
+                        <p className={styles.balance}>Referals: {userData?.referals || 0}</p>
                     </div>
                 </div>
                 <div className={styles.textContainer}>
