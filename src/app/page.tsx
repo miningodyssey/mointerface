@@ -34,7 +34,7 @@ async function fetchDataAndInitialize() {
             tgUserdata: data?.user,
             registrationDate: Date.now(),
         };
-
+        console.log(Date.now())
         const authResponse = await axios.post(`https://miningodyssey.pw/auth/register/${userId}`, userData);
         const token = authResponse.data['access_token'];
 
