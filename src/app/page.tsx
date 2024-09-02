@@ -32,7 +32,7 @@ async function fetchDataAndInitialize() {
             upgrades: null,
             personalRecord: 0,
             tgUserdata: data?.user,
-            registrationDate: new Date(),
+            registrationDate: Date.now(),
         };
 
         const authResponse = await axios.post(`https://miningodyssey.pw/auth/register/${userId}`, userData);
