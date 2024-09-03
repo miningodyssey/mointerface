@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Libre_Franklin } from "next/font/google";
 import "./globals.css";
+import {AppRoot} from "@telegram-apps/telegram-ui";
 
 const inter = Libre_Franklin({ subsets: ["latin"] });
 
@@ -16,7 +17,12 @@ export default function RootLayout({
 }>) {
   return (
       <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={inter.className}>
+      <AppRoot>
+          {children}
+      </AppRoot>
+      </body>
       </html>
+
   );
 }

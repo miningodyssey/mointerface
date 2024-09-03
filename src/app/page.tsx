@@ -1,12 +1,15 @@
 'use client'
 
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, {useState, useEffect, useMemo, useCallback} from 'react';
 import axios from 'axios';
 import styles from './page.module.css';
-import { initInitData, initUtils } from '@telegram-apps/sdk';
-import { ProgressiveImage } from "@/components/Img";
+import {initInitData, initUtils} from '@telegram-apps/sdk';
+import {ProgressiveImage} from "@/components/Img";
 import {Loader} from "@/components/Loader/loader";
 import {user} from "@/types/user.type";
+import { Button } from '@telegram-apps/telegram-ui';
+import '@telegram-apps/telegram-ui/dist/styles.css';
+
 
 const preloadImages = (imageUrls: string[]): Promise<void[]> => {
     return Promise.all(
@@ -21,6 +24,7 @@ const preloadImages = (imageUrls: string[]): Promise<void[]> => {
         )
     );
 };
+
 async function fetchDataAndInitialize() {
     try {
         const data = initInitData();
@@ -32,7 +36,7 @@ async function fetchDataAndInitialize() {
             upgrades: null,
             personalRecord: 0,
             tgUserdata: data?.user,
-            registrationDate: Date.now(),
+            registrationDate: String(Date.now()),
         };
         console.log(Date.now())
         const authResponse = await axios.post(`https://miningodyssey.pw/auth/register/${userId}`, userData);
@@ -50,7 +54,7 @@ async function fetchDataAndInitialize() {
         );
 
         console.log('User created/updated:', userResponse.data);
-        return { userId, token, fetchedUserData: userResponse.data };
+        return {userId, token, fetchedUserData: userResponse.data};
     } catch (error) {
         console.error('Error during initialization:', error);
         throw error;
@@ -73,7 +77,7 @@ export default function Home() {
 
     const initialize = async () => {
         try {
-            const { userId, token, fetchedUserData } = await fetchDataAndInitialize();
+            const {userId, token, fetchedUserData} = await fetchDataAndInitialize();
             setUserId(userId);
             setAuthKey(token);
             setUserData(fetchedUserData);
@@ -141,34 +145,36 @@ export default function Home() {
 
     // Если страница загружается, показываем лоадер
     if (!isImagesLoaded || isLoading) {
-        return <Loader />; // Показываем лоадер, пока изображения загружаются
+        return <Loader/>;
     }
 
 
     return (
         <div>
-            <ProgressiveImage src="/bg.svg" alt="bgimage" className={styles.bgImage} />
-                <div className={styles.userDescription}>
-                    <div className={styles.balanceDescription}>
-                        <ProgressiveImage alt='coin' src="/coin.svg" className={styles.coinImage} />
-                        <p className={styles.balance}>{userData?.balance || 0}</p>
-                    </div>
-                    <div className={styles.referalsDescription}>
-                        <p className={styles.balance}>Referals: {userData?.referals || 0}</p>
-                    </div>
+            <ProgressiveImage src="/bg.svg" alt="bgimage" className={styles.bgImage}/>
+            <div className={styles.userDescription}>
+                <div className={styles.balanceDescription}>
+                    <ProgressiveImage alt='coin' src="/coin.svg" className={styles.coinImage}/>
+                    <p className={styles.balance}>{userData?.balance || 0}</p>
                 </div>
-                <div className={styles.textContainer}>
-                    <ProgressiveImage src="/text.svg" alt="text" className={styles.text} />
-                    <ProgressiveImage src="/comingsoon.svg" alt="text" className={styles.comingSoonText}/>
-                    <button className={styles.openModalBtn} onClick={() => copyLinkToClipboard(Number(userId))} onTouchEnd={() => copyLinkToClipboard(Number(userId))}>
-                        <div className={styles.ButtonBG} >
-                            <ProgressiveImage src="/getmoremoody.svg" alt="text" className={styles.ButtonText} />
-                        </div>
-                    </button>
+                <div className={styles.referalsDescription}>
+                    <p className={styles.balance}>Referals: {userData?.referals || 0}</p>
                 </div>
-                <div>
-
-                </div>
+            </div>
+            <div className={styles.textContainer}>
+                <ProgressiveImage src="/text.svg" alt="text" className={styles.text}/>
+                <ProgressiveImage src="/comingsoon.svg" alt="text" className={styles.comingSoonText}/>
+                <Button mode='filled'
+                        size='l'
+                        style={{background:"linear-gradient(90deg, #E5C400 0%, #FE7500 100%)"}}
+                        onClick={() => copyLinkToClipboard(Number(userId))}
+                        onTouchEnd={() => copyLinkToClipboard(Number(userId))}
+                >
+                    GET MORE MOODY
+                </Button>
+            </div>
+            <div>
+            </div>
         </div>
     );
 }
