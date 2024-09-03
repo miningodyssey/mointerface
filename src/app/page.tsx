@@ -1,15 +1,14 @@
-'use client'
+'use client';
 
-import React, {useState, useEffect, useMemo, useCallback} from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import axios from 'axios';
 import styles from './page.module.css';
-import {initInitData, initUtils} from '@telegram-apps/sdk';
-import {ProgressiveImage} from "@/components/Img";
-import {Loader} from "@/components/Loader/loader";
-import {user} from "@/types/user.type";
-import { Button } from '@telegram-apps/telegram-ui';
+import { initInitData, initUtils } from '@telegram-apps/sdk';
+import { ProgressiveImage } from "@/components/Img";
+import { user } from "@/types/user.type";
+import { Button, Snackbar } from '@telegram-apps/telegram-ui';
 import '@telegram-apps/telegram-ui/dist/styles.css';
-
+import { Loader } from "@/components/Loader";
 
 const preloadImages = (imageUrls: string[]): Promise<void[]> => {
     return Promise.all(
@@ -28,6 +27,7 @@ const preloadImages = (imageUrls: string[]): Promise<void[]> => {
 async function fetchDataAndInitialize() {
     try {
         const data = initInitData();
+        console.log(data?.user?.photoUrl)
         const userId = data?.user?.id || 0;
         const userData = {
             balance: 0,
@@ -38,7 +38,6 @@ async function fetchDataAndInitialize() {
             tgUserdata: data?.user,
             registrationDate: String(Date.now()),
         };
-        console.log(Date.now())
         const authResponse = await axios.post(`https://miningodyssey.pw/auth/register/${userId}`, userData);
         const token = authResponse.data['access_token'];
 
@@ -54,7 +53,7 @@ async function fetchDataAndInitialize() {
         );
 
         console.log('User created/updated:', userResponse.data);
-        return {userId, token, fetchedUserData: userResponse.data};
+        return { userId, token, fetchedUserData: userResponse.data };
     } catch (error) {
         console.error('Error during initialization:', error);
         throw error;
@@ -71,13 +70,19 @@ export default function Home() {
     const [copyStatus, setStatus] = useState('COPY');
     const [isImagesLoaded, setIsImagesLoaded] = useState(false);
     const [isInitialized, setIsInitialized] = useState(false);
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
 
-    // Инициализация utils только на клиенте
+    const handleSnackbarOpen = () => {
+        setSnackbarOpen(true);
+        setTimeout(() => {
+            setSnackbarOpen(false); // Закрытие Snackbar через установленное время
+        }, 3000); // Время отображения в миллисекундах
+    };
+
     const utils = useMemo(() => (typeof window !== 'undefined' ? initUtils() : null), []);
-
     const initialize = async () => {
         try {
-            const {userId, token, fetchedUserData} = await fetchDataAndInitialize();
+            const { userId, token, fetchedUserData } = await fetchDataAndInitialize();
             setUserId(userId);
             setAuthKey(token);
             setUserData(fetchedUserData);
@@ -121,7 +126,6 @@ export default function Home() {
             .catch((err) => console.error('Failed to preload images:', err));
     }, []);
 
-
     const handleButtonClick = useCallback(async () => {
         try {
             setIsModalVisible(true);
@@ -131,30 +135,27 @@ export default function Home() {
     }, [userId, authKey, isInitialized]);
 
 
-    const handleCloseModal = useCallback(() => {
-        setIsModalVisible(false);
-        setStatus('COPY');
-    }, []);
-
     const copyLinkToClipboard = useCallback((userId: number) => {
         const link = `https://t.me/MiningOdysseyBot/Game?startapp=${userId}`;
         navigator.clipboard.writeText(link)
-            .then(() => setStatus('DONE'))
+            .then(() => {
+                setStatus('DONE');
+                handleSnackbarOpen(); // Открыть Snackbar
+            })
             .catch(err => console.error('Не удалось скопировать ссылку', err));
     }, []);
 
     // Если страница загружается, показываем лоадер
     if (!isImagesLoaded || isLoading) {
-        return <Loader/>;
+        return <Loader />;
     }
-
 
     return (
         <div>
-            <ProgressiveImage src="/bg.svg" alt="bgimage" className={styles.bgImage}/>
+            <ProgressiveImage src="/bg.svg" alt="bgimage" className={styles.bgImage} />
             <div className={styles.userDescription}>
                 <div className={styles.balanceDescription}>
-                    <ProgressiveImage alt='coin' src="/coin.svg" className={styles.coinImage}/>
+                    <ProgressiveImage alt='coin' src="/coin.svg" className={styles.coinImage} />
                     <p className={styles.balance}>{userData?.balance || 0}</p>
                 </div>
                 <div className={styles.referalsDescription}>
@@ -162,16 +163,26 @@ export default function Home() {
                 </div>
             </div>
             <div className={styles.textContainer}>
-                <ProgressiveImage src="/text.svg" alt="text" className={styles.text}/>
-                <ProgressiveImage src="/comingsoon.svg" alt="text" className={styles.comingSoonText}/>
-                <Button mode='filled'
-                        size='l'
-                        style={{background:"linear-gradient(90deg, #E5C400 0%, #FE7500 100%)"}}
-                        onClick={() => copyLinkToClipboard(Number(userId))}
-                        onTouchEnd={() => copyLinkToClipboard(Number(userId))}
+                <ProgressiveImage src="/text.svg" alt="text" className={styles.text} />
+                <ProgressiveImage src="/comingsoon.svg" alt="text" className={styles.comingSoonText} />
+                <Button
+                    mode='filled'
+                    size='l'
+                    style={{ background: "linear-gradient(90deg, #E5C400 0%, #FE7500 100%)" }}
+                    onClick={() => copyLinkToClipboard(Number(userId))}
+                    onTouchEnd={() => copyLinkToClipboard(Number(userId))}
                 >
                     GET MORE MOODY
                 </Button>
+                {snackbarOpen && (
+                    <Snackbar
+                        onClose={() => setSnackbarOpen(false)}
+                        duration={3000} // Время отображения в миллисекундах
+                        before={<span role="img" aria-label="checkmark">✅</span>}
+                    >
+                        Your referal link has been copied to the clipboard!
+                    </Snackbar>
+                )}
             </div>
             <div>
             </div>
