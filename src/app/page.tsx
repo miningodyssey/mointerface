@@ -6,7 +6,7 @@ import styles from './page.module.css';
 import { initInitData, initUtils } from '@telegram-apps/sdk';
 import { ProgressiveImage } from "@/components/Img";
 import { user } from "@/types/user.type";
-import { Button, Snackbar } from '@telegram-apps/telegram-ui';
+import { Button, Snackbar, Spinner } from '@telegram-apps/telegram-ui';
 import '@telegram-apps/telegram-ui/dist/styles.css';
 import { Loader } from "@/components/Loader";
 
@@ -74,9 +74,6 @@ export default function Home() {
 
     const handleSnackbarOpen = () => {
         setSnackbarOpen(true);
-        setTimeout(() => {
-            setSnackbarOpen(false); // Закрытие Snackbar через установленное время
-        }, 3000); // Время отображения в миллисекундах
     };
 
     const utils = useMemo(() => (typeof window !== 'undefined' ? initUtils() : null), []);
@@ -115,7 +112,6 @@ export default function Home() {
             '/bg.svg',
             '/text.svg',
             '/comingsoon.svg',
-            '/getmoremoody.svg',
             '/coin.svg',
         ];
 
@@ -147,12 +143,16 @@ export default function Home() {
 
     // Если страница загружается, показываем лоадер
     if (!isImagesLoaded || isLoading) {
-        return <Loader />;
+        return <Spinner  size='l'/>;
     }
 
     return (
         <div>
-            <ProgressiveImage src="/bg.svg" alt="bgimage" className={styles.bgImage} />
+            <link rel="preload" href="/bg.svg" as="image"/>
+            <link rel="preload" href="/text.svg" as="image"/>
+            <link rel="preload" href="/comingsoon.svg" as="image"/>
+            <link rel="preload" href="/coin.svg" as="image"/>
+            <ProgressiveImage src="/bg.svg" alt="bgimage" className={styles.bgImage} width={'100'} height={'100'}/>
             <div className={styles.userDescription}>
                 <div className={styles.balanceDescription}>
                     <ProgressiveImage alt='coin' src="/coin.svg" className={styles.coinImage} />
@@ -163,8 +163,8 @@ export default function Home() {
                 </div>
             </div>
             <div className={styles.textContainer}>
-                <ProgressiveImage src="/text.svg" alt="text" className={styles.text} />
-                <ProgressiveImage src="/comingsoon.svg" alt="text" className={styles.comingSoonText} />
+                <ProgressiveImage src="/text.svg" alt="text" className={styles.text} width={'100'}/>
+                <ProgressiveImage src="/comingsoon.svg" alt="text" className={styles.comingSoonText} width={'50'} />
                 <Button
                     mode='filled'
                     size='l'
@@ -179,8 +179,9 @@ export default function Home() {
                         onClose={() => setSnackbarOpen(false)}
                         duration={3000} // Время отображения в миллисекундах
                         before={<span role="img" aria-label="checkmark">✅</span>}
+                        description={'Your referal link has been copied to the clipboard!'}
                     >
-                        Your referal link has been copied to the clipboard!
+                        Done!
                     </Snackbar>
                 )}
             </div>

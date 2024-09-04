@@ -5,8 +5,8 @@ import NextImage from "next/image";
 
 interface IProgressiveImageProps extends HTMLAttributes<HTMLImageElement>{
     src?: string;
-    width?: number;
-    height?: number;
+    width?: string;
+    height?: string;
     alt: string;
 }
 
@@ -49,8 +49,8 @@ export const ProgressiveImage: React.FC<IProgressiveImageProps> = (props) => {
             {loaded && <NextImage
                 className={className}
                 src={src}
-                width={width}
-                height={height}
+                width={Number(width)}
+                height={Number(height)}
                 alt={alt}
             />
             }
