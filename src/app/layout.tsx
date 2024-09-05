@@ -4,6 +4,7 @@ import "./globals.css";
 import {AppRoot} from "@telegram-apps/telegram-ui";
 import Head from "next/head";
 import React from "react";
+import Script from "next/script";
 
 const inter = Libre_Franklin({ subsets: ["latin"] });
 
@@ -25,6 +26,7 @@ export default function RootLayout({
           <link rel="preload" href="/comingsoon.svg" as="image"/>
           <link rel="preload" href="/coin.svg" as="image"/>
       </Head>
+      <Script src="https://telegram.org/js/telegram-web-app.js"></Script>
       <body className={inter.className}>
       <AppRoot>
           {children}

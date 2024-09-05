@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import styles from './page.module.css';
-import { initInitData, initUtils } from '@telegram-apps/sdk';
+import {initInitData, initMiniApp} from '@telegram-apps/sdk';
 import { ProgressiveImage } from "@/components/Img";
 import { user } from "@/types/user.type";
 import { Button, Snackbar, Spinner } from '@telegram-apps/telegram-ui';
@@ -28,7 +28,6 @@ const preloadImages = (imageUrls: string[]): Promise<void[]> => {
 async function fetchDataAndInitialize() {
     try {
         const data = initInitData();
-        console.log(data?.user?.photoUrl)
         const userId = data?.user?.id || 0;
         const userData = {
             balance: 0,
@@ -73,13 +72,16 @@ export default function Home() {
     const [isImagesLoaded, setIsImagesLoaded] = useState(false);
     const [isInitialized, setIsInitialized] = useState(false);
     const [snackbarOpen, setSnackbarOpen] = useState(false);
-
-
+    useEffect(() => {
+        const data = initMiniApp();
+        if (data && window.Telegram && window.Telegram.WebApp) {
+            window.Telegram.WebApp.setHeaderColor('var(--tgui--bg_color)');
+        }
+    }, []);
     const handleSnackbarOpen = () => {
         setSnackbarOpen(true);
     };
 
-    const utils = useMemo(() => (typeof window !== 'undefined' ? initUtils() : null), []);
     const initialize = async () => {
         try {
             const { userId, token, fetchedUserData } = await fetchDataAndInitialize();
@@ -146,7 +148,11 @@ export default function Home() {
 
     // Если страница загружается, показываем лоадер
     if (!isImagesLoaded || isLoading) {
-        return <Spinner  size='l'/>;
+        return (
+            <div className={styles.homeBody}>
+                <Spinner  size='l'/>
+            </div>
+        )
     }
 
     return (
@@ -175,7 +181,7 @@ export default function Home() {
                 </Button>
                 {snackbarOpen && (
                     <Snackbar
-                        style={{ backgroundColor: 'var(--tg-theme-bg-color)' }}
+                        className={styles.snackBar}
                         onClose={() => setSnackbarOpen(false)}
                         duration={3000}
                         before={<span role="img" aria-label="checkmark">✅</span>}

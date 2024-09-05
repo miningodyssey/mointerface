@@ -1,14 +1,23 @@
-body, html {
+body, html, head {
   margin: 0;
   padding: 0;
   height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
-  background: var(--tgui--bg_color);
+  background: var(--tg-theme-bg-color);
+  color: var(--tg-theme-bg-color);
+  background-color:var(--tg-theme-bg-color) ;
+  font-family: var(--font-family);
 }
 
 img {
   user-select: none;          /* Запрещает выделение изображения */
   -webkit-user-drag: none;    /* Запрещает перетаскивание изображения */
+}
+
+:root {
+  font-family: var(--font-family);
+  background: var(--tgui--bg_color);
+  --font-family: -apple-system, system-ui, "Roboto", sans-serif;
 }

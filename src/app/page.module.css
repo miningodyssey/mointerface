@@ -1,3 +1,8 @@
+.homeBody {
+  background: var(--tgui--bg_color);
+  color: var(--tgui--bg_color);
+}
+
 .bgImage {
   position: absolute;
   top: 0;
@@ -316,7 +321,6 @@
 }
 
 .snackBar {
-  background-color: var(--tgui--bg_color)
 }
 
 @media (min-width: 559px) {
