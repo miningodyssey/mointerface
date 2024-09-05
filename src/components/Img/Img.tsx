@@ -47,6 +47,7 @@ export const ProgressiveImage: React.FC<IProgressiveImageProps> = (props) => {
                              style={{width,height}}
             />}
             {loaded && <NextImage
+                priority={true}
                 className={className}
                 src={src}
                 width={Number(width)}

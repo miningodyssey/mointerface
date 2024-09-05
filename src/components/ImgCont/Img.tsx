@@ -46,6 +46,7 @@ export const ProgressiveImageCont: React.FC<IProgressiveImageProps> = (props) =>
             {!loaded && <div className={`Placeholder ${className}`} />}
             {loaded && (
                 <NextImage
+                    priority={true}
                     className="progressiveImage"
                     src={src}
                     width={width || 0}  // Provide default value

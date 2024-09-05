@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Libre_Franklin } from "next/font/google";
 import "./globals.css";
 import {AppRoot} from "@telegram-apps/telegram-ui";
+import Head from "next/head";
+import React from "react";
 
 const inter = Libre_Franklin({ subsets: ["latin"] });
 
@@ -17,6 +19,12 @@ export default function RootLayout({
 }>) {
   return (
       <html lang="en">
+      <Head>
+          <link rel="preload" href="/bg.svg" as="image"/>
+          <link rel="preload" href="/text.svg" as="image"/>
+          <link rel="preload" href="/comingsoon.svg" as="image"/>
+          <link rel="preload" href="/coin.svg" as="image"/>
+      </Head>
       <body className={inter.className}>
       <AppRoot>
           {children}

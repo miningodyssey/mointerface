@@ -8,7 +8,8 @@ import { ProgressiveImage } from "@/components/Img";
 import { user } from "@/types/user.type";
 import { Button, Snackbar, Spinner } from '@telegram-apps/telegram-ui';
 import '@telegram-apps/telegram-ui/dist/styles.css';
-import { Loader } from "@/components/Loader";
+import { useTranslation } from 'react-i18next';
+import './../i18n'
 
 const preloadImages = (imageUrls: string[]): Promise<void[]> => {
     return Promise.all(
@@ -61,6 +62,7 @@ async function fetchDataAndInitialize() {
 }
 
 export default function Home() {
+    const { t } = useTranslation();
     const [isLoading, setIsLoading] = useState(true); // Состояние для отображения лоадера
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [userId, setUserId] = useState<number>(0);
@@ -71,6 +73,7 @@ export default function Home() {
     const [isImagesLoaded, setIsImagesLoaded] = useState(false);
     const [isInitialized, setIsInitialized] = useState(false);
     const [snackbarOpen, setSnackbarOpen] = useState(false);
+
 
     const handleSnackbarOpen = () => {
         setSnackbarOpen(true);
@@ -148,10 +151,6 @@ export default function Home() {
 
     return (
         <div>
-            <link rel="preload" href="/bg.svg" as="image"/>
-            <link rel="preload" href="/text.svg" as="image"/>
-            <link rel="preload" href="/comingsoon.svg" as="image"/>
-            <link rel="preload" href="/coin.svg" as="image"/>
             <ProgressiveImage src="/bg.svg" alt="bgimage" className={styles.bgImage} width={'100'} height={'100'}/>
             <div className={styles.userDescription}>
                 <div className={styles.balanceDescription}>
@@ -159,12 +158,12 @@ export default function Home() {
                     <p className={styles.balance}>{userData?.balance || 0}</p>
                 </div>
                 <div className={styles.referalsDescription}>
-                    <p className={styles.balance}>Referals: {userData?.referals || 0}</p>
+                    <p className={styles.balance}>{t('referals' as any)}: {userData?.referals || 0}</p>
                 </div>
             </div>
             <div className={styles.textContainer}>
                 <ProgressiveImage src="/text.svg" alt="text" className={styles.text} width={'100'}/>
-                <ProgressiveImage src="/comingsoon.svg" alt="text" className={styles.comingSoonText} width={'50'} />
+                <p className={styles.comingSoonText}>{t('coomingsoon' as any)}</p>
                 <Button
                     mode='filled'
                     size='l'
@@ -172,16 +171,17 @@ export default function Home() {
                     onClick={() => copyLinkToClipboard(Number(userId))}
                     onTouchEnd={() => copyLinkToClipboard(Number(userId))}
                 >
-                    GET MORE MOODY
+                    {t('getMoreMoody' as any)}
                 </Button>
                 {snackbarOpen && (
                     <Snackbar
+                        style={{ backgroundColor: 'var(--tg-theme-bg-color)' }}
                         onClose={() => setSnackbarOpen(false)}
-                        duration={3000} // Время отображения в миллисекундах
+                        duration={3000}
                         before={<span role="img" aria-label="checkmark">✅</span>}
-                        description={'Your referal link has been copied to the clipboard!'}
+                        description={t('linkCopied' as any)}
                     >
-                        Done!
+                        {t('done' as any) }
                     </Snackbar>
                 )}
             </div>

@@ -29,8 +29,14 @@
 }
 
 .comingSoonText {
+  font-family: var(--tgui--font-family);
   width: 50vw;
   margin-bottom: 2vw;
+  color: white;
+  font-size: 4.1vw;
+  user-select: none;
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+  text-align: center;
 }
 
 .startBtn {
@@ -232,8 +238,9 @@
 }
 
 .taskDescription, .balance {
+  font-family: var(--tgui--font-family);
   color: white;
-  font-size: 3.5vw;
+  font-size: 3.1vw;
   margin: 0 0 2px 5px;
   user-select: none;
   text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
@@ -307,6 +314,11 @@
   right: 0;
   height: 100%;
 }
+
+.snackBar {
+  background-color: var(--tgui--bg_color)
+}
+
 @media (min-width: 559px) {
   .closeButtonWrapper {
     right: -12.5%
