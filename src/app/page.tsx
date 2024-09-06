@@ -10,7 +10,13 @@ import { Button, Snackbar, Spinner } from '@telegram-apps/telegram-ui';
 import '@telegram-apps/telegram-ui/dist/styles.css';
 import { useTranslation } from 'react-i18next';
 import './../i18n'
+import { motion } from 'framer-motion';
 
+
+const fadeIn = {
+    hidden: { opacity: 0 },
+    visible: { opacity: 1, transition: { duration: 1 } },
+};
 const preloadImages = (imageUrls: string[]): Promise<void[]> => {
     return Promise.all(
         imageUrls.map(
@@ -156,8 +162,20 @@ export default function Home() {
     }
 
     return (
-        <div>
-            <ProgressiveImage src="/bg.svg" alt="bgimage" className={styles.bgImage} width={'100'} height={'100'}/>
+        <motion.div
+            initial="hidden"
+            animate="visible"
+            variants={fadeIn}
+        >
+            <motion.img
+                src="/bg.svg"
+                alt="bgimage"
+                className={styles.bgImage}
+                initial="hidden"
+                animate="visible"
+                variants={fadeIn}
+                fetchPriority={'high'}
+            />
             <div className={styles.userDescription}>
                 <div className={styles.balanceDescription}>
                     <ProgressiveImage alt='coin' src="/coin.svg" className={styles.coinImage} />
@@ -168,7 +186,16 @@ export default function Home() {
                 </div>
             </div>
             <div className={styles.textContainer}>
-                <ProgressiveImage src="/text.svg" alt="text" className={styles.text} width={'100'}/>
+                <div className={styles.logoContainer}>
+                    <motion.img
+                        src="/text.svg"
+                        alt="text"
+                        className={styles.logo}
+                        initial="hidden"
+                        animate="visible"
+                        variants={fadeIn}
+                    />
+                </div>
                 <p className={styles.comingSoonText}>{t('coomingsoon' as any)}</p>
                 <Button
                     mode='filled'
@@ -193,6 +220,6 @@ export default function Home() {
             </div>
             <div>
             </div>
-        </div>
+        </motion.div>
     );
 }

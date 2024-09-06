@@ -26,10 +26,14 @@
   transform: translate(-50%, -50%);
   display: flex;
   flex-direction: column;
-  align-items: center; /* Выравнивает содержимое по горизонтали */
+  align-items: center; 
 }
 
-.text {
+.logo {
+  width: 100%;
+}
+
+.logoContainer {
   width: 100vw;
 }
 

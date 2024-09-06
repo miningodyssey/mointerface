@@ -7,7 +7,7 @@ body, html, head {
   align-items: center;
   background: var(--tg-theme-bg-color);
   color: var(--tg-theme-bg-color);
-  background-color:var(--tg-theme-bg-color) ;
+  background-color:var(--tg-theme-bg-color);
   font-family: var(--font-family);
 }
 
