@@ -1,21 +1,23 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, {useState, useEffect, useCallback, useMemo} from 'react';
 import axios from 'axios';
 import styles from './page.module.css';
-import {initInitData, initMiniApp} from '@telegram-apps/sdk';
-import { ProgressiveImage } from "@/components/Img";
+import {initInitData, initMiniApp, initUtils} from '@telegram-apps/sdk';
 import { user } from "@/types/user.type";
 import { Button, Snackbar, Spinner } from '@telegram-apps/telegram-ui';
 import '@telegram-apps/telegram-ui/dist/styles.css';
 import { useTranslation } from 'react-i18next';
 import './../i18n'
 import { motion } from 'framer-motion';
+import CoinIcon from "@/components/CoinIcon/CoinIcon";
+import PeopleIcon from "@/components/PeopleIcon/PeopleIcon";
+import CopyIcon from "@/components/CopyIcon/CopyIcon";
 
 
 const fadeIn = {
     hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { duration: 1 } },
+    visible: { opacity: 1, transition: { duration: 1.5 } },
 };
 const preloadImages = (imageUrls: string[]): Promise<void[]> => {
     return Promise.all(
@@ -70,21 +72,20 @@ export default function Home() {
     const { t } = useTranslation();
     const [userData, setUserData] = useState<user>();
     const [isLoading, setIsLoading] = useState(true); // Состояние для отображения лоадера
-    const [isModalVisible, setIsModalVisible] = useState(false);
     const [userId, setUserId] = useState<number>(0);
-    const [taskList, setTaskList] = useState();
     const [authKey, setAuthKey] = useState<string>();
     const [copyStatus, setStatus] = useState('COPY');
     const [isImagesLoaded, setIsImagesLoaded] = useState(false);
     const [isInitialized, setIsInitialized] = useState(false);
+    const [isLogoLoaded, setIsLogoLoaded] = useState(false)
     const [snackbarOpen, setSnackbarOpen] = useState(false);
-    /*
     useEffect(() => {
         const data = initMiniApp();
         if (data && window.Telegram && window.Telegram.WebApp) {
             window.Telegram.WebApp.setHeaderColor('var(--tgui--bg_color)');
         }
     }, []);
+    const utils = useMemo(() => (typeof window !== 'undefined' ? initUtils() : null), []);
     const handleSnackbarOpen = () => {
         setSnackbarOpen(true);
     };
@@ -122,9 +123,7 @@ export default function Home() {
     useEffect(() => {
         const images = [
             '/bg.svg',
-            '/text.svg',
-            '/comingsoon.svg',
-            '/coin.svg',
+            '/text.svg'
         ];
 
         preloadImages(images)
@@ -134,13 +133,6 @@ export default function Home() {
             .catch((err) => console.error('Failed to preload images:', err));
     }, []);
 
-    const handleButtonClick = useCallback(async () => {
-        try {
-            setIsModalVisible(true);
-        } catch (error) {
-            console.error('Error fetching tasks:', error);
-        }
-    }, [userId, authKey, isInitialized]);
 
 
     const copyLinkToClipboard = useCallback((userId: number) => {
@@ -153,14 +145,22 @@ export default function Home() {
             .catch(err => console.error('Не удалось скопировать ссылку', err));
     }, []);
 
+    const sendLink = useCallback((userId: number) => {
+        const link = `https://t.me/MiningOdysseyBot/Game?startapp=${userId}`;
+        if (utils) {
+            utils.shareURL(link, 'Hi')
+        }
+    }, []);
+
+
     // Если страница загружается, показываем лоадер
     if (!isImagesLoaded || isLoading) {
         return (
-            <div className={styles.pageBody}>
+            <div>
                 <Spinner  size='l'/>
             </div>
         )
-    }*/
+    }
 
     return (
         <motion.div
@@ -169,25 +169,23 @@ export default function Home() {
             variants={fadeIn}
             className={styles.pageBody}
         >
-            <motion.img
-                src="/bg.svg"
-                alt="bgimage"
+            <motion.div
                 className={styles.bgImage}
-                initial="hidden"
-                animate="visible"
                 variants={fadeIn}
-                fetchPriority={'high'}
             />
+
+
             <div className={styles.userDescription}>
                 <div className={styles.balanceContainer}>
-                    <p className={styles.totalbalance}>Total Balance</p>
+                    <p className={styles.totalbalance}>{t('totalBalance' as any)}</p>
                     <div className={styles.balanceDescription}>
-                        <ProgressiveImage alt='coin' src="/coin.svg" className={styles.coinImage} width={'100'} height={'100'}/>
+                        <CoinIcon />
                         <p className={styles.balance}>{userData?.balance || 0}</p>
                     </div>
                 </div>
                 <div className={styles.referalsDescription}>
-                    <p className={styles.referals}>{userData?.referals || 0} {t('referals' as any)} </p>
+                    <PeopleIcon/>
+                    <p className={styles.referals}> {userData?.referals || 0} {t('referals' as any)} </p>
                 </div>
             </div>
             <div className={styles.textContainer}>
@@ -197,9 +195,9 @@ export default function Home() {
                         alt="text"
                         className={styles.logo}
                         initial="hidden"
-                        animate="visible"
+                        animate={isImagesLoaded ? "visible" : "hidden"}
                         variants={fadeIn}
-                        fetchPriority={'high'}
+                        onLoad={() => setIsLogoLoaded(true)}
                     />
                 </div>
                 <div>
@@ -207,7 +205,6 @@ export default function Home() {
                 </div>
                 {snackbarOpen && (
                     <Snackbar
-                        className={styles.snackBar}
                         onClose={() => setSnackbarOpen(false)}
                         duration={3000}
                         before={<span role="img" aria-label="checkmark">✅</span>}
@@ -221,12 +218,19 @@ export default function Home() {
                 <Button
                     mode='filled'
                     size='l'
-                    onClick={() => copyLinkToClipboard(Number(userId))}
-                    onTouchEnd={() => copyLinkToClipboard(Number(userId))}
+                    onClick={() => sendLink(Number(userId))}
+                    onTouchEnd={() => sendLink(Number(userId))}
                     stretched
                 >
                     {t('inviteFriends' as any)}
                 </Button>
+                <button
+                    className={styles.copyButton}
+                    onClick={() => copyLinkToClipboard(Number(userId))}
+                    onTouchEnd={() => copyLinkToClipboard(Number(userId))}
+                >
+                    <CopyIcon />
+                </button>
             </div>
         </motion.div>
     );

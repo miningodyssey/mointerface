@@ -1,0 +1,6 @@
+.PeopleIcon {
+    width: 5vw;
+    height: 100%;
+    position: relative;
+    color: var(--moody-logo-color);
+}

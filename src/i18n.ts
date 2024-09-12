@@ -16,6 +16,7 @@ i18n
             en: {
                 translation: {
                     "welcome": "Welcome to React and react-i18next",
+                    "totalBalance": "Total Balance",
                     "inviteFriends": "Invite your friends!",
                     "referals": "friends invited",
                     "done": "Done!",
@@ -26,6 +27,7 @@ i18n
             ru: {
                 translation: {
                     "welcome": "Добро пожаловать в React и react-i18next",
+                    "totalBalance": "Баланс",
                     "inviteFriends": "Пригласить друзей",
                     "referals": "друзей приглашено",
                     "done": "Готово!",

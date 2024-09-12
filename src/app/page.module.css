@@ -1,21 +1,21 @@
 .pageBody {
-  background: var(--tgui--bg_color);
   color: var(--tgui--bg_color);
   display: flex;
   width: 100%;
   height: 100vh;
   flex-direction: column;
+  background: black;
+
 }
 
 .bgImage {
   position: absolute;
   top: 0;
   left: 0;
-  width: 100vw;
   height: 100vh;
-  object-fit: cover;
-  object-position: center center;
-  z-index: -1;
+  width: 100vw;
+  background: var(--tgui--bg_color) url('/bg.svg') no-repeat center center;
+  background-size: cover;
 }
 
 .interfaceContainer {
@@ -34,25 +34,17 @@
 }
 
 .logo {
-  width: 50%;
+  width: 100%;
+  background-size: cover;
 }
 
 .logoContainer {
   width: 100vw;
   justify-content: center;
   display: flex;
+  height: 45vh;
 }
 
-.comingSoonText {
-  font-family: var(--tgui--font-family);
-  width: 50vw;
-  margin-bottom: 2vw;
-  color: white;
-  font-size: 4.1vw;
-  user-select: none;
-  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
-  text-align: center;
-}
 
 .startBtn {
   display: flex;
@@ -226,9 +218,9 @@
   left: 50%;
   display: flex;
   flex-direction: column;
-  user-select: none;          /* Запрещает выделение изображения */
-  pointer-events: none;       /* Отключает события указателя */
-  -webkit-user-drag: none;    /* Запрещает перетаскивание изображения */
+  user-select: none;
+  pointer-events: none;
+  -webkit-user-drag: none;
 }
 .task {
   justify-content: center;
@@ -252,17 +244,29 @@
   align-items: center;
 }
 
-.taskDescription, .balance {
+.taskDescription, .balance, .referals {
   font-family: var(--tgui--font-family);
   color: white;
-  font-size: 3.1vw;
   margin: 0 0 2px 5px;
   user-select: none;
 }
-.totalbalance, .referals {
+
+
+.referals {
+  font-size: small;
+  font-weight: 500;
+
+}
+.balance {
+  font-size: x-large;
+  font-weight: 700;
+}
+
+.totalbalance {
   font-size: 100%;
   margin: 0;
   user-select: none;
+  color: var(--tgui--text_color);
 }
 
 .totalbalance {
@@ -272,7 +276,7 @@
 .balanceContainer {
   display: flex;
   flex-direction: column;
-  align-content: flex-start;
+  align-items: center;
 }
 
 .taskDescriptionContainer {
@@ -304,26 +308,44 @@
 .inviteButton {
   position: absolute;
   transform: translateX(-50%);
-  bottom: 1%;
-  width: 100%;
+  bottom: 2%;
+  width: 95%;
+  display: inline-flex;
+}
+
+.copyButton {
+  background: none;
+  -webkit-user-drag: none;
+  user-select: none;
+  border: none;
+  padding-right: 0;
+  cursor: pointer;
+  transition: opacity .15s ease-out;
+}
+
+.copyButton:hover {
+  opacity: 0.8
 }
 
 .userDescription {
   display: flex;
   flex-direction: column;
   position: absolute;
+  justify-content: center;
+  align-items: center;
   top: 10px;
-  transform: translateX(-50%);
+  left: 0;
+  width: 100%;
 }
 
 .coinImage {
-  width: 3vw;
   right: 0;
+  top: 1%;
+  position: relative;
+  width: 3vw;
   height: 100%;
 }
 
-.snackBar {
-}
 
 @media (min-width: 559px) {
   .closeButtonWrapper {
