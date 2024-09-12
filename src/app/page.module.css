@@ -1,6 +1,10 @@
-.homeBody {
+.pageBody {
   background: var(--tgui--bg_color);
   color: var(--tgui--bg_color);
+  display: flex;
+  width: 100%;
+  height: 100vh;
+  flex-direction: column;
 }
 
 .bgImage {
@@ -26,15 +30,17 @@
   transform: translate(-50%, -50%);
   display: flex;
   flex-direction: column;
-  align-items: center; 
+  align-items: center;
 }
 
 .logo {
-  width: 100%;
+  width: 50%;
 }
 
 .logoContainer {
   width: 100vw;
+  justify-content: center;
+  display: flex;
 }
 
 .comingSoonText {
@@ -252,7 +258,21 @@
   font-size: 3.1vw;
   margin: 0 0 2px 5px;
   user-select: none;
-  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+}
+.totalbalance, .referals {
+  font-size: 100%;
+  margin: 0;
+  user-select: none;
+}
+
+.totalbalance {
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+.balanceContainer {
+  display: flex;
+  flex-direction: column;
+  align-content: flex-start;
 }
 
 .taskDescriptionContainer {
@@ -274,52 +294,30 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: center;
-  border-radius: 32px; /* Скругленные края */
-  padding: 2px 20px;
+  justify-content: flex-start;
   background-color: transparent; /* Фон контейнера */
   z-index: 1;
   margin-bottom: 5px;
-  width: 20vw;
 }
 
-.balanceDescription::before, .referalsDescription::before {
-  content: "";
+
+.inviteButton {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  border-radius: 32px; /* Скругленные углы */
-  padding: 0.8vw; /* Толщина границы */
-  background: linear-gradient(90deg, #E5C400 0%, #FE7500 100%);
-  -webkit-mask:
-          linear-gradient(#fff 0 0) content-box,
-          linear-gradient(#fff 0 0); /* Прозрачный центр и цветная граница */
-  -webkit-mask-composite: xor;
-  mask-composite: exclude; /* Совместимость с другими браузерами */
-  z-index: -1; /* Размещение за основным контентом */
+  transform: translateX(-50%);
+  bottom: 1%;
+  width: 100%;
 }
-
-.balanceDescription::after, .referalsDescription::after {
-  content: "";
-  border-radius: 29px; /* Немного меньший радиус, чтобы повторить внутренние границы */
-  background-color: transparent; /* Цвет внутреннего фона */
-  z-index: -2; /* Псевдоэлемент за градиентом */
-}
-
 
 .userDescription {
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
   position: absolute;
-  top: 2vw;
-  right: 3vh;
+  top: 10px;
+  transform: translateX(-50%);
 }
+
 .coinImage {
-  position: absolute;
-  width: 6vw;
+  width: 3vw;
   right: 0;
   height: 100%;
 }

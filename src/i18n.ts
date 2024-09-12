@@ -16,8 +16,8 @@ i18n
             en: {
                 translation: {
                     "welcome": "Welcome to React and react-i18next",
-                    "getMoreMoody": "GET MORE MOODY",
-                    "referals": "Referals",
+                    "inviteFriends": "Invite your friends!",
+                    "referals": "friends invited",
                     "done": "Done!",
                     "linkCopied": "Your referral link has been copied to the clipboard!",
                     "coomingsoon": "GAME IS COOMING SOON!"
@@ -26,8 +26,8 @@ i18n
             ru: {
                 translation: {
                     "welcome": "Добро пожаловать в React и react-i18next",
-                    "getMoreMoody": "ПОЛУЧИТЬ БОЛЬШЕ MOODY",
-                    "referals": "Рефералы",
+                    "inviteFriends": "Пригласить друзей",
+                    "referals": "друзей приглашено",
                     "done": "Готово!",
                     "linkCopied": "Ваша реферальная ссылка скопирована в буфер обмена!",
                     "coomingsoon": "ИГРА СКОРО!"

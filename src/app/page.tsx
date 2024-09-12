@@ -68,16 +68,17 @@ async function fetchDataAndInitialize() {
 
 export default function Home() {
     const { t } = useTranslation();
+    const [userData, setUserData] = useState<user>();
     const [isLoading, setIsLoading] = useState(true); // Состояние для отображения лоадера
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [userId, setUserId] = useState<number>(0);
-    const [userData, setUserData] = useState<user>();
     const [taskList, setTaskList] = useState();
     const [authKey, setAuthKey] = useState<string>();
     const [copyStatus, setStatus] = useState('COPY');
     const [isImagesLoaded, setIsImagesLoaded] = useState(false);
     const [isInitialized, setIsInitialized] = useState(false);
     const [snackbarOpen, setSnackbarOpen] = useState(false);
+    /*
     useEffect(() => {
         const data = initMiniApp();
         if (data && window.Telegram && window.Telegram.WebApp) {
@@ -155,17 +156,18 @@ export default function Home() {
     // Если страница загружается, показываем лоадер
     if (!isImagesLoaded || isLoading) {
         return (
-            <div className={styles.homeBody}>
+            <div className={styles.pageBody}>
                 <Spinner  size='l'/>
             </div>
         )
-    }
+    }*/
 
     return (
         <motion.div
             initial="hidden"
             animate="visible"
             variants={fadeIn}
+            className={styles.pageBody}
         >
             <motion.img
                 src="/bg.svg"
@@ -177,12 +179,15 @@ export default function Home() {
                 fetchPriority={'high'}
             />
             <div className={styles.userDescription}>
-                <div className={styles.balanceDescription}>
-                    <ProgressiveImage alt='coin' src="/coin.svg" className={styles.coinImage} />
-                    <p className={styles.balance}>{userData?.balance || 0}</p>
+                <div className={styles.balanceContainer}>
+                    <p className={styles.totalbalance}>Total Balance</p>
+                    <div className={styles.balanceDescription}>
+                        <ProgressiveImage alt='coin' src="/coin.svg" className={styles.coinImage} width={'100'} height={'100'}/>
+                        <p className={styles.balance}>{userData?.balance || 0}</p>
+                    </div>
                 </div>
                 <div className={styles.referalsDescription}>
-                    <p className={styles.balance}>{t('referals' as any)}: {userData?.referals || 0}</p>
+                    <p className={styles.referals}>{userData?.referals || 0} {t('referals' as any)} </p>
                 </div>
             </div>
             <div className={styles.textContainer}>
@@ -194,18 +199,12 @@ export default function Home() {
                         initial="hidden"
                         animate="visible"
                         variants={fadeIn}
+                        fetchPriority={'high'}
                     />
                 </div>
-                <p className={styles.comingSoonText}>{t('coomingsoon' as any)}</p>
-                <Button
-                    mode='filled'
-                    size='l'
-                    style={{ background: "linear-gradient(90deg, #E5C400 0%, #FE7500 100%)" }}
-                    onClick={() => copyLinkToClipboard(Number(userId))}
-                    onTouchEnd={() => copyLinkToClipboard(Number(userId))}
-                >
-                    {t('getMoreMoody' as any)}
-                </Button>
+                <div>
+
+                </div>
                 {snackbarOpen && (
                     <Snackbar
                         className={styles.snackBar}
@@ -218,7 +217,16 @@ export default function Home() {
                     </Snackbar>
                 )}
             </div>
-            <div>
+            <div className={styles.inviteButton}>
+                <Button
+                    mode='filled'
+                    size='l'
+                    onClick={() => copyLinkToClipboard(Number(userId))}
+                    onTouchEnd={() => copyLinkToClipboard(Number(userId))}
+                    stretched
+                >
+                    {t('inviteFriends' as any)}
+                </Button>
             </div>
         </motion.div>
     );
