@@ -1,5 +1,6 @@
 interface WebApp {
     setHeaderColor(color: string): void;
+    disableVerticalSwipes: boolean
 }
 
 interface Telegram {
@@ -8,4 +9,5 @@ interface Telegram {
 
 interface Window {
     Telegram?: Telegram;
+    TelegramWebviewProxy?
 }

@@ -3,7 +3,7 @@
 import React, {useState, useEffect, useCallback, useMemo} from 'react';
 import axios from 'axios';
 import styles from './page.module.css';
-import {initInitData, initMiniApp, initUtils} from '@telegram-apps/sdk';
+import {initInitData, initMiniApp, initUtils, postEvent} from '@telegram-apps/sdk';
 import { user } from "@/types/user.type";
 import { Button, Snackbar, Spinner } from '@telegram-apps/telegram-ui';
 import '@telegram-apps/telegram-ui/dist/styles.css';
@@ -15,10 +15,6 @@ import PeopleIcon from "@/components/PeopleIcon/PeopleIcon";
 import CopyIcon from "@/components/CopyIcon/CopyIcon";
 
 
-const fadeIn = {
-    hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { duration: 1.5 } },
-};
 const preloadImages = (imageUrls: string[]): Promise<void[]> => {
     return Promise.all(
         imageUrls.map(
@@ -74,17 +70,33 @@ export default function Home() {
     const [isLoading, setIsLoading] = useState(true); // Состояние для отображения лоадера
     const [userId, setUserId] = useState<number>(0);
     const [authKey, setAuthKey] = useState<string>();
-    const [copyStatus, setStatus] = useState('COPY');
     const [isImagesLoaded, setIsImagesLoaded] = useState(false);
-    const [isInitialized, setIsInitialized] = useState(false);
     const [isLogoLoaded, setIsLogoLoaded] = useState(false)
     const [snackbarOpen, setSnackbarOpen] = useState(false);
+    const fadeIn = useMemo(() => ({
+        hidden: { opacity: 0 },
+        visible: { opacity: 1, transition: { duration: 0.5 } },
+    }), []);
     useEffect(() => {
-        const data = initMiniApp();
-        if (data && window.Telegram && window.Telegram.WebApp) {
-            window.Telegram.WebApp.setHeaderColor('var(--tgui--bg_color)');
+        const initTelegramWebApp = () => {
+            const data = initMiniApp();
+            if (data && window.Telegram && window.Telegram.WebApp) {
+                window.Telegram.WebApp.disableVerticalSwipes = true;
+
+                window.Telegram.WebApp.setHeaderColor('var(--tgui--bg_color)');
+            }
+            if (window.TelegramWebviewProxy) {
+                window
+                    .TelegramWebviewProxy
+                    .postEvent('web_app_setup_swipe_behavior', { allow_vertical_swipe: false })
+            }
+        };
+
+        if (typeof window !== 'undefined') {
+            initTelegramWebApp();
         }
     }, []);
+
     const utils = useMemo(() => (typeof window !== 'undefined' ? initUtils() : null), []);
     const handleSnackbarOpen = () => {
         setSnackbarOpen(true);
@@ -96,7 +108,6 @@ export default function Home() {
             setUserId(userId);
             setAuthKey(token);
             setUserData(fetchedUserData);
-            setIsInitialized(true);
         } catch (error) {
             console.error('Error during initialization:', error);
         }
@@ -104,33 +115,28 @@ export default function Home() {
 
     useEffect(() => {
         initialize().finally(() => {
-            // Устанавливаем isLoading в false только после завершения инициализации
             setIsLoading(false);
         });
 
-        // Проверяем завершение загрузки страницы
-        const handleLoad = () => {
-            setIsLoading(false);
-        };
-
+        const handleLoad = () => setIsLoading(false);
         window.addEventListener('load', handleLoad);
 
-        return () => {
-            window.removeEventListener('load', handleLoad);
-        };
+        return () => window.removeEventListener('load', handleLoad);
     }, []);
 
     useEffect(() => {
-        const images = [
-            '/bg.svg',
-            '/text.svg'
-        ];
+        const images = ['/bg.svg', '/text.svg'];
 
-        preloadImages(images)
-            .then(() => {
+        const preload = async () => {
+            try {
+                await preloadImages(images);
                 setIsImagesLoaded(true);
-            })
-            .catch((err) => console.error('Failed to preload images:', err));
+            } catch (error) {
+                console.error('Failed to preload images:', error);
+            }
+        };
+
+        preload();
     }, []);
 
 
@@ -139,8 +145,7 @@ export default function Home() {
         const link = `https://t.me/MiningOdysseyBot/Game?startapp=${userId}`;
         navigator.clipboard.writeText(link)
             .then(() => {
-                setStatus('DONE');
-                handleSnackbarOpen(); // Открыть Snackbar
+                handleSnackbarOpen();
             })
             .catch(err => console.error('Не удалось скопировать ссылку', err));
     }, []);
@@ -169,8 +174,12 @@ export default function Home() {
             variants={fadeIn}
             className={styles.pageBody}
         >
-            <motion.div
+            <motion.img
+                src="/bg.svg"
+                alt="bg"
                 className={styles.bgImage}
+                initial="hidden"
+                animate={isImagesLoaded ? "visible" : "hidden"}
                 variants={fadeIn}
             />
 
@@ -219,7 +228,6 @@ export default function Home() {
                     mode='filled'
                     size='l'
                     onClick={() => sendLink(Number(userId))}
-                    onTouchEnd={() => sendLink(Number(userId))}
                     stretched
                 >
                     {t('inviteFriends' as any)}
@@ -227,7 +235,6 @@ export default function Home() {
                 <button
                     className={styles.copyButton}
                     onClick={() => copyLinkToClipboard(Number(userId))}
-                    onTouchEnd={() => copyLinkToClipboard(Number(userId))}
                 >
                     <CopyIcon />
                 </button>

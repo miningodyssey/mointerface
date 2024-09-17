@@ -14,8 +14,8 @@
   left: 0;
   height: 100vh;
   width: 100vw;
-  background: var(--tgui--bg_color) url('/bg.svg') no-repeat center center;
-  background-size: cover;
+  object-fit: cover;
+  object-position: center;
 }
 
 .interfaceContainer {
