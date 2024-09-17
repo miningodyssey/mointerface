@@ -1,17 +1,21 @@
-.homeBody {
-  background: var(--tgui--bg_color);
+.pageBody {
   color: var(--tgui--bg_color);
+  display: flex;
+  width: 100%;
+  height: 100vh;
+  flex-direction: column;
+  background: black;
+
 }
 
 .bgImage {
   position: absolute;
   top: 0;
   left: 0;
-  width: 100vw;
   height: 100vh;
-  object-fit: cover;
-  object-position: center center;
-  z-index: -1;
+  width: 100vw;
+  background: var(--tgui--bg_color) url('/bg.svg') no-repeat center center;
+  background-size: cover;
 }
 
 .interfaceContainer {
@@ -26,27 +30,21 @@
   transform: translate(-50%, -50%);
   display: flex;
   flex-direction: column;
-  align-items: center; 
+  align-items: center;
 }
 
 .logo {
   width: 100%;
+  background-size: cover;
 }
 
 .logoContainer {
   width: 100vw;
+  justify-content: center;
+  display: flex;
+  height: 45vh;
 }
 
-.comingSoonText {
-  font-family: var(--tgui--font-family);
-  width: 50vw;
-  margin-bottom: 2vw;
-  color: white;
-  font-size: 4.1vw;
-  user-select: none;
-  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
-  text-align: center;
-}
 
 .startBtn {
   display: flex;
@@ -220,9 +218,9 @@
   left: 50%;
   display: flex;
   flex-direction: column;
-  user-select: none;          /* Запрещает выделение изображения */
-  pointer-events: none;       /* Отключает события указателя */
-  -webkit-user-drag: none;    /* Запрещает перетаскивание изображения */
+  user-select: none;
+  pointer-events: none;
+  -webkit-user-drag: none;
 }
 .task {
   justify-content: center;
@@ -246,13 +244,39 @@
   align-items: center;
 }
 
-.taskDescription, .balance {
+.taskDescription, .balance, .referals {
   font-family: var(--tgui--font-family);
   color: white;
-  font-size: 3.1vw;
   margin: 0 0 2px 5px;
   user-select: none;
-  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+}
+
+
+.referals {
+  font-size: small;
+  font-weight: 500;
+
+}
+.balance {
+  font-size: x-large;
+  font-weight: 700;
+}
+
+.totalbalance {
+  font-size: 100%;
+  margin: 0;
+  user-select: none;
+  color: var(--tgui--text_color);
+}
+
+.totalbalance {
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+.balanceContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .taskDescriptionContainer {
@@ -274,58 +298,54 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: center;
-  border-radius: 32px; /* Скругленные края */
-  padding: 2px 20px;
+  justify-content: flex-start;
   background-color: transparent; /* Фон контейнера */
   z-index: 1;
   margin-bottom: 5px;
-  width: 20vw;
 }
 
-.balanceDescription::before, .referalsDescription::before {
-  content: "";
+
+.inviteButton {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  border-radius: 32px; /* Скругленные углы */
-  padding: 0.8vw; /* Толщина границы */
-  background: linear-gradient(90deg, #E5C400 0%, #FE7500 100%);
-  -webkit-mask:
-          linear-gradient(#fff 0 0) content-box,
-          linear-gradient(#fff 0 0); /* Прозрачный центр и цветная граница */
-  -webkit-mask-composite: xor;
-  mask-composite: exclude; /* Совместимость с другими браузерами */
-  z-index: -1; /* Размещение за основным контентом */
+  transform: translateX(-50%);
+  bottom: 2%;
+  width: 95%;
+  display: inline-flex;
 }
 
-.balanceDescription::after, .referalsDescription::after {
-  content: "";
-  border-radius: 29px; /* Немного меньший радиус, чтобы повторить внутренние границы */
-  background-color: transparent; /* Цвет внутреннего фона */
-  z-index: -2; /* Псевдоэлемент за градиентом */
+.copyButton {
+  background: none;
+  -webkit-user-drag: none;
+  user-select: none;
+  border: none;
+  padding-right: 0;
+  cursor: pointer;
+  transition: opacity .15s ease-out;
 }
 
+.copyButton:hover {
+  opacity: 0.8
+}
 
 .userDescription {
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
   position: absolute;
-  top: 2vw;
-  right: 3vh;
+  justify-content: center;
+  align-items: center;
+  top: 10px;
+  left: 0;
+  width: 100%;
 }
+
 .coinImage {
-  position: absolute;
-  width: 6vw;
   right: 0;
+  top: 1%;
+  position: relative;
+  width: 3vw;
   height: 100%;
 }
 
-.snackBar {
-}
 
 @media (min-width: 559px) {
   .closeButtonWrapper {

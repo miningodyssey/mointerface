@@ -21,10 +21,7 @@ export default function RootLayout({
   return (
       <html lang="en">
       <Head>
-          <link rel="preload" href="/bg.svg" as="image"/>
           <link rel="preload" href="/text.svg" as="image"/>
-          <link rel="preload" href="/comingsoon.svg" as="image"/>
-          <link rel="preload" href="/coin.svg" as="image"/>
       </Head>
       <Script src="https://telegram.org/js/telegram-web-app.js"></Script>
       <body className={inter.className}>

@@ -19,5 +19,6 @@ img {
 :root {
   font-family: var(--font-family);
   background: var(--tgui--bg_color);
+  --moody-logo-color: var(--tg-theme-button-color);
   --font-family: -apple-system, system-ui, "Roboto", sans-serif;
 }
