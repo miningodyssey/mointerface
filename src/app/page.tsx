@@ -44,7 +44,6 @@ async function fetchDataAndInitialize() {
         };
         const authResponse = await axios.post(`https://miningodyssey.pw/auth/register/${userId}`, userData);
         const token = authResponse.data['access_token'];
-
         const userResponse = await axios.post(
             `https://miningodyssey.pw/users/create/${userId}`,
             userData,
@@ -56,7 +55,6 @@ async function fetchDataAndInitialize() {
             }
         );
 
-        console.log('User created/updated:', userResponse.data);
         return { userId, token, fetchedUserData: userResponse.data };
     } catch (error) {
         console.error('Error during initialization:', error);
@@ -153,13 +151,13 @@ export default function Home() {
     const sendLink = useCallback((userId: number) => {
         const link = `https://t.me/MiningOdysseyBot/Game?startapp=${userId}`;
         if (utils) {
-            utils.shareURL(link, 'Hi')
+            utils.shareURL(link, t('InviteMessage'))
         }
     }, []);
 
 
     // Если страница загружается, показываем лоадер
-    if (!isImagesLoaded || isLoading) {
+    if (!isImagesLoaded || isLoading || !userData) {
         return (
             <div>
                 <Spinner  size='l'/>
@@ -182,8 +180,6 @@ export default function Home() {
                 animate={isImagesLoaded ? "visible" : "hidden"}
                 variants={fadeIn}
             />
-
-
             <div className={styles.userDescription}>
                 <div className={styles.balanceContainer}>
                     <p className={styles.totalbalance}>{t('totalBalance' as any)}</p>

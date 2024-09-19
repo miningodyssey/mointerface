@@ -21,7 +21,12 @@ i18n
                     "referals": "friends invited",
                     "done": "Done!",
                     "linkCopied": "Your referral link has been copied to the clipboard!",
-                    "coomingsoon": "GAME IS COOMING SOON!"
+                    "coomingsoon": "GAME IS COOMING SOON!",
+                    "InviteMessage": "\nHi there! 🚀\n" +
+                        "\n" +
+                        "Jump into the world of cryptocurrencies with Mining Odyssey and earn rewards! 💰 Sign up using my link and get exclusive bonuses \n" +
+                        "\n" +
+                        "See you in the game! 😉"
                 }
             },
             ru: {
@@ -32,7 +37,12 @@ i18n
                     "referals": "друзей приглашено",
                     "done": "Готово!",
                     "linkCopied": "Ваша реферальная ссылка скопирована в буфер обмена!",
-                    "coomingsoon": "ИГРА СКОРО!"
+                    "coomingsoon": "ИГРА СКОРО!",
+                    "InviteMessage": "\nПривет! 🚀\n" +
+                        "\n" +
+                        "Врывайся в мир криптовалют с Mining Odyssey и зарабатывай награды! 💰 Регистрируйся по моей ссылке и получай бонусы \n" +
+                        "\n" +
+                        "До встречи в игре! 😉\n"
                 }
             }
         },
