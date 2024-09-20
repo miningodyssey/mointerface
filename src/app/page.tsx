@@ -151,10 +151,9 @@ export default function Home() {
     const sendLink = useCallback((userId: number) => {
         const link = `https://t.me/MiningOdysseyBot/Game?startapp=${userId}`;
         if (utils) {
-            utils.shareURL(link, t('InviteMessage'))
+            utils.shareURL(t('InviteMessage'),link)
         }
     }, []);
-
 
     // Если страница загружается, показываем лоадер
     if (!isImagesLoaded || isLoading || !userData) {
