@@ -3,7 +3,7 @@
 import React, {useState, useEffect, useCallback, useMemo} from 'react';
 import axios from 'axios';
 import styles from './page.module.css';
-import {initInitData, initMiniApp, initUtils, postEvent} from '@telegram-apps/sdk';
+import {initInitData, initMiniApp, initUtils} from '@telegram-apps/sdk';
 import { user } from "@/types/user.type";
 import { Button, Snackbar, Spinner } from '@telegram-apps/telegram-ui';
 import '@telegram-apps/telegram-ui/dist/styles.css';
