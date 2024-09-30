@@ -76,24 +76,36 @@ export default function Home() {
         visible: { opacity: 1, transition: { duration: 0.5 } },
     }), []);
     useEffect(() => {
+        // Инициализация Telegram Web App
         const initTelegramWebApp = () => {
             const data = initMiniApp();
             if (data && window.Telegram && window.Telegram.WebApp) {
                 window.Telegram.WebApp.disableVerticalSwipes = true;
-
                 window.Telegram.WebApp.setHeaderColor('var(--tgui--bg_color)');
             }
             if (window.TelegramWebviewProxy) {
-                window
-                    .TelegramWebviewProxy
-                    .postEvent('web_app_setup_swipe_behavior', { allow_vertical_swipe: false })
+                window.TelegramWebviewProxy.postEvent('web_app_setup_swipe_behavior', { allow_vertical_swipe: false });
             }
         };
+
+        // Отключаем вертикальный скролл для мобильных устройств
+        const disableTouchScroll = (e: TouchEvent) => {
+            e.preventDefault();
+        };
+
+        // Добавляем слушатель на касания
+        document.body.addEventListener('touchmove', disableTouchScroll, { passive: false });
 
         if (typeof window !== 'undefined') {
             initTelegramWebApp();
         }
+
+        // Удаляем слушатель при размонтировании
+        return () => {
+            document.body.removeEventListener('touchmove', disableTouchScroll);
+        };
     }, []);
+
 
     const utils = useMemo(() => (typeof window !== 'undefined' ? initUtils() : null), []);
     const handleSnackbarOpen = () => {
