@@ -269,7 +269,7 @@
   font-size: 100%;
   margin: 0;
   user-select: none;
-  color: var(--tgui--text_color);
+  color: white;
 }
 
 .totalbalance {
