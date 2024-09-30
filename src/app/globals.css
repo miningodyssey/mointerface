@@ -4,6 +4,7 @@ body, html, head {
   height: 100%;
   overflow: hidden;
   -webkit-overflow-scrolling: touch;
+  overscroll-behavior: none;
   display: flex;
   justify-content: center;
   align-items: center;
