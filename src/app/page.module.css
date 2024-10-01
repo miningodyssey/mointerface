@@ -272,6 +272,19 @@
   color: white;
 }
 
+.muteBtn {
+  position: absolute;
+  top: 18%;
+  z-index: 1;
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  outline: none;
+}
+
 .totalbalance {
   font-weight: 700;
   margin-bottom: 10px;

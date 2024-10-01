@@ -1,6 +1,6 @@
 'use client';
 
-import React, {useState, useEffect, useCallback, useMemo} from 'react';
+import React, {useState, useEffect, useCallback, useMemo, useRef} from 'react';
 import axios from 'axios';
 import styles from './page.module.css';
 import {initInitData, initMiniApp, initUtils} from '@telegram-apps/sdk';
@@ -65,12 +65,14 @@ async function fetchDataAndInitialize() {
 export default function Home() {
     const { t } = useTranslation();
     const [userData, setUserData] = useState<user>();
-    const [isLoading, setIsLoading] = useState(true); // Состояние для отображения лоадера
+    const [isLoading, setIsLoading] = useState(true);
     const [userId, setUserId] = useState<number>(0);
     const [authKey, setAuthKey] = useState<string>();
     const [isImagesLoaded, setIsImagesLoaded] = useState(false);
     const [isLogoLoaded, setIsLogoLoaded] = useState(false)
     const [snackbarOpen, setSnackbarOpen] = useState(false);
+    const [isMuted, setIsMuted] = useState(true);
+    const audioRef = useRef<HTMLAudioElement>(null);
     const fadeIn = useMemo(() => ({
         hidden: { opacity: 0 },
         visible: { opacity: 1, transition: { duration: 0.5 } },
@@ -166,7 +168,12 @@ export default function Home() {
             utils.shareURL(t('InviteMessage'),link)
         }
     }, []);
-
+    const toggleMute = () => {
+        if (audioRef.current) {
+            audioRef.current.muted = !audioRef.current.muted;
+            setIsMuted(audioRef.current.muted);
+        }
+    };
     // Если страница загружается, показываем лоадер
     if (!isImagesLoaded || isLoading || !userData) {
         return (
@@ -183,6 +190,13 @@ export default function Home() {
             variants={fadeIn}
             className={styles.pageBody}
         >
+            <audio ref={audioRef} autoPlay loop muted={isMuted}>
+                <source src="/bgsound.mp3" type="audio/mpeg" />
+            </audio>
+
+            <button onClick={toggleMute} className={styles.muteBtn}>
+                {isMuted ? '🔇' : '🔊'}
+            </button>
             <motion.img
                 src="/bg.svg"
                 alt="bg"
