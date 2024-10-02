@@ -13,6 +13,7 @@ import { motion } from 'framer-motion';
 import CoinIcon from "@/components/CoinIcon/CoinIcon";
 import PeopleIcon from "@/components/PeopleIcon/PeopleIcon";
 import CopyIcon from "@/components/CopyIcon/CopyIcon";
+import {useTelegram} from "@/hooks/useTelegram/useTelegram";
 
 
 const preloadImages = (imageUrls: string[]): Promise<void[]> => {
@@ -72,6 +73,7 @@ export default function Home() {
     const [isLogoLoaded, setIsLogoLoaded] = useState(false)
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [isMuted, setIsMuted] = useState(true);
+    const { webApp } = useTelegram();
     const audioRef = useRef<HTMLAudioElement>(null);
     const fadeIn = useMemo(() => ({
         hidden: { opacity: 0 },
@@ -83,7 +85,9 @@ export default function Home() {
             const data = initMiniApp();
             if (data && window.Telegram && window.Telegram.WebApp) {
                 window.Telegram.WebApp.disableVerticalSwipes = true;
+                window.Telegram.WebApp.expand();
                 window.Telegram.WebApp.setHeaderColor('var(--tgui--bg_color)');
+                console.log(123)
             }
             if (window.TelegramWebviewProxy) {
                 window.TelegramWebviewProxy.postEvent('web_app_setup_swipe_behavior', { allow_vertical_swipe: false });
