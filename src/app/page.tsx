@@ -1,67 +1,52 @@
 'use client';
 
 import React, {useState, useEffect, useCallback, useMemo, useRef} from 'react';
-import axios from 'axios';
 import styles from './page.module.css';
-import {initInitData, initMiniApp, initUtils} from '@telegram-apps/sdk';
+import {initMiniApp, initUtils} from '@telegram-apps/sdk';
 import { user } from "@/types/user.type";
-import { Button, Snackbar, Spinner } from '@telegram-apps/telegram-ui';
+import {Button, Snackbar, Spinner, Tabbar} from '@telegram-apps/telegram-ui';
 import '@telegram-apps/telegram-ui/dist/styles.css';
 import { useTranslation } from 'react-i18next';
 import './../i18n'
 import { motion } from 'framer-motion';
-import CoinIcon from "@/components/CoinIcon/CoinIcon";
-import PeopleIcon from "@/components/PeopleIcon/PeopleIcon";
-import CopyIcon from "@/components/CopyIcon/CopyIcon";
+import CoinIcon from "@/components/Icons/CoinIcon/CoinIcon";
+import HomeIcon from "@/components/Icons/HomeIcon/HomeIcon";
+import UserIcon from "@/components/Icons/HumanIcon/UserIcon";
+import ChartIcon from "@/components/Icons/ChartIcon/ChartIcon";
+import TasksIcon from "@/components/Icons/TasksIcon/TasksIcon";
+import {FriendsIcon} from "@/components/Icons/FriendsIcon/FriendsIcon";
+import {fetchDataAndInitialize} from "@/components/functions/fetchDataAndInitialize";
+import {preloadImages} from "@/components/functions/preloadImages";
+import MainCategory from "@/categories/main";
 
 
-const preloadImages = (imageUrls: string[]): Promise<void[]> => {
-    return Promise.all(
-        imageUrls.map(
-            (src) =>
-                new Promise<void>((resolve, reject) => {
-                    const img = new Image();
-                    img.src = src;
-                    img.onload = () => resolve();
-                    img.onerror = reject;
-                })
-        )
-    );
-};
-
-async function fetchDataAndInitialize() {
-    try {
-        const data = initInitData();
-        const userId = data?.user?.id || 0;
-        const userData = {
-            balance: 0,
-            referrals: 0,
-            referer: data?.startParam,
-            upgrades: null,
-            personalRecord: 0,
-            tgUserdata: data?.user,
-            registrationDate: String(Date.now()),
-        };
-        const authResponse = await axios.post(`https://miningodyssey.pw/auth/register/${userId}`, userData);
-        const token = authResponse.data['access_token'];
-        const userResponse = await axios.post(
-            `https://miningodyssey.pw/users/create/${userId}`,
-            userData,
-            {
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json',
-                }
-            }
-        );
-
-        return { userId, token, fetchedUserData: userResponse.data };
-    } catch (error) {
-        console.error('Error during initialization:', error);
-        throw error;
-    }
-}
-
+const tabs = [
+        {
+            id: 0,
+            text: "Home",
+            Icon: <HomeIcon/>
+        },
+        {
+            id: 1,
+            text: "Tasks",
+            Icon: <TasksIcon/>
+        },
+        {
+            id: 2,
+            text: "Leaderboard",
+            Icon: <ChartIcon/>
+        },
+        {
+            id: 3,
+            text: "Friends",
+            Icon: <FriendsIcon/>
+        },
+        {
+            id: 4,
+            text: "Profile",
+            Icon: <UserIcon/>
+        },
+    ]
 export default function Home() {
     const { t } = useTranslation();
     const [userData, setUserData] = useState<user>();
@@ -72,6 +57,7 @@ export default function Home() {
     const [isLogoLoaded, setIsLogoLoaded] = useState(false)
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [isMuted, setIsMuted] = useState(true);
+    const [currentTab, setCurrentTab] = useState(tabs[0].id);
     const audioRef = useRef<HTMLAudioElement>(null);
     const fadeIn = useMemo(() => ({
         hidden: { opacity: 0 },
@@ -190,13 +176,6 @@ export default function Home() {
             variants={fadeIn}
             className={styles.pageBody}
         >
-            <audio ref={audioRef} autoPlay loop muted={isMuted}>
-                <source src="/bgsound.mp3" type="audio/mpeg" />
-            </audio>
-
-            <button onClick={toggleMute} className={styles.muteBtn}>
-                {isMuted ? '🔇' : '🔊'}
-            </button>
             <motion.img
                 src="/bg.svg"
                 alt="bg"
@@ -213,53 +192,28 @@ export default function Home() {
                         <p className={styles.balance}>{userData?.balance || 0}</p>
                     </div>
                 </div>
-                <div className={styles.referalsDescription}>
-                    <PeopleIcon/>
-                    <p className={styles.referals}> {userData?.referals || 0} {t('referals' as any)} </p>
-                </div>
             </div>
-            <div className={styles.textContainer}>
-                <div className={styles.logoContainer}>
-                    <motion.img
-                        src="/text.svg"
-                        alt="text"
-                        className={styles.logo}
-                        initial="hidden"
-                        animate={isImagesLoaded ? "visible" : "hidden"}
-                        variants={fadeIn}
-                        onLoad={() => setIsLogoLoaded(true)}
-                    />
-                </div>
-                <div>
-
-                </div>
-                {snackbarOpen && (
-                    <Snackbar
-                        onClose={() => setSnackbarOpen(false)}
-                        duration={3000}
-                        before={<span role="img" aria-label="checkmark">✅</span>}
-                        description={t('linkCopied' as any)}
-                    >
-                        {t('done' as any) }
-                    </Snackbar>
-                )}
-            </div>
-            <div className={styles.inviteButton}>
-                <Button
-                    mode='filled'
-                    size='l'
-                    onClick={() => sendLink(Number(userId))}
-                    stretched
-                >
-                    {t('inviteFriends' as any)}
-                </Button>
-                <button
-                    className={styles.copyButton}
-                    onClick={() => copyLinkToClipboard(Number(userId))}
-                >
-                    <CopyIcon />
-                </button>
-            </div>
+            {currentTab === 0 && (
+                <MainCategory
+                    isImagesLoaded={isImagesLoaded}
+                    fadeIn={fadeIn}
+                    setIsLogoLoaded={setIsLogoLoaded}
+                    snackbarOpen={snackbarOpen}
+                    setSnackbarOpen={setSnackbarOpen}
+                    t={t}
+                    sendLink={sendLink}
+                    userId={userId}
+                />
+            )}
+            <Tabbar style={{background: 'var(--tgui--bg_color)'}}>
+                {tabs.map(({
+                               id,
+                               text,
+                               Icon
+                           }) => <Tabbar.Item key={id} text={text} selected={id === currentTab} onClick={() => setCurrentTab(id)}>
+                    {Icon}
+                </Tabbar.Item>)}
+            </Tabbar>
         </motion.div>
     );
 }

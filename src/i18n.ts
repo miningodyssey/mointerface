@@ -21,6 +21,7 @@ i18n
                     "referals": "friends invited",
                     "done": "Done!",
                     "linkCopied": "Your referral link has been copied to the clipboard!",
+                    "startRun": "Start your run!",
                     "coomingsoon": "GAME IS COOMING SOON!",
                     "InviteMessage": "\nHi there! 🚀\n" +
                         "\n" +
@@ -36,6 +37,7 @@ i18n
                     "inviteFriends": "Пригласить друзей",
                     "referals": "друзей приглашено",
                     "done": "Готово!",
+                    "startRun": "Начать забег!",
                     "linkCopied": "Ваша реферальная ссылка скопирована в буфер обмена!",
                     "coomingsoon": "ИГРА СКОРО!",
                     "InviteMessage": "\nПривет! 🚀\n" +

@@ -34,10 +34,19 @@
 }
 
 .logo {
-  width: 80%;
+  width: 70%;
   background-size: cover;
   user-select: none;
   pointer-events: none;
+}
+
+.TabbarItem {
+  max-width: 100%;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  overflow: visible;
+  font-size: 80%;
 }
 
 .logoContainer {
@@ -45,32 +54,18 @@
   justify-content: center;
   display: flex;
   height: 45vh;
-  user-select: none;
+  transform: translateY(-40%);
 }
 
 
-.startBtn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  border: none;
-  background: none;
-  z-index: 1;
-  margin: 0;
-  padding: 0;
-  position: relative; /* Добавьте это для относительного позиционирования */
-  transition: top 0.1s ease; /* Добавляем плавный переход */
+.startButton {
+  position: absolute;
+  transform: translateX(-50%);
+  bottom: 45%;
+  width: 95%;
+  display: inline-flex;
 }
 
-.startBtn:active {
-  top: 2px; /* Перемещение на 2 пикселя вниз */
-}
-
-
-.ButtonBG {
-
-}
 
 .ButtonText {
   min-width: 60vw;
@@ -84,23 +79,6 @@
   min-height: 15vh;
 }
 
-
-.StartButtonImage {
-  width: 18vmin;
-}
-
-.startButtonText{
-  position: absolute;
-  color: white;
-  font-size: 3vw;
-  clear: both;
-  display: inline-block;
-  overflow: hidden;
-  white-space: nowrap;
-  font-weight: bold;
-  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
-  pointer-events: none;
-}
 .buttonText {
   position: absolute;
   top: 50%;
@@ -321,13 +299,7 @@
 }
 
 
-.inviteButton {
-  position: absolute;
-  transform: translateX(-50%);
-  bottom: 2%;
-  width: 95%;
-  display: inline-flex;
-}
+
 
 .copyButton {
   background: none;
@@ -376,9 +348,7 @@
   .taskIcon{
     width: 1vw
   }
-  .StartButtonImage {
-    width: 5vw;
-  }
+
   .taskDescription {
     font-size: 1vw;
   }
@@ -386,23 +356,15 @@
   .taskBoardText {
     font-size: 2vw;
   }
-  .startButtonText{
-    font-size: 1vw;
-  }
+
 }
 
 @media (min-width: 1921px) {
   .taskIcon{
     width: 2vw
   }
-  .StartButtonImage {
-    width: 2.5vw;
-  }
   .taskDescription {
     font-size: 0.75vw;
-  }
-  .startButtonText{
-    font-size: 0.5vw;
   }
   .taskBoardText {
     font-size: 1vw;

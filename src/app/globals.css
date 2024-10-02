@@ -19,6 +19,18 @@ img {
   -webkit-user-drag: none;    /* Запрещает перетаскивание изображения */
 }
 
+.tgui-aeab497081949a15 {
+  overflow: visible !important;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  font-size: 85% !important;
+}
+
+.tgui-64cd0db020a9bacf {
+  padding: 6px 8px 8px !important;
+}
+
 :root {
   font-family: var(--font-family);
   background: var(--tgui--bg_color);
