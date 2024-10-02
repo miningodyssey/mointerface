@@ -323,7 +323,7 @@
 .inviteButton {
   position: absolute;
   transform: translateX(-50%);
-  bottom: 2%;
+  bottom: calc(2% + 12px);
   width: 95%;
   display: inline-flex;
 }
