@@ -194,9 +194,7 @@ export default function Home() {
                 <source src="/bgsound.mp3" type="audio/mpeg" />
             </audio>
 
-            <button onClick={toggleMute} className={styles.muteBtn}>
-                {isMuted ? '🔇' : '🔊'}
-            </button>
+
             <motion.img
                 src="/bg.svg"
                 alt="bg"
@@ -217,6 +215,9 @@ export default function Home() {
                     <PeopleIcon/>
                     <p className={styles.referals}> {userData?.referals || 0} {t('referals' as any)} </p>
                 </div>
+                <button onClick={toggleMute} className={styles.muteBtn}>
+                    {isMuted ? '🔇' : '🔊'}
+                </button>
             </div>
             <div className={styles.textContainer}>
                 <div className={styles.logoContainer}>
