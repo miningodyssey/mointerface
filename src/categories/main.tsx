@@ -1,32 +1,65 @@
-import React from "react";
-import styles from "@/app/page.module.css";
-import {motion} from "framer-motion";
-import {Button, Snackbar} from "@telegram-apps/telegram-ui";
+import React, { useState, useEffect } from "react";
+import styles from "./main.module.css";
+import { motion } from "framer-motion";
+import { Button } from "@telegram-apps/telegram-ui";
+import LightningIcon from "@/components/Icons/LightningIcon/LightningIcon";
 
 interface MainCategoryProps {
     isImagesLoaded: boolean;
     fadeIn: any;
     setIsLogoLoaded: (value: boolean) => void;
-    snackbarOpen: boolean;
-    setSnackbarOpen: (value: boolean) => void;
     t: (key: string) => any;
     sendLink: (userId: number) => void;
     userId: number;
+    registrationTime: number; // Добавляем проп для времени регистрации в формате Unix timestamp
 }
 
 const MainCategory: React.FC<MainCategoryProps> = ({
                                                        isImagesLoaded,
                                                        fadeIn,
                                                        setIsLogoLoaded,
-                                                       snackbarOpen,
-                                                       setSnackbarOpen,
                                                        t,
                                                        sendLink,
                                                        userId,
+                                                       registrationTime, // Используем проп
                                                    }) => {
+    const [timeLeft, setTimeLeft] = useState<number>(0);
+
+    const TWO_HOURS = 2 * 60 * 60; // Время в секундах (2 часа)
+
+    useEffect(() => {
+        const calculateTimeLeft = () => {
+            const currentTime = Math.floor(Date.now() / 1000); // Текущее время в Unix timestamp
+            const elapsedTime = currentTime - registrationTime; // Время, прошедшее с момента регистрации
+
+            // Если прошло больше 2 часов, перезапускаем таймер
+            if (elapsedTime >= TWO_HOURS) {
+                setTimeLeft(TWO_HOURS); // Сбрасываем таймер на 2 часа
+            } else {
+                setTimeLeft(TWO_HOURS - (elapsedTime % TWO_HOURS)); // Оставшееся время до конца 2-часового периода
+            }
+        };
+
+        // Начальный расчет времени
+        calculateTimeLeft();
+
+        const interval = setInterval(() => {
+            calculateTimeLeft();
+        }, 1000); // Обновляем каждую секунду
+
+        return () => clearInterval(interval); // Чистим интервал при размонтировании
+    }, [registrationTime]);
+
+    const formatTime = (seconds: number) => {
+        const hours = Math.floor(seconds / 3600);
+        const minutes = Math.floor((seconds % 3600) / 60);
+        const secs = seconds % 60;
+        return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+    };
+
     return (
-        <div>
-            <div className={styles.textContainer}>
+        <div className={styles.mainContainer}>
+            <div>
                 <div className={styles.logoContainer}>
                     <motion.img
                         src="/text.svg"
@@ -39,16 +72,6 @@ const MainCategory: React.FC<MainCategoryProps> = ({
                     />
                 </div>
                 <div></div>
-                {snackbarOpen && (
-                    <Snackbar
-                        onClose={() => setSnackbarOpen(false)}
-                        duration={3000}
-                        before={<span role="img" aria-label="checkmark">✅</span>}
-                        description={t('linkCopied')}
-                    >
-                        {t('done')}
-                    </Snackbar>
-                )}
             </div>
             <div className={styles.startButton}>
                 <Button
@@ -59,6 +82,18 @@ const MainCategory: React.FC<MainCategoryProps> = ({
                 >
                     {t('startRun')}
                 </Button>
+            </div>
+            <div className={styles.EnergyContainer}>
+                <div className={styles.EnergyCountContainer}>
+                    <p className={styles.EnergyCount}><LightningIcon/>3/10</p>
+                    <p className={styles.EnergyCountTimer}>{formatTime(timeLeft)}</p>
+                </div>
+                <Button mode={'bezeled'}>
+                    Watch ads to add energy!
+                </Button>
+            </div>
+            <div className={styles.DailyContainer}>
+                <h1 className={styles.DailyTasksH1}>Daily tasks</h1>
             </div>
         </div>
     );

@@ -198,11 +198,10 @@ export default function Home() {
                     isImagesLoaded={isImagesLoaded}
                     fadeIn={fadeIn}
                     setIsLogoLoaded={setIsLogoLoaded}
-                    snackbarOpen={snackbarOpen}
-                    setSnackbarOpen={setSnackbarOpen}
                     t={t}
                     sendLink={sendLink}
                     userId={userId}
+                    registrationTime={Number(userData?.registrationDate)}
                 />
             )}
             <Tabbar style={{background: 'var(--tgui--bg_color)'}}>

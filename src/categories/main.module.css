@@ -1,0 +1,69 @@
+.EnergyContainer {
+    position: absolute;
+    bottom: 40%;
+    width: 95%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.mainContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Центрирование по вертикали */
+    align-items: center; /* Центрирование по горизонтали */
+    z-index: 10;
+}
+
+.logoContainer {
+    width: 99.9vw;
+    justify-content: center;
+    display: flex;
+    height: 45vh;
+    transform: translateY(-45%);
+}
+
+.logo {
+    width: 70%;
+    background-size: cover;
+    user-select: none;
+    pointer-events: none;
+}
+
+
+.startButton {
+    position: absolute;
+    bottom: 50%;
+    width: 95%;
+}
+
+.EnergyCount {
+    color: white;
+    margin-right: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    align-content: center;
+    align-self: center;
+    text-align: center;
+}
+
+.EnergyCountTimer {
+    color: var(--tgui--hint_color)
+}
+
+.EnergyCountContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.DailyContainer {
+    width: 95%;
+    margin-top: 0;
+}
+
+.DailyTasksH1 {
+    color: white;
+    margin-top: 0;
+}
