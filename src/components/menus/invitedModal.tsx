@@ -8,14 +8,15 @@ interface invitedModalInterface {
     sendLink: (userId: any) => void;
     userID: number
     className: any
+    t: any
 }
 
-const InvitedModal: React.FC<invitedModalInterface> = ({ setIsModalOpen, sendLink, userID, className }) => {
+const InvitedModal: React.FC<invitedModalInterface> = ({ setIsModalOpen, sendLink, userID, className, t }) => {
     const fadeIn = useMemo(() => ({
         hidden: { opacity: 0 },
         visible: { opacity: 1, transition: { duration: 0.5 } },
     }), []);
-    const text = 'Link sent! Don\'t relax — we\'re waiting for your friends to join so you can get your rewards. Spread the word! 💬'
+    const text = t('InviteMoreText')
     return (
         <motion.div className={styles.modalOverlay}
                     initial="hidden"
@@ -24,10 +25,10 @@ const InvitedModal: React.FC<invitedModalInterface> = ({ setIsModalOpen, sendLin
             <div className={styles.modal}>
                 <Placeholder description={text} style={{width: '70%', background:'var(--tgui--bg_color)', flexDirection:'column-reverse', borderRadius: '24px'}}>
                     <Button stretched onClick={() => setIsModalOpen(false)} mode={'outline'} style={{color: 'var(--tgui--text_color)'}}>
-                        ⏳ Later
+                        {t('CancelInviteMore' as any)}
                     </Button>
                     <Button stretched onClick={() => sendLink(userID)}>
-                        🔄 Invite more
+                        {t('InviteMore' as any)}
                     </Button>
                 </Placeholder>
             </div>

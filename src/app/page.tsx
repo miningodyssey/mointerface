@@ -270,7 +270,7 @@ export default function Home() {
                 </button>
             </div>
             {isModalOpen && (
-                <InvitedModal setIsModalOpen={setIsModalOpen} sendLink={sendLink} userID={userId} className={styles.InvitedModal}/>
+                <InvitedModal t={t} setIsModalOpen={setIsModalOpen} sendLink={sendLink} userID={userId} className={styles.InvitedModal}/>
             )}
         </motion.div>
     );
