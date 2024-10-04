@@ -13,7 +13,7 @@ import { motion } from 'framer-motion';
 import CoinIcon from "@/components/CoinIcon/CoinIcon";
 import PeopleIcon from "@/components/PeopleIcon/PeopleIcon";
 import CopyIcon from "@/components/CopyIcon/CopyIcon";
-import {useTelegram} from "@/hooks/useTelegram/useTelegram";
+import InvitedModal from "@/components/menus/invitedModal";
 
 
 const preloadImages = (imageUrls: string[]): Promise<void[]> => {
@@ -73,12 +73,14 @@ export default function Home() {
     const [isLogoLoaded, setIsLogoLoaded] = useState(false)
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [isMuted, setIsMuted] = useState(true);
-    const { webApp } = useTelegram();
     const audioRef = useRef<HTMLAudioElement>(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isSendLinkCalled, setIsSendLinkCalled] = useState(false);
     const fadeIn = useMemo(() => ({
         hidden: { opacity: 0 },
         visible: { opacity: 1, transition: { duration: 0.5 } },
     }), []);
+
     useEffect(() => {
         // Инициализация Telegram Web App
         const initTelegramWebApp = () => {
@@ -87,7 +89,6 @@ export default function Home() {
                 window.Telegram.WebApp.disableVerticalSwipes = true;
                 window.Telegram.WebApp.expand();
                 window.Telegram.WebApp.setHeaderColor('var(--tgui--bg_color)');
-                console.log(123)
             }
             if (window.TelegramWebviewProxy) {
                 window.TelegramWebviewProxy.postEvent('web_app_setup_swipe_behavior', { allow_vertical_swipe: false });
@@ -169,9 +170,11 @@ export default function Home() {
     const sendLink = useCallback((userId: number) => {
         const link = `https://t.me/MiningOdysseyBot/Game?startapp=${userId}`;
         if (utils) {
-            utils.shareURL(t('InviteMessage'),link)
+            setIsSendLinkCalled(true);  // Устанавливаем флаг, что вызвана функция sendLink
+            setIsModalOpen(true);       // Сразу открываем модальное окно после вызова sendLink
+            utils.shareURL(t('InviteMessage'), link);
         }
-    }, []);
+    }, [utils]);
     const toggleMute = () => {
         if (audioRef.current) {
             audioRef.current.muted = !audioRef.current.muted;
@@ -194,6 +197,7 @@ export default function Home() {
             variants={fadeIn}
             className={styles.pageBody}
         >
+
             <audio ref={audioRef} autoPlay loop muted={isMuted}>
                 <source src="/bgsound.mp3" type="audio/mpeg" />
             </audio>
@@ -265,6 +269,9 @@ export default function Home() {
                     <CopyIcon />
                 </button>
             </div>
+            {isModalOpen && (
+                <InvitedModal setIsModalOpen={setIsModalOpen} sendLink={sendLink} userID={userId} className={styles.InvitedModal}/>
+            )}
         </motion.div>
     );
 }

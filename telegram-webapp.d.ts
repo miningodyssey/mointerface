@@ -1,7 +1,7 @@
 interface WebApp {
     setHeaderColor(color: string): void;
     disableVerticalSwipes: boolean;
-    expand();
+    expand(): void;
 }
 
 interface Telegram {
