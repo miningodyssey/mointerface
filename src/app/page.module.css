@@ -318,8 +318,6 @@
   pointer-events: auto;
   cursor: pointer;
   transition: opacity .15s ease-out;
-
-
 }
 .topBarBtn:hover {
   opacity: 0.8;
@@ -329,7 +327,11 @@
   font-size: 16px;
   font-weight: bold;
 }
-
+.topBarBtnP {
+  margin: 4px 0 0;
+  font-size: 16px;
+  font-weight: bold;
+}
 .coinImage {
   right: 0;
   top: 1%;

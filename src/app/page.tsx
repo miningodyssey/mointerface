@@ -3,12 +3,12 @@
 import React, {useState, useEffect, useCallback, useMemo, useRef} from 'react';
 import styles from './page.module.css';
 import {initMiniApp, initUtils} from '@telegram-apps/sdk';
-import { user } from "@/types/user.type";
+import {user} from "@/types/user.type";
 import {Button, Snackbar, Spinner, Tabbar} from '@telegram-apps/telegram-ui';
 import '@telegram-apps/telegram-ui/dist/styles.css';
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
 import './../i18n'
-import { motion } from 'framer-motion';
+import {motion} from 'framer-motion';
 import CoinIcon from "@/components/Icons/CoinIcon/CoinIcon";
 import HomeIcon from "@/components/Icons/HomeIcon/HomeIcon";
 import UserIcon from "@/components/Icons/HumanIcon/UserIcon";
@@ -23,34 +23,34 @@ import WalletIcon from "@/components/Icons/WalletIcon/WalletIcon";
 
 
 const tabs = [
-        {
-            id: 0,
-            text: "Home",
-            Icon: <HomeIcon/>
-        },
-        {
-            id: 1,
-            text: "Tasks",
-            Icon: <TasksIcon/>
-        },
-        {
-            id: 2,
-            text: "Leaderboard",
-            Icon: <ChartIcon/>
-        },
-        {
-            id: 3,
-            text: "Friends",
-            Icon: <FriendsIcon/>
-        },
-        {
-            id: 4,
-            text: "Profile",
-            Icon: <UserIcon/>
-        },
-    ]
+    {
+        id: 0,
+        text: "Home",
+        Icon: <HomeIcon/>
+    },
+    {
+        id: 1,
+        text: "Leaderboard",
+        Icon: <ChartIcon/>
+    },
+    {
+        id: 2,
+        text: "Tasks",
+        Icon: <TasksIcon/>
+    },
+    {
+        id: 3,
+        text: "Friends",
+        Icon: <FriendsIcon/>
+    },
+    {
+        id: 4,
+        text: "Profile",
+        Icon: <UserIcon/>
+    },
+]
 export default function Home() {
-    const { t } = useTranslation();
+    const {t} = useTranslation();
     const [userData, setUserData] = useState<user>();
     const [isLoading, setIsLoading] = useState(true);
     const [userId, setUserId] = useState<number>(0);
@@ -62,8 +62,8 @@ export default function Home() {
     const [currentTab, setCurrentTab] = useState(tabs[0].id);
     const audioRef = useRef<HTMLAudioElement>(null);
     const fadeIn = useMemo(() => ({
-        hidden: { opacity: 0 },
-        visible: { opacity: 1, transition: { duration: 0.5 } },
+        hidden: {opacity: 0},
+        visible: {opacity: 1, transition: {duration: 0.5}},
     }), []);
     useEffect(() => {
         // Инициализация Telegram Web App
@@ -74,7 +74,7 @@ export default function Home() {
                 window.Telegram.WebApp.setHeaderColor('var(--tgui--bg_color)');
             }
             if (window.TelegramWebviewProxy) {
-                window.TelegramWebviewProxy.postEvent('web_app_setup_swipe_behavior', { allow_vertical_swipe: false });
+                window.TelegramWebviewProxy.postEvent('web_app_setup_swipe_behavior', {allow_vertical_swipe: false});
             }
         };
 
@@ -84,9 +84,9 @@ export default function Home() {
             const dailyTasksList = document.querySelector('.DailyTasksList');
 
             if (dailyTasksList) { // Проверяем, что элемент существует
-                dailyTasksList.addEventListener('touchmove', function(e) {
+                dailyTasksList.addEventListener('touchmove', function (e) {
                     e.stopPropagation();
-                }, { passive: true });
+                }, {passive: true});
             } else {
                 // Если элемент еще не найден, повторяем проверку через небольшой интервал
                 setTimeout(addTouchMoveListener, 100);
@@ -98,7 +98,7 @@ export default function Home() {
         return () => {
             const dailyTasksList = document.querySelector('.DailyTasksList');
             if (dailyTasksList) {
-                dailyTasksList.removeEventListener('touchmove', function(e) {
+                dailyTasksList.removeEventListener('touchmove', function (e) {
                     e.stopPropagation();
                 });
             }
@@ -112,7 +112,7 @@ export default function Home() {
 
     const initialize = async () => {
         try {
-            const { userId, token, fetchedUserData } = await fetchDataAndInitialize();
+            const {userId, token, fetchedUserData} = await fetchDataAndInitialize();
             setUserId(userId);
             setAuthKey(token);
             setUserData(fetchedUserData);
@@ -148,7 +148,6 @@ export default function Home() {
     }, []);
 
 
-
     const copyLinkToClipboard = useCallback((userId: number) => {
         const link = `https://t.me/MiningOdysseyBot/Game?startapp=${userId}`;
         navigator.clipboard.writeText(link)
@@ -161,7 +160,7 @@ export default function Home() {
     const sendLink = useCallback((userId: number) => {
         const link = `https://t.me/MiningOdysseyBot/Game?startapp=${userId}`;
         if (utils) {
-            utils.shareURL(t('InviteMessage'),link)
+            utils.shareURL(t('InviteMessage'), link)
         }
     }, []);
     const toggleMute = () => {
@@ -175,11 +174,10 @@ export default function Home() {
     if (!isImagesLoaded || isLoading || !userData) {
         return (
             <div>
-                <Spinner  size='l'/>
+                <Spinner size='l'/>
             </div>
         )
     }
-
     return (
         <motion.div
             initial="hidden"
@@ -196,23 +194,54 @@ export default function Home() {
                 variants={fadeIn}
             />
             <div className={styles.topBarContainer}>
-                <div className={styles.topBarBtn}>
-                    <SettingsIcon/>
-                    <p>Settings</p>
-                </div>
-                <div className={styles.userDescription}>
-                    <div className={styles.balanceContainer}>
-                        <p className={styles.totalbalance}>{t('totalBalance' as any)}</p>
-                        <div className={styles.balanceDescription}>
-                            <CoinIcon />
-                            <p className={styles.balance}>{userData?.balance || 0}</p>
+                { currentTab === 0 &&
+                    (<div className={styles.topBarBtn}>
+                        <SettingsIcon/>
+                        <p>Settings</p>
+                    </div>)
+                }
+                {
+                    (currentTab === 1 || currentTab === 2) &&
+                    (<div style={{opacity: '0'}}>
+                        <SettingsIcon style={{opacity: '0'}}/>
+                        <p className={styles.topBarBtnP}>Settings</p>
+                    </div>)
+                }
+                {
+                    (currentTab === 4) &&
+                    (<div className={styles.topBarBtn}>
+                        <SettingsIcon/>
+                        <p>Settings</p>
+                    </div>)
+                }
+                {
+                    currentTab !== 3 && (
+                        <div className={styles.userDescription}>
+                            <div className={styles.balanceContainer}>
+                                <p className={styles.totalbalance}>{t('totalBalance' as any)}</p>
+                                <div className={styles.balanceDescription}>
+                                    <CoinIcon/>
+                                    <p className={styles.balance}>{userData?.balance || 0}</p>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-                <div className={styles.topBarBtn}>
-                    <WalletIcon/>
-                    <p>Wallet</p>
-                </div>
+                    )
+                }
+                {
+                    (currentTab === 4 || currentTab === 2 || currentTab === 0) && (
+                        <div className={styles.topBarBtn}>
+                            <WalletIcon/>
+                            <p>Wallet</p>
+                        </div>
+                    )
+                }
+                {
+                    currentTab === 1 &&
+                    (<div style={{opacity: '0'}}>
+                        <SettingsIcon/>
+                        <p className={styles.topBarBtnP}>Settings</p>
+                    </div>)
+                }
             </div>
             {currentTab === 0 && (
                 <MainCategory
@@ -230,7 +259,8 @@ export default function Home() {
                                id,
                                text,
                                Icon
-                           }) => <Tabbar.Item key={id} text={text} selected={id === currentTab} onClick={() => setCurrentTab(id)}>
+                           }) => <Tabbar.Item key={id} text={text} selected={id === currentTab}
+                                              onClick={() => setCurrentTab(id)}>
                     {Icon}
                 </Tabbar.Item>)}
             </Tabbar>
