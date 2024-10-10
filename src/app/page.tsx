@@ -18,6 +18,8 @@ import {FriendsIcon} from "@/components/Icons/FriendsIcon/FriendsIcon";
 import {fetchDataAndInitialize} from "@/components/functions/fetchDataAndInitialize";
 import {preloadImages} from "@/components/functions/preloadImages";
 import MainCategory from "@/categories/main";
+import SettingsIcon from "@/components/Icons/SettingsIcon/SettingsIcon";
+import WalletIcon from "@/components/Icons/WalletIcon/WalletIcon";
 
 
 const tabs = [
@@ -76,24 +78,32 @@ export default function Home() {
             }
         };
 
-        // Отключаем вертикальный скролл для мобильных устройств
-        const disableTouchScroll = (e: TouchEvent) => {
-            e.preventDefault();
+    }, []);
+    useEffect(() => {
+        const addTouchMoveListener = () => {
+            const dailyTasksList = document.querySelector('.DailyTasksList');
+
+            if (dailyTasksList) { // Проверяем, что элемент существует
+                dailyTasksList.addEventListener('touchmove', function(e) {
+                    e.stopPropagation();
+                }, { passive: true });
+            } else {
+                // Если элемент еще не найден, повторяем проверку через небольшой интервал
+                setTimeout(addTouchMoveListener, 100);
+            }
         };
 
-        // Добавляем слушатель на касания
-        document.body.addEventListener('touchmove', disableTouchScroll, { passive: false });
+        addTouchMoveListener(); // Запускаем функцию
 
-        if (typeof window !== 'undefined') {
-            initTelegramWebApp();
-        }
-
-        // Удаляем слушатель при размонтировании
         return () => {
-            document.body.removeEventListener('touchmove', disableTouchScroll);
+            const dailyTasksList = document.querySelector('.DailyTasksList');
+            if (dailyTasksList) {
+                dailyTasksList.removeEventListener('touchmove', function(e) {
+                    e.stopPropagation();
+                });
+            }
         };
     }, []);
-
 
     const utils = useMemo(() => (typeof window !== 'undefined' ? initUtils() : null), []);
     const handleSnackbarOpen = () => {
@@ -160,6 +170,7 @@ export default function Home() {
             setIsMuted(audioRef.current.muted);
         }
     };
+
     // Если страница загружается, показываем лоадер
     if (!isImagesLoaded || isLoading || !userData) {
         return (
@@ -184,13 +195,23 @@ export default function Home() {
                 animate={isImagesLoaded ? "visible" : "hidden"}
                 variants={fadeIn}
             />
-            <div className={styles.userDescription}>
-                <div className={styles.balanceContainer}>
-                    <p className={styles.totalbalance}>{t('totalBalance' as any)}</p>
-                    <div className={styles.balanceDescription}>
-                        <CoinIcon />
-                        <p className={styles.balance}>{userData?.balance || 0}</p>
+            <div className={styles.topBarContainer}>
+                <div className={styles.topBarBtn}>
+                    <SettingsIcon/>
+                    <p>Settings</p>
+                </div>
+                <div className={styles.userDescription}>
+                    <div className={styles.balanceContainer}>
+                        <p className={styles.totalbalance}>{t('totalBalance' as any)}</p>
+                        <div className={styles.balanceDescription}>
+                            <CoinIcon />
+                            <p className={styles.balance}>{userData?.balance || 0}</p>
+                        </div>
                     </div>
+                </div>
+                <div className={styles.topBarBtn}>
+                    <WalletIcon/>
+                    <p>Wallet</p>
                 </div>
             </div>
             {currentTab === 0 && (

@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import styles from "./main.module.css";
 import { motion } from "framer-motion";
-import { Button } from "@telegram-apps/telegram-ui";
+import {Button, Cell, Section} from "@telegram-apps/telegram-ui";
 import LightningIcon from "@/components/Icons/LightningIcon/LightningIcon";
+import CoinIcon from "@/components/Icons/CoinIcon/CoinIcon";
+import PeopleIcon from "@/components/Icons/PeopleIcon/PeopleIcon";
 
 interface MainCategoryProps {
     isImagesLoaded: boolean;
@@ -56,7 +58,6 @@ const MainCategory: React.FC<MainCategoryProps> = ({
         const secs = seconds % 60;
         return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
     };
-
     return (
         <div className={styles.mainContainer}>
             <div>
@@ -94,6 +95,52 @@ const MainCategory: React.FC<MainCategoryProps> = ({
             </div>
             <div className={styles.DailyContainer}>
                 <h1 className={styles.DailyTasksH1}>Daily tasks</h1>
+                    <div className={styles.DailyTasksList}>
+                        <Cell
+                            className={styles.Cell}
+                            before={
+                                <div>
+                                    <CoinIcon />
+                                </div>
+                            }
+                            subtitle={<div style={{ color: 'green' }}>5,000 pts</div>}
+                        >
+                            <div className={styles.DailyTaskName}>
+                                <p>Invite friend</p>
+                                <p>2/10</p>
+                            </div>
+                        </Cell>
+                        <Cell
+                            className={styles.Cell}
+                            before={
+                                <div>
+                                    <LightningIcon />
+                                </div>
+                            }
+                            subtitle={<div style={{ color: 'green' }}>5,000 pts</div>}
+                        >
+                            <div className={styles.DailyTaskName}>
+                                <p>Invite friend</p>
+                                <p>2/10</p>
+                            </div>
+                        </Cell>
+
+                        <Cell
+                            className={styles.Cell}
+                            before={
+                                <div>
+                                    <CoinIcon />
+                                </div>
+                            }
+                            subtitle={<div style={{ color: 'green' }}>5,000 pts</div>}
+                        >
+                            <div className={styles.DailyTaskName}>
+                                <p>Invite friend</p>
+                                <p>2/10</p>
+                            </div>
+                        </Cell>
+
+                    </div>
             </div>
         </div>
     );

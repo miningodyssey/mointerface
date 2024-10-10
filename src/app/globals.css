@@ -31,6 +31,19 @@ img {
   padding: 6px 8px 8px !important;
 }
 
+.tgui-b8dfba0b5c3d054c {
+  border-radius: 12px !important;
+  background: var(--tgui--bg_color);
+}
+.tgui-b8dfba0b5c3d054c:hover {
+  background: var(--tgui--bg_color) !important;
+  opacity: var(--tgui--button--hovered-opacity) !important;
+}
+
+.tgui-8735a62be5a8b8a7 {
+  padding: 12px 0 !important;
+}
+
 :root {
   font-family: var(--font-family);
   background: var(--tgui--bg_color);

@@ -20,7 +20,7 @@
     justify-content: center;
     display: flex;
     height: 45vh;
-    transform: translateY(-45%);
+    transform: translateY(-35%);
 }
 
 .logo {
@@ -59,11 +59,52 @@
 }
 
 .DailyContainer {
-    width: 95%;
-    margin-top: 0;
+    width: 95vw; /* Контейнер занимает всю ширину экрана */
+    margin: 0;
+    box-sizing: border-box;
+    padding-left: 0; /* Убираем отступы слева */
 }
 
 .DailyTasksH1 {
     color: white;
     margin-top: 0;
+    margin-bottom: 0;
+}
+
+.DailyTaskName {
+    display: inline-flex;
+    justify-content: space-between;
+    color: white;
+}
+.DailyTaskName p {
+    margin: 0 4px 0 0;
+
+}
+
+.DailyTaskName p:last-child {
+    margin-right: 0;
+    color: var(--tgui--hint_color)
+}
+
+.DailyTasksList {
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto; /* Включаем горизонтальный скролл */
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none; /* Скрываем скроллбар */
+    white-space: nowrap; /* Элементы не переносятся на новую строку */
+    width: 100%; /* Ширина контейнера */
+    padding: 10px 0; /* Убираем боковые отступы */
+    box-sizing: border-box;
+    gap: 5px; /* Промежутки между элементами */
+    -webkit-overflow-scrolling: touch; /* Улучшаем прокрутку на iOS */
+    user-select: none;
+}
+
+
+
+.Cell {
+    flex: 0 0 auto;
+    width: 65%;
+    user-select: none; /* Предотвращает выделение текста при прокрутке */
 }
