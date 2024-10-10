@@ -88,30 +88,17 @@ export default function Home() {
             if (data && window.Telegram && window.Telegram.WebApp) {
                 window.Telegram.WebApp.disableVerticalSwipes = true;
                 window.Telegram.WebApp.expand();
-                window.Telegram.WebApp.setHeaderColor('var(--tgui--bg_color)');
             }
             if (window.TelegramWebviewProxy) {
                 window.TelegramWebviewProxy.postEvent('web_app_setup_swipe_behavior', { allow_vertical_swipe: false });
             }
         };
 
-        // Отключаем вертикальный скролл для мобильных устройств
-        const disableTouchScroll = (e: TouchEvent) => {
-            e.preventDefault();
-        };
-
-        // Добавляем слушатель на касания
-        document.body.addEventListener('touchmove', disableTouchScroll, { passive: false });
-
         if (typeof window !== 'undefined') {
             initTelegramWebApp();
         }
 
-        // Удаляем слушатель при размонтировании
-        return () => {
-            document.body.removeEventListener('touchmove', disableTouchScroll);
-        };
-    }, []);
+    }, [window.Telegram]);
 
 
     const utils = useMemo(() => (typeof window !== 'undefined' ? initUtils() : null), []);
@@ -182,10 +169,10 @@ export default function Home() {
         }
     };
     // Если страница загружается, показываем лоадер
-    if (!isImagesLoaded || isLoading || !userData) {
+    if (!isImagesLoaded || isLoading || !userData || !window.Telegram) {
         return (
             <div>
-                <Spinner  size='l'/>
+                <Spinner className={styles.Spinner}  size='m'/>
             </div>
         )
     }
