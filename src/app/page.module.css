@@ -117,18 +117,6 @@
   pointer-events: none;
 }
 
-.modalOverlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 999; /* Убедитесь, что z-index достаточно высок */
-}
 
 .modal {
   background: none;
@@ -140,6 +128,10 @@
   display: flex;
   align-items: center;
   z-index: 1000; /* Убедитесь, что модальное окно выше overlay */
+}
+
+.InvitedModal {
+  position: absolute;
 }
 
 .closeButtonWrapper {
@@ -273,16 +265,15 @@
 }
 
 .muteBtn {
-  position: absolute;
-  top: 18%;
   z-index: 1;
   background: none;
   border: none;
-  padding: 0;
   font: inherit;
   color: inherit;
   cursor: pointer;
   outline: none;
+  transform: scale(150%, 150%);
+  padding-top: 5px;
 }
 
 .totalbalance {
@@ -320,11 +311,19 @@
   margin-bottom: 5px;
 }
 
+.Spinner {
+  animation: spin 2s linear infinite; /* Анимация */
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
 
 .inviteButton {
   position: absolute;
   transform: translateX(-50%);
-  bottom: 2%;
+  bottom: calc(2% + 12px);
   width: 95%;
   display: inline-flex;
 }

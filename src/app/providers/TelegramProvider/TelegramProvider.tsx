@@ -37,7 +37,7 @@ export const TelegramProvider: FCWithChildren = (props) => {
 
   return (
     <TelegramContext.Provider value={value}>
-      <Script src="/js/telegram-web-app.js" strategy="beforeInteractive" />
+      <Script src="https://telegram.org/js/telegram-web-app.js" strategy="beforeInteractive" />
       {children}
     </TelegramContext.Provider>
   )
