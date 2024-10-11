@@ -6,6 +6,7 @@
   flex-direction: column;
   background: black;
   justify-content: center;
+  align-items: center;
   user-select: none;
 }
 
@@ -112,92 +113,13 @@
   width: 10vmax;
 }
 
-.taskBoardContainer {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 99.9%;
-  height: 99.9%;
-}
-
-.taskBoard {
-  width: 99.9%;
-  height: auto;
-}
-
-.taskBoardContent {
-  position: absolute;
-  top: 40%;  /* Center vertically */
-  left: 50%; /* Center horizontally */
-  transform: translate(-50%, -50%); /* Translate to center */
-  width: 90%; /* Adjust this to fit your content within the taskboard */
-  color: black; /* Adjust the color of your content */
-  display: flex;
-  flex-direction: column;
-  align-items: center;  /* Center items horizontally */
-  justify-content: center; /* Center items vertically */
-}
-
-.taskBoardText {
-  color: white;
-  font-size: 4vw;
-  clear: both;
-  font-weight: bold;
-  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
-  pointer-events: none;
-  text-align: center;
-}
-
-
-.taskBoardTextContainer {
-  display: flex;
-  flex-direction: column;
-  align-items: center; /* Center text container items horizontally */
-  margin-bottom: 20px;
-}
-
-.taskBackground {
-  width: 99.9%;
-  height: 99.9%;
-  margin-bottom: 5px;
-  justify-content: center; /* Center task background content horizontally */
-  align-items: center; /* Center task background content vertically */
-}
-
-.taskList {
-  position: absolute;
-  width: 90%;
-  top: 32.5%;
-  left: 50%;
-  display: flex;
-  flex-direction: column;
-  user-select: none;
-  pointer-events: none;
-  -webkit-user-drag: none;
-}
-.task {
-  justify-content: center;
-  margin-bottom: 5px;
-  transform: translate(-50%, -50%);
-}
-
-
-.taskContent {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content:space-between;
-  padding: 5px;
-  width: 100%
-}
-
 .imageAndDescription {
   display: flex;
   flex-direction: row;
   align-items: center;
 }
 
-.taskDescription, .balance, .referals {
+.balance, .referals {
   font-family: var(--tgui--font-family);
   color: white;
   margin: 0 0 2px 5px;
@@ -292,7 +214,6 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  left: 0;
 }
 
 .topBarContainer {
@@ -302,10 +223,16 @@
   transform: translateX(-50%);
   width: 90%;
   display: flex;
-  flex-direction: row;
   align-items: center;
   justify-content: space-between;
   z-index: 1000;
+  padding: 0 20px;
+}
+
+.leftButtons, .rightButtons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .topBarBtn {

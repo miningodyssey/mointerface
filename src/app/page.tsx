@@ -17,9 +17,10 @@ import TasksIcon from "@/components/Icons/TasksIcon/TasksIcon";
 import {FriendsIcon} from "@/components/Icons/FriendsIcon/FriendsIcon";
 import {fetchDataAndInitialize} from "@/components/functions/fetchDataAndInitialize";
 import {preloadImages} from "@/components/functions/preloadImages";
-import MainCategory from "@/categories/main";
+import MainCategory from "@/categories/main/main";
 import SettingsIcon from "@/components/Icons/SettingsIcon/SettingsIcon";
 import WalletIcon from "@/components/Icons/WalletIcon/WalletIcon";
+import LeaderBoardCategory from "@/categories/leaderboard/leaderboard";
 
 
 const tabs = [
@@ -78,32 +79,7 @@ export default function Home() {
             }
         };
 
-    }, []);
-    useEffect(() => {
-        const addTouchMoveListener = () => {
-            const dailyTasksList = document.querySelector('.DailyTasksList');
-
-            if (dailyTasksList) { // Проверяем, что элемент существует
-                dailyTasksList.addEventListener('touchmove', function (e) {
-                    e.stopPropagation();
-                }, {passive: true});
-            } else {
-                // Если элемент еще не найден, повторяем проверку через небольшой интервал
-                setTimeout(addTouchMoveListener, 100);
-            }
-        };
-
-        addTouchMoveListener(); // Запускаем функцию
-
-        return () => {
-            const dailyTasksList = document.querySelector('.DailyTasksList');
-            if (dailyTasksList) {
-                dailyTasksList.removeEventListener('touchmove', function (e) {
-                    e.stopPropagation();
-                });
-            }
-        };
-    }, []);
+    }, [window.Telegram]);
 
     const utils = useMemo(() => (typeof window !== 'undefined' ? initUtils() : null), []);
     const handleSnackbarOpen = () => {
@@ -194,24 +170,30 @@ export default function Home() {
                 variants={fadeIn}
             />
             <div className={styles.topBarContainer}>
-                { currentTab === 0 &&
-                    (<div className={styles.topBarBtn}>
-                        <SettingsIcon/>
-                        <p>Settings</p>
+                {currentTab === 0 &&
+                    (<div className={styles.leftButtons}>
+                        <div className={styles.topBarBtn}>
+                            <SettingsIcon/>
+                            <p>Settings</p>
+                        </div>
                     </div>)
                 }
                 {
                     (currentTab === 1 || currentTab === 2) &&
-                    (<div style={{opacity: '0'}}>
-                        <SettingsIcon style={{opacity: '0'}}/>
-                        <p className={styles.topBarBtnP}>Settings</p>
+                    (<div className={styles.leftButtons} style={{opacity: '0'}}>
+                        <div className={styles.topBarBtn}>
+                            <SettingsIcon/>
+                            <p>Settings</p>
+                        </div>
                     </div>)
                 }
                 {
                     (currentTab === 4) &&
-                    (<div className={styles.topBarBtn}>
-                        <SettingsIcon/>
-                        <p>Settings</p>
+                    (<div className={styles.leftButtons}>
+                        <div className={styles.topBarBtn}>
+                            <SettingsIcon/>
+                            <p>Settings</p>
+                        </div>
                     </div>)
                 }
                 {
@@ -229,17 +211,21 @@ export default function Home() {
                 }
                 {
                     (currentTab === 4 || currentTab === 2 || currentTab === 0) && (
-                        <div className={styles.topBarBtn}>
-                            <WalletIcon/>
-                            <p>Wallet</p>
+                        <div className={styles.rightButtons}>
+                            <div className={styles.topBarBtn}>
+                                <WalletIcon/>
+                                <p>Wallet</p>
+                            </div>
                         </div>
                     )
                 }
                 {
                     currentTab === 1 &&
-                    (<div style={{opacity: '0'}}>
-                        <SettingsIcon/>
-                        <p className={styles.topBarBtnP}>Settings</p>
+                    (<div className={styles.rightButtons} style={{opacity: '0'}}>
+                        <div className={styles.topBarBtn}>
+                            <WalletIcon/>
+                            <p>Wallet</p>
+                        </div>
                     </div>)
                 }
             </div>
@@ -254,6 +240,18 @@ export default function Home() {
                     registrationTime={Number(userData?.registrationDate)}
                 />
             )}
+            {currentTab === 1 && (
+                <LeaderBoardCategory
+                    isImagesLoaded={isImagesLoaded}
+                    fadeIn={fadeIn}
+                    setIsLogoLoaded={setIsLogoLoaded}
+                    t={t}
+                    sendLink={sendLink}
+                    userId={userId}
+                    registrationTime={Number(userData?.registrationDate)}
+                />
+            )}
+
             <Tabbar style={{background: 'var(--tgui--bg_color)'}}>
                 {tabs.map(({
                                id,

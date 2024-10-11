@@ -59,7 +59,11 @@ const MainCategory: React.FC<MainCategoryProps> = ({
         return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
     };
     return (
-        <div className={styles.mainContainer}>
+        <motion.div
+    initial="hidden"
+    animate="visible"
+    variants={fadeIn}
+    className={styles.mainContainer}>
             <div>
                 <div className={styles.logoContainer}>
                     <motion.img
@@ -142,7 +146,7 @@ const MainCategory: React.FC<MainCategoryProps> = ({
 
                     </div>
             </div>
-        </div>
+        </motion.div>
     );
 };
 
