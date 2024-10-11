@@ -13,6 +13,7 @@ import { motion } from 'framer-motion';
 import CoinIcon from "@/components/CoinIcon/CoinIcon";
 import PeopleIcon from "@/components/PeopleIcon/PeopleIcon";
 import CopyIcon from "@/components/CopyIcon/CopyIcon";
+import InvitedModal from "@/components/menus/invitedModal";
 
 
 const preloadImages = (imageUrls: string[]): Promise<void[]> => {
@@ -73,40 +74,31 @@ export default function Home() {
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [isMuted, setIsMuted] = useState(true);
     const audioRef = useRef<HTMLAudioElement>(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isSendLinkCalled, setIsSendLinkCalled] = useState(false);
     const fadeIn = useMemo(() => ({
         hidden: { opacity: 0 },
         visible: { opacity: 1, transition: { duration: 0.5 } },
     }), []);
+
     useEffect(() => {
         // Инициализация Telegram Web App
         const initTelegramWebApp = () => {
             const data = initMiniApp();
             if (data && window.Telegram && window.Telegram.WebApp) {
                 window.Telegram.WebApp.disableVerticalSwipes = true;
-                window.Telegram.WebApp.setHeaderColor('var(--tgui--bg_color)');
+                window.Telegram.WebApp.expand();
             }
             if (window.TelegramWebviewProxy) {
                 window.TelegramWebviewProxy.postEvent('web_app_setup_swipe_behavior', { allow_vertical_swipe: false });
             }
         };
 
-        // Отключаем вертикальный скролл для мобильных устройств
-        const disableTouchScroll = (e: TouchEvent) => {
-            e.preventDefault();
-        };
-
-        // Добавляем слушатель на касания
-        document.body.addEventListener('touchmove', disableTouchScroll, { passive: false });
-
         if (typeof window !== 'undefined') {
             initTelegramWebApp();
         }
 
-        // Удаляем слушатель при размонтировании
-        return () => {
-            document.body.removeEventListener('touchmove', disableTouchScroll);
-        };
-    }, []);
+    }, [window.Telegram]);
 
 
     const utils = useMemo(() => (typeof window !== 'undefined' ? initUtils() : null), []);
@@ -165,9 +157,11 @@ export default function Home() {
     const sendLink = useCallback((userId: number) => {
         const link = `https://t.me/MiningOdysseyBot/Game?startapp=${userId}`;
         if (utils) {
-            utils.shareURL(t('InviteMessage'),link)
+            setIsSendLinkCalled(true);  // Устанавливаем флаг, что вызвана функция sendLink
+            setIsModalOpen(true);       // Сразу открываем модальное окно после вызова sendLink
+            utils.shareURL(t('InviteMessage'), link);
         }
-    }, []);
+    }, [utils]);
     const toggleMute = () => {
         if (audioRef.current) {
             audioRef.current.muted = !audioRef.current.muted;
@@ -175,10 +169,10 @@ export default function Home() {
         }
     };
     // Если страница загружается, показываем лоадер
-    if (!isImagesLoaded || isLoading || !userData) {
+    if (!isImagesLoaded || isLoading || !userData || !window.Telegram) {
         return (
             <div>
-                <Spinner  size='l'/>
+                <Spinner className={styles.Spinner}  size='m'/>
             </div>
         )
     }
@@ -190,13 +184,12 @@ export default function Home() {
             variants={fadeIn}
             className={styles.pageBody}
         >
+
             <audio ref={audioRef} autoPlay loop muted={isMuted}>
                 <source src="/bgsound.mp3" type="audio/mpeg" />
             </audio>
 
-            <button onClick={toggleMute} className={styles.muteBtn}>
-                {isMuted ? '🔇' : '🔊'}
-            </button>
+
             <motion.img
                 src="/bg.svg"
                 alt="bg"
@@ -217,6 +210,9 @@ export default function Home() {
                     <PeopleIcon/>
                     <p className={styles.referals}> {userData?.referals || 0} {t('referals' as any)} </p>
                 </div>
+                <button onClick={toggleMute} className={styles.muteBtn}>
+                    {isMuted ? '🔇' : '🔊'}
+                </button>
             </div>
             <div className={styles.textContainer}>
                 <div className={styles.logoContainer}>
@@ -260,6 +256,9 @@ export default function Home() {
                     <CopyIcon />
                 </button>
             </div>
+            {isModalOpen && (
+                <InvitedModal t={t} setIsModalOpen={setIsModalOpen} sendLink={sendLink} userID={userId} className={styles.InvitedModal}/>
+            )}
         </motion.div>
     );
 }
