@@ -21,6 +21,7 @@ import MainCategory from "@/categories/main/main";
 import SettingsIcon from "@/components/Icons/SettingsIcon/SettingsIcon";
 import WalletIcon from "@/components/Icons/WalletIcon/WalletIcon";
 import LeaderBoardCategory from "@/categories/leaderboard/leaderboard";
+import FriendsCategory from "@/categories/friends/friends";
 
 
 const tabs = [
@@ -229,30 +230,31 @@ export default function Home() {
                     </div>)
                 }
             </div>
-            {currentTab === 0 && (
-                <MainCategory
-                    isImagesLoaded={isImagesLoaded}
-                    fadeIn={fadeIn}
-                    setIsLogoLoaded={setIsLogoLoaded}
-                    t={t}
-                    sendLink={sendLink}
-                    userId={userId}
-                    registrationTime={Number(userData?.registrationDate)}
-                />
-            )}
-            {currentTab === 1 && (
-                <LeaderBoardCategory
-                    isImagesLoaded={isImagesLoaded}
-                    fadeIn={fadeIn}
-                    setIsLogoLoaded={setIsLogoLoaded}
-                    t={t}
-                    sendLink={sendLink}
-                    userId={userId}
-                    registrationTime={Number(userData?.registrationDate)}
-                />
-            )}
 
-            <Tabbar style={{background: 'var(--tgui--bg_color)'}}>
+            <div className={styles.mainContent}>
+                {currentTab === 0 && (
+                    <MainCategory
+                        isImagesLoaded={isImagesLoaded}
+                        fadeIn={fadeIn}
+                        setIsLogoLoaded={setIsLogoLoaded}
+                        t={t}
+                        sendLink={sendLink}
+                        userId={userId}
+                        registrationTime={Number(userData?.registrationDate)}
+                    />
+                )}
+                {currentTab === 1 && (
+                    <LeaderBoardCategory
+                        fadeIn={fadeIn}
+                    />
+                )}
+                {currentTab === 3 && (
+                    <FriendsCategory
+                        fadeIn={fadeIn}
+                    />
+                )}
+            </div>
+            <Tabbar style={{background: 'var(--tgui--bg_color)', flexShrink: '0', height: '70px', position:'relative'}}>
                 {tabs.map(({
                                id,
                                text,

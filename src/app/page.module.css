@@ -38,6 +38,13 @@
   font-size: 80%;
 }
 
+.mainContent {
+  flex-grow: 1; /* Занимает оставшееся пространство */
+  overflow-y: auto; /* Включаем прокрутку, если контент превышает доступное пространство */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
 
 .ButtonText {
@@ -217,16 +224,14 @@
 }
 
 .topBarContainer {
-  position: absolute;
-  top: 2%;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 90%;
+  width: 90vw;
   display: flex;
   align-items: center;
+  height: 40px;
   justify-content: space-between;
   z-index: 1000;
-  padding: 0 20px;
+  flex-shrink: 0;
+  padding: 20px;
 }
 
 .leftButtons, .rightButtons {

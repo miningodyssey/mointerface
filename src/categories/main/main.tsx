@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, {useState, useEffect} from "react";
 import styles from "./main.module.css";
-import { motion } from "framer-motion";
+import {motion} from "framer-motion";
 import {Button, Cell, Section} from "@telegram-apps/telegram-ui";
 import LightningIcon from "@/components/Icons/LightningIcon/LightningIcon";
 import CoinIcon from "@/components/Icons/CoinIcon/CoinIcon";
@@ -60,10 +60,10 @@ const MainCategory: React.FC<MainCategoryProps> = ({
     };
     return (
         <motion.div
-    initial="hidden"
-    animate="visible"
-    variants={fadeIn}
-    className={styles.mainContainer}>
+            initial="hidden"
+            animate="visible"
+            variants={fadeIn}
+            className={styles.mainContainer}>
             <div>
                 <div className={styles.logoContainer}>
                     <motion.img
@@ -99,52 +99,52 @@ const MainCategory: React.FC<MainCategoryProps> = ({
             </div>
             <div className={styles.DailyContainer}>
                 <h1 className={styles.DailyTasksH1}>Daily tasks</h1>
-                    <div className={styles.DailyTasksList}>
-                        <Cell
-                            className={styles.Cell}
-                            before={
-                                <div>
-                                    <CoinIcon />
-                                </div>
-                            }
-                            subtitle={<div style={{ color: 'green' }}>5,000 pts</div>}
-                        >
-                            <div className={styles.DailyTaskName}>
-                                <p>Invite friend</p>
-                                <p>2/10</p>
+                <div className={styles.DailyTasksList}>
+                    <Cell
+                        className={styles.Cell}
+                        before={
+                            <div>
+                                <CoinIcon/>
                             </div>
-                        </Cell>
-                        <Cell
-                            className={styles.Cell}
-                            before={
-                                <div>
-                                    <LightningIcon />
-                                </div>
-                            }
-                            subtitle={<div style={{ color: 'green' }}>5,000 pts</div>}
-                        >
-                            <div className={styles.DailyTaskName}>
-                                <p>Invite friend</p>
-                                <p>2/10</p>
+                        }
+                        subtitle={<div style={{color: 'green'}}>5,000 pts</div>}
+                    >
+                        <div className={styles.DailyTaskName}>
+                            <p>Invite friend</p>
+                            <p>2/10</p>
+                        </div>
+                    </Cell>
+                    <Cell
+                        className={styles.Cell}
+                        before={
+                            <div>
+                                <LightningIcon/>
                             </div>
-                        </Cell>
+                        }
+                        subtitle={<div style={{color: 'green'}}>5,000 pts</div>}
+                    >
+                        <div className={styles.DailyTaskName}>
+                            <p>Invite friend</p>
+                            <p>2/10</p>
+                        </div>
+                    </Cell>
 
-                        <Cell
-                            className={styles.Cell}
-                            before={
-                                <div>
-                                    <CoinIcon />
-                                </div>
-                            }
-                            subtitle={<div style={{ color: 'green' }}>5,000 pts</div>}
-                        >
-                            <div className={styles.DailyTaskName}>
-                                <p>Invite friend</p>
-                                <p>2/10</p>
+                    <Cell
+                        className={styles.Cell}
+                        before={
+                            <div>
+                                <CoinIcon/>
                             </div>
-                        </Cell>
+                        }
+                        subtitle={<div style={{color: 'green'}}>5,000 pts</div>}
+                    >
+                        <div className={styles.DailyTaskName}>
+                            <p>Invite friend</p>
+                            <p>2/10</p>
+                        </div>
+                    </Cell>
 
-                    </div>
+                </div>
             </div>
         </motion.div>
     );

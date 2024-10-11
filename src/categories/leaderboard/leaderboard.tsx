@@ -1,75 +1,64 @@
 import React, {useState, useEffect} from "react";
 import styles from "./leaderboard.module.css";
 import {motion} from "framer-motion";
-import {Button, Cell} from "@telegram-apps/telegram-ui";
-import LightningIcon from "@/components/Icons/LightningIcon/LightningIcon";
-import CoinIcon from "@/components/Icons/CoinIcon/CoinIcon";
+import {Button, Cell, List, TabsList} from "@telegram-apps/telegram-ui";
+import ListElement from "@/categories/leaderboard/listElement/listElement";
 
 interface LeaderBoardCategoryProps {
-    isImagesLoaded: boolean;
     fadeIn: any;
-    setIsLogoLoaded: (value: boolean) => void;
-    t: (key: string) => any;
-    sendLink: (userId: number) => void;
-    userId: number;
-    registrationTime: number; // Добавляем проп для времени регистрации в формате Unix timestamp
 }
 
 const LeaderBoardCategory: React.FC<LeaderBoardCategoryProps> = ({
-                                                                     isImagesLoaded,
                                                                      fadeIn,
-                                                                     setIsLogoLoaded,
-                                                                     t,
-                                                                     sendLink,
-                                                                     userId,
-                                                                     registrationTime, // Используем проп
                                                                  }) => {
-    const [timeLeft, setTimeLeft] = useState<number>(0);
+    const [currentTab, setCurrentTab] = useState(0);
 
-    const TWO_HOURS = 2 * 60 * 60; // Время в секундах (2 часа)
-
-    useEffect(() => {
-        const calculateTimeLeft = () => {
-            const currentTime = Math.floor(Date.now() / 1000); // Текущее время в Unix timestamp
-            const elapsedTime = currentTime - registrationTime; // Время, прошедшее с момента регистрации
-
-            // Если прошло больше 2 часов, перезапускаем таймер
-            if (elapsedTime >= TWO_HOURS) {
-                setTimeLeft(TWO_HOURS); // Сбрасываем таймер на 2 часа
-            } else {
-                setTimeLeft(TWO_HOURS - (elapsedTime % TWO_HOURS)); // Оставшееся время до конца 2-часового периода
-            }
-        };
-
-        // Начальный расчет времени
-        calculateTimeLeft();
-
-        const interval = setInterval(() => {
-            calculateTimeLeft();
-        }, 1000); // Обновляем каждую секунду
-
-        return () => clearInterval(interval); // Чистим интервал при размонтировании
-    }, [registrationTime]);
-
-    const formatTime = (seconds: number) => {
-        const hours = Math.floor(seconds / 3600);
-        const minutes = Math.floor((seconds % 3600) / 60);
-        const secs = seconds % 60;
-        return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
-    };
     return (
         <motion.div
             initial="hidden"
             animate="visible"
             variants={fadeIn}
-            className={styles.mainContainer}>
+            className={styles.leaderBoardContainer}>
             <div>
-                <div className={styles.logoContainer}>
-                    <h6>Become the best runner!</h6>
+                <div className={styles.textContainer}>
+                    <h2>Become the best runner!</h2>
                     <p>See where you stand and challenge top runners</p>
                 </div>
             </div>
-
+            <div style={{height: '42px', width: '100%', display: 'flex', justifyContent:'center'}}>
+                <TabsList style={{width: '90%', height: '100%'}}>
+                    <TabsList.Item selected={currentTab === 0} onClick={() => setCurrentTab(0)}>
+                        Friends
+                    </TabsList.Item>
+                    <TabsList.Item selected={currentTab === 1} onClick={() => setCurrentTab(1)}>
+                        Global
+                    </TabsList.Item>
+                </TabsList>
+            </div>
+            {
+                currentTab === 0 && (
+                    <div className={styles.leaderBoardList}>
+                        <ListElement name={'Bebrikh'} points={5000} position={1}/>
+                        <ListElement name={'Bebrikh'} points={5000} position={1}/>
+                        <ListElement name={'Bebrikh'} points={5000} position={1}/>
+                        <ListElement name={'Bebrikh'} points={5000} position={1}/>
+                        <ListElement name={'Bebrikh'} points={5000} position={1}/>
+                        <ListElement name={'Bebrikh'} points={5000} position={1}/>
+                        <ListElement name={'Bebrikh'} points={5000} position={1}/>
+                        <ListElement name={'Bebrikh'} points={5000} position={1}/>
+                        <ListElement name={'Bebrikh'} points={5000} position={1}/>
+                        <ListElement name={'Bebrikh'} points={5000} position={1}/>
+                        <ListElement name={'Bebrikh'} points={5000} position={1}/>
+                        <ListElement name={'Bebrikh'} points={5000} position={1}/>
+                    </div>
+                )
+            }
+            {
+                currentTab === 1 && (
+                    <div className={styles.leaderBoardList}>
+                    </div>
+                )
+            }
         </motion.div>
     );
 };

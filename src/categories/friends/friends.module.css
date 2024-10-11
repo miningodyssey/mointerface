@@ -1,8 +1,11 @@
-.leaderBoardContainer {
+.friendsContainer {
     display: flex;
     flex-direction: column;
     align-items: center; /* Центрирование по горизонтали */
     z-index: 10;
+    position: absolute;
+    top: 0;
+    left: 0;
     height: 100%;
     overflow: visible;
 }
@@ -22,17 +25,9 @@
     justify-content: center;
     display: flex;
     flex-direction: column;
-    text-align: center;
     color: white;
+    text-align: start;
     margin-bottom: 20px;
-}
-
-.textContainer p {
-    color: var(--tgui--hint_color);
-    margin: 0;
-}
-.textContainer h2 {
-    margin: 0 0 4px;
 }
 
 .logo {
