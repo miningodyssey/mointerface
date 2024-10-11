@@ -22,6 +22,7 @@ import SettingsIcon from "@/components/Icons/SettingsIcon/SettingsIcon";
 import WalletIcon from "@/components/Icons/WalletIcon/WalletIcon";
 import LeaderBoardCategory from "@/categories/leaderboard/leaderboard";
 import FriendsCategory from "@/categories/friends/friends";
+import TasksCategory from "@/categories/tasks/tasks";
 
 
 const tabs = [
@@ -253,8 +254,13 @@ export default function Home() {
                         fadeIn={fadeIn}
                     />
                 )}
+                {currentTab === 2 && (
+                    <TasksCategory
+                        fadeIn={fadeIn}
+                    />
+                )}
             </div>
-            <Tabbar style={{background: 'var(--tgui--bg_color)', flexShrink: '0', height: '70px', position:'relative'}}>
+            <Tabbar style={{background: 'var(--tgui--bg_color)', flexShrink: '0', height: '70px', position:'relative', width: '100vw'}}>
                 {tabs.map(({
                                id,
                                text,

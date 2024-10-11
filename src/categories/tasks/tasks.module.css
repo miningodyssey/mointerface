@@ -1,10 +1,11 @@
-.leaderBoardContainer {
+.tasksContainer {
     display: flex;
     flex-direction: column;
     align-items: center; /* Центрирование по горизонтали */
     z-index: 10;
     height: 100%;
     overflow: visible;
+    box-sizing: border-box;
 }
 
 .leaderBoardList {
@@ -12,7 +13,7 @@
     flex-grow: 1;
     display: flex;
     flex-direction: column;
-    background: rgb(56, 56, 56);
+    align-items: center;
     overflow-y: auto; /* Позволяем прокрутку по Y */
     scrollbar-width: none;
 }
@@ -33,11 +34,4 @@
 }
 .textContainer h2 {
     margin: 0 0 4px;
-}
-
-.logo {
-    width: 70%;
-    background-size: cover;
-    user-select: none;
-    pointer-events: none;
 }

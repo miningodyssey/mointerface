@@ -3,6 +3,7 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    align-items: center;
     position: absolute;
     bottom: 35%;
 }
@@ -56,6 +57,7 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    align-items: center;
 }
 
 .DailyContainer {
@@ -74,7 +76,7 @@
 .DailyTaskName {
     display: inline-flex;
     justify-content: space-between;
-    color: white;
+    color: var(--tgui--text_color);
 }
 .DailyTaskName p {
     margin: 0 4px 0 0;
@@ -104,7 +106,12 @@
 
 
 .Cell {
+    transition: opacity .15s ease-out;
     flex: 0 0 auto;
     width: 65%;
     user-select: none; /* Предотвращает выделение текста при прокрутке */
+    opacity: 1;
+}
+.Cell:hover {
+    opacity: 0.8 !important;
 }

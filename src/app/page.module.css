@@ -8,6 +8,7 @@
   justify-content: center;
   align-items: center;
   user-select: none;
+  font-family: var(--tgui--font-family);
 }
 
 .bgImage {
@@ -217,10 +218,11 @@
 }
 
 .userDescription {
+  width: 100%; /* Если родительский контейнер тянется на всю ширину */
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  justify-content: center; /* Горизонтальная центровка */
+  align-items: center; /* Вертикальная центровка */
+  text-align: center;
 }
 
 .topBarContainer {
@@ -231,12 +233,13 @@
   justify-content: space-between;
   z-index: 1000;
   flex-shrink: 0;
-  padding: 20px;
+  padding: 35px 20px 20px;
 }
 
 .leftButtons, .rightButtons {
   display: flex;
   align-items: center;
+  flex: 0 0 auto;
   justify-content: center;
 }
 
