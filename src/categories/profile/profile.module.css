@@ -1,0 +1,156 @@
+.profileContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Центрирование по горизонтали */
+    z-index: 10;
+    height: 100%;
+    width: 99.9vw;
+    overflow: visible;
+}
+
+.nickInput {
+    width: 90%;
+    margin-bottom: 10px;
+}
+
+.nickInput div {
+    padding: 3px 3px 3px;
+    border-radius: 14px;
+}
+
+.nickInput div label {
+    box-shadow: 0 0 0 2px transparent;
+}
+
+.skinContainer {
+    width: 90%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 10px;
+    z-index: 10;
+    margin-bottom: 10px;
+}
+
+.skinBanner {
+    width: 50%;
+}
+
+.leaderBoardList {
+    width: 100%;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    background: rgb(56, 56, 56);
+    overflow-y: auto; /* Позволяем прокрутку по Y */
+    scrollbar-width: none;
+}
+
+.textContainer {
+    width: 99.9vw;
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    color: white;
+    margin-bottom: 20px;
+}
+
+.textContainer p {
+    color: var(--tgui--hint_color);
+    margin: 0;
+}
+
+.textContainer h2 {
+    margin: 0 0 4px;
+}
+
+.inviteButton {
+    position: absolute;
+    bottom: 70px;
+    width: 100%;
+    display: inline-flex;
+    background: linear-gradient(to top, black, transparent);
+    box-sizing: border-box;
+    padding: 12px;
+}
+
+
+.copyButton {
+    background: none;
+    -webkit-user-drag: none;
+    user-select: none;
+    border: none;
+    padding-right: 0;
+    cursor: pointer;
+    transition: opacity .15s ease-out;
+}
+
+.copyButton:hover {
+    opacity: 0.8
+}
+
+.DailyContainer {
+    width: 95vw; /* Контейнер занимает всю ширину экрана */
+    margin: 0;
+    box-sizing: border-box;
+    padding-left: 0; /* Убираем отступы слева */
+}
+
+.DailyTasksH1 {
+    color: white;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.DailyTaskName {
+    display: inline-flex;
+    justify-content: space-between;
+    color: var(--tgui--text_color);
+}
+
+.DailyTaskName p {
+    margin: 0 4px 0 0;
+
+}
+
+.DailyTaskName p:last-child {
+    margin-right: 0;
+    color: var(--tgui--hint_color)
+}
+
+.DailyTasksList {
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto; /* Включаем горизонтальный скролл */
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none; /* Скрываем скроллбар */
+    white-space: nowrap; /* Элементы не переносятся на новую строку */
+    width: 100%; /* Ширина контейнера */
+    padding: 10px 0; /* Убираем боковые отступы */
+    box-sizing: border-box;
+    gap: 5px; /* Промежутки между элементами */
+    -webkit-overflow-scrolling: touch; /* Улучшаем прокрутку на iOS */
+    user-select: none;
+}
+
+
+.Cell {
+    transition: opacity .15s ease-out;
+    flex: 0 0 auto;
+    width: 100%;
+    user-select: none; /* Предотвращает выделение текста при прокрутке */
+    opacity: 1;
+    box-sizing: border-box;
+}
+
+.Cell:hover {
+    opacity: 0.8 !important;
+}
+
+.CellsContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}

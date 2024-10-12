@@ -224,6 +224,9 @@
   align-items: center; /* Вертикальная центровка */
   text-align: center;
 }
+.InvitedModal {
+  position: absolute;
+}
 
 .topBarContainer {
   width: 90vw;

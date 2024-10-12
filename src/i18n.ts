@@ -27,7 +27,10 @@ i18n
                         "\n" +
                         "Jump into the world of cryptocurrencies with Mining Odyssey and earn rewards! 💰 Sign up using my link and get exclusive bonuses \n" +
                         "\n" +
-                        "See you in the game! 😉"
+                        "See you in the game! 😉",
+                    "InviteMoreText": "Link sent! Don\'t relax — we\'re waiting for your friends to join so you can get your rewards. Spread the word! 💬",
+                    "InviteMore": "🔄 Invite more",
+                    "CancelInviteMore" : "⏳ Later"
                 }
             },
             ru: {
@@ -44,7 +47,10 @@ i18n
                         "\n" +
                         "Врывайся в мир криптовалют с Mining Odyssey и зарабатывай награды! 💰 Регистрируйся по моей ссылке и получай бонусы \n" +
                         "\n" +
-                        "До встречи в игре! 😉\n"
+                        "До встречи в игре! 😉\n",
+                    "InviteMoreText": "🚀 Ссылка отправлена! Не расслабляйся — ждем, когда друзья зайдут, чтобы ты получил бонусы. Расскажи всем! 💬",
+                    "InviteMore" : "🔄 Пригласить еще",
+                    "CancelInviteMore" : "⏳ Позже"
                 }
             }
         },

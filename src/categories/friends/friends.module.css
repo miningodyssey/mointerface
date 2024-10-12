@@ -73,3 +73,27 @@
     color: var(--tg-theme-button-color); /* Цвет кружка */
 }
 
+.inviteButton {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    display: inline-flex;
+    background: linear-gradient(to top, black, transparent);
+    box-sizing: border-box;
+    padding: 12px;
+}
+
+
+.copyButton {
+    background: none;
+    -webkit-user-drag: none;
+    user-select: none;
+    border: none;
+    padding-right: 0;
+    cursor: pointer;
+    transition: opacity .15s ease-out;
+}
+
+.copyButton:hover {
+    opacity: 0.8
+}

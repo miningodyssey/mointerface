@@ -23,6 +23,8 @@ import WalletIcon from "@/components/Icons/WalletIcon/WalletIcon";
 import LeaderBoardCategory from "@/categories/leaderboard/leaderboard";
 import FriendsCategory from "@/categories/friends/friends";
 import TasksCategory from "@/categories/tasks/tasks";
+import InvitedModal from "@/components/menus/invitedModal";
+import ProfileCategory from "@/categories/profile/profile";
 
 
 const tabs = [
@@ -59,7 +61,8 @@ export default function Home() {
     const [userId, setUserId] = useState<number>(0);
     const [authKey, setAuthKey] = useState<string>();
     const [isImagesLoaded, setIsImagesLoaded] = useState(false);
-    const [isLogoLoaded, setIsLogoLoaded] = useState(false)
+    const [isLogoLoaded, setIsLogoLoaded] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [isMuted, setIsMuted] = useState(true);
     const [currentTab, setCurrentTab] = useState(tabs[0].id);
@@ -137,6 +140,7 @@ export default function Home() {
 
     const sendLink = useCallback((userId: number) => {
         const link = `https://t.me/MiningOdysseyBot/Game?startapp=${userId}`;
+        setIsModalOpen(true);
         if (utils) {
             utils.shareURL(t('InviteMessage'), link)
         }
@@ -149,7 +153,7 @@ export default function Home() {
     };
 
     // Если страница загружается, показываем лоадер
-    if (!isImagesLoaded || isLoading || !userData) {
+    if (!isImagesLoaded || isLoading || !userData || !window.Telegram) {
         return (
             <div>
                 <Spinner size='l'/>
@@ -247,11 +251,10 @@ export default function Home() {
                 {currentTab === 1 && (
                     <LeaderBoardCategory
                         fadeIn={fadeIn}
-                    />
-                )}
-                {currentTab === 3 && (
-                    <FriendsCategory
-                        fadeIn={fadeIn}
+                        copyLinkToClipboard={copyLinkToClipboard}
+                        sendLink={sendLink}
+                        t={t}
+                        userId={userId}
                     />
                 )}
                 {currentTab === 2 && (
@@ -259,8 +262,51 @@ export default function Home() {
                         fadeIn={fadeIn}
                     />
                 )}
+                {currentTab === 3 && (
+                    <FriendsCategory
+                        fadeIn={fadeIn}
+                        copyLinkToClipboard={copyLinkToClipboard}
+                        sendLink={sendLink}
+                        t={t}
+                        userId={userId}
+                        isModalOpen={isModalOpen}
+                        setIsModalOpen={setIsModalOpen}
+                    />
+                )}
+                {currentTab === 4 && (
+                    <ProfileCategory
+                        fadeIn={fadeIn}
+                        copyLinkToClipboard={copyLinkToClipboard}
+                        sendLink={sendLink}
+                        t={t}
+                        userId={userId}
+                        isModalOpen={isModalOpen}
+                        setIsModalOpen={setIsModalOpen}
+                    />
+                )}
+
             </div>
-            <Tabbar style={{background: 'var(--tgui--bg_color)', flexShrink: '0', height: '70px', position:'relative', width: '100vw'}}>
+            {snackbarOpen && (
+                <Snackbar
+                    onClose={() => setSnackbarOpen(false)}
+                    duration={3000}
+                    before={<span role="img" aria-label="checkmark">✅</span>}
+                    description={t('linkCopied' as any)}
+                >
+                    {t('done' as any) }
+                </Snackbar>
+            )}
+            {isModalOpen && (
+                <InvitedModal t={t} setIsModalOpen={setIsModalOpen} sendLink={sendLink} userID={userId} className={styles.InvitedModal}/>
+            )}
+            <Tabbar style={{
+                background: 'var(--tgui--bg_color)',
+                flexShrink: '0',
+                height: '70px',
+                position: 'relative',
+                width: '100vw'
+            }}>
+
                 {tabs.map(({
                                id,
                                text,

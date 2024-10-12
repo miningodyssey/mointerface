@@ -11,8 +11,6 @@ interface MainCategoryProps {
     fadeIn: any;
     setIsLogoLoaded: (value: boolean) => void;
     t: (key: string) => any;
-    sendLink: (userId: number) => void;
-    userId: number;
     registrationTime: number; // Добавляем проп для времени регистрации в формате Unix timestamp
 }
 
@@ -21,8 +19,6 @@ const MainCategory: React.FC<MainCategoryProps> = ({
                                                        fadeIn,
                                                        setIsLogoLoaded,
                                                        t,
-                                                       sendLink,
-                                                       userId,
                                                        registrationTime, // Используем проп
                                                    }) => {
     const [timeLeft, setTimeLeft] = useState<number>(0);
@@ -82,7 +78,6 @@ const MainCategory: React.FC<MainCategoryProps> = ({
                 <Button
                     mode="filled"
                     size="l"
-                    onClick={() => sendLink(Number(userId))}
                     stretched
                 >
                     {t('startRun')}

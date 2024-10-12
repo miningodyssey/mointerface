@@ -3,13 +3,22 @@ import styles from "./leaderboard.module.css";
 import {motion} from "framer-motion";
 import {Button, Cell, List, TabsList} from "@telegram-apps/telegram-ui";
 import ListElement from "@/categories/leaderboard/listElement/listElement";
+import CopyIcon from "@/components/Icons/CopyIcon/CopyIcon";
 
 interface LeaderBoardCategoryProps {
     fadeIn: any;
+    copyLinkToClipboard: any;
+    sendLink: any;
+    t: any;
+    userId: any
 }
 
 const LeaderBoardCategory: React.FC<LeaderBoardCategoryProps> = ({
                                                                      fadeIn,
+                                                                     copyLinkToClipboard,
+                                                                     sendLink,
+                                                                     t,
+                                                                     userId
                                                                  }) => {
     const [currentTab, setCurrentTab] = useState(0);
 
@@ -51,11 +60,32 @@ const LeaderBoardCategory: React.FC<LeaderBoardCategoryProps> = ({
                         <ListElement name={'Bebrikh'} points={5000} position={1}/>
                         <ListElement name={'Bebrikh'} points={5000} position={1}/>
                     </div>
+
                 )
             }
             {
                 currentTab === 1 && (
                     <div className={styles.leaderBoardList}>
+                    </div>
+                )
+            }
+            {
+                currentTab === 0 && (
+                    <div className={styles.inviteButton}>
+                        <Button
+                            mode='filled'
+                            size='l'
+                            onClick={() => sendLink(Number(userId))}
+                            stretched
+                        >
+                            {t('inviteFriends' as any)}
+                        </Button>
+                        <button
+                            className={styles.copyButton}
+                            onClick={() => copyLinkToClipboard(Number(userId))}
+                        >
+                            <CopyIcon />
+                        </button>
                     </div>
                 )
             }

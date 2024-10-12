@@ -1,0 +1,40 @@
+.card {
+    background: transparent;
+    border: 1px solid var(--tgui--surface_dark);
+    padding: 10px;
+    border-radius: 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Изменено с center на flex-start */
+    width: 100%; /* Можно изменить в зависимости от нужного размера */
+    box-sizing: border-box;
+}
+
+.cardImage {
+    width: 100%;
+    height: 70%; /* Занимает 70% от высоты карточки */
+    object-fit: cover; /* Чтобы изображение заполнило область */
+    border-top-left-radius: 14px;
+    border-top-right-radius: 14px;
+    z-index: 10;
+    display: flex;
+    justify-content: center;
+}
+
+.cardContent {
+    width: 100%;
+    text-align: left; /* Изменено с center на left */
+}
+
+.cardTitle {
+    color: white;
+    font-weight: bold;
+    margin: 10px 0 5px;
+    text-align: left; /* Можно оставить, но не обязательно */
+}
+
+.cardSubtitle {
+    color: var(--tgui--hint_color);
+    font-size: 0.9em;
+    text-align: left; /* Можно оставить, но не обязательно */
+}
