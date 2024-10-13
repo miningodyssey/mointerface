@@ -5,6 +5,7 @@ import ListElement from "@/categories/friends/listElement/listElement";
 import {Button} from "@telegram-apps/telegram-ui";
 import CopyIcon from "@/components/Icons/CopyIcon/CopyIcon";
 import InvitedModal from "@/components/menus/invitedModal";
+import Header from "@/categories/leaderboard/header/header";
 
 interface FriendsCategoryProps {
     fadeIn: any;
@@ -45,8 +46,9 @@ const FriendsCategory: React.FC<FriendsCategoryProps> = ({
                 <p><span className={styles.inlineHeading}>0</span> friends invited</p>
             </div>
             <div className={styles.leaderBoardList}>
+                <Header left={'Name'} right={'Total points'}></Header>
                 <ListElement name={'Bebrikh'} points={5000} position={1}/>
-                <ListElement name={'Bebrikh'} points={5000} position={1}/>
+                <ListElement name={'Bebrikh'} points={5000} position={1}/>points
                 <ListElement name={'Bebrikh'} points={5000} position={1}/>
                 <ListElement name={'Bebrikh'} points={5000} position={1}/>
                 <ListElement name={'Bebrikh'} points={5000} position={1}/>

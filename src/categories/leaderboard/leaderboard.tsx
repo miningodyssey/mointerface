@@ -4,6 +4,7 @@ import {motion} from "framer-motion";
 import {Button, Cell, List, TabsList} from "@telegram-apps/telegram-ui";
 import ListElement from "@/categories/leaderboard/listElement/listElement";
 import CopyIcon from "@/components/Icons/CopyIcon/CopyIcon";
+import Header from "@/categories/leaderboard/header/header";
 
 interface LeaderBoardCategoryProps {
     fadeIn: any;
@@ -34,7 +35,7 @@ const LeaderBoardCategory: React.FC<LeaderBoardCategoryProps> = ({
                     <p>See where you stand and challenge top runners</p>
                 </div>
             </div>
-            <div style={{height: '42px', width: '100%', display: 'flex', justifyContent:'center'}}>
+            <div style={{height: '42px', width: '100%', display: 'flex', justifyContent:'center', marginBottom: '10px'}}>
                 <TabsList style={{width: '90%', height: '100%'}}>
                     <TabsList.Item selected={currentTab === 0} onClick={() => setCurrentTab(0)}>
                         Friends
@@ -47,6 +48,7 @@ const LeaderBoardCategory: React.FC<LeaderBoardCategoryProps> = ({
             {
                 currentTab === 0 && (
                     <div className={styles.leaderBoardList}>
+                        <Header left={'12 racers'} right={'Total points'}></Header>
                         <ListElement name={'Bebrikh'} points={5000} position={1}/>
                         <ListElement name={'Bebrikh'} points={5000} position={1}/>
                         <ListElement name={'Bebrikh'} points={5000} position={1}/>

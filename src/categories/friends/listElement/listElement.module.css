@@ -14,7 +14,7 @@
 }
 .name {
     flex: 1;
-    margin-left: 10px;
+    margin-left: 0px;
 }
 .points {
     color: var(--moody-logo-color)
