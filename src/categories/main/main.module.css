@@ -4,24 +4,23 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    position: absolute;
-    bottom: 35%;
 }
 
 .mainContainer {
     display: flex;
     flex-direction: column;
-    justify-content: center; /* Центрирование по вертикали */
-    align-items: center; /* Центрирование по горизонтали */
+    align-items: center;
     z-index: 10;
+    height: 100%;
+    justify-content: space-between;
+    box-sizing: border-box;
+    padding-bottom: 100px;
 }
 
 .logoContainer {
     width: 99.9vw;
     justify-content: center;
     display: flex;
-    height: 45vh;
-    transform: translateY(-30%);
 }
 
 .logo {
@@ -33,8 +32,6 @@
 
 
 .startButton {
-    position: absolute;
-    bottom: 45%;
     width: 95%;
 }
 

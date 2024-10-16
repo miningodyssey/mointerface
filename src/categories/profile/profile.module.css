@@ -16,11 +16,39 @@
 .nickInput div {
     padding: 3px 3px 3px;
     border-radius: 14px;
+    display: flex;
+    flex-grow: 1;
+    gap: 10px;
 }
 
 .nickInput div label {
     box-shadow: 0 0 0 2px transparent;
 }
+
+.inputWrapper {
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    width: 100%;
+}
+
+.inputWithButton {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    width: 100%;
+}
+
+.saveButton {
+    background-color: transparent;
+    color: var(--tgui--button_color);
+    border: none;
+    cursor: pointer;
+    width: 56px;
+}
+
 
 .skinContainer {
     width: 90%;

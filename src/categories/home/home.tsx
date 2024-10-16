@@ -26,7 +26,10 @@ import TasksCategory from "@/categories/tasks/tasks";
 import InvitedModal from "@/components/menus/invitedModal";
 import ProfileCategory from "@/categories/profile/profile";
 import ForwardIcon from "@/components/Icons/ForwardIcon/forwardIcon";
-import {TonConnectButton, useTonAddress, useTonConnectUI, useTonWallet} from '@tonconnect/ui-react';
+import {TonConnectButton, useTonAddress, useTonConnectUI} from '@tonconnect/ui-react';
+import {fetchTopPlayers} from "@/components/functions/fetchTopPlayers";
+import {fetchReferals} from "@/components/functions/fetchReferals";
+import {fetchFriends} from "@/components/functions/fetchFriends";
 
 
 const tabs = [
@@ -56,9 +59,15 @@ const tabs = [
         Icon: <UserIcon/>
     },
 ]
+
+type TopPlayersType = {
+    userPosition: number
+    topTen: any[];
+};
+
 export default function HomeComponent() {
     const {t} = useTranslation();
-    const [userData, setUserData] = useState<user>();
+    const [userData, setUserData] = useState<any>();
     const [isLoading, setIsLoading] = useState(true);
     const [userId, setUserId] = useState<number>(0);
     const [authKey, setAuthKey] = useState<string>();
@@ -68,6 +77,9 @@ export default function HomeComponent() {
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [isMuted, setIsMuted] = useState(true);
     const [currentTab, setCurrentTab] = useState(tabs[0].id);
+    const [topPlayers, setTopPlayers] = useState<TopPlayersType | null>(null);
+    const [referals, setReferals] = useState([]);
+    const [friends, setFriends] = useState([]);
     const [tonConnectUI, setOptions] = useTonConnectUI();
     const userFriendlyAddress = useTonAddress();
     const audioRef = useRef<HTMLAudioElement>(null);
@@ -75,6 +87,13 @@ export default function HomeComponent() {
         hidden: {opacity: 0},
         visible: {opacity: 1, transition: {duration: 0.5}},
     }), []);
+
+
+    // Добавь эту логику в уже существующий useEffect или туда, где определяется userId
+    useEffect(() => {
+        // Например, когда пользователь авторизован
+        setUserId(1); // Здесь нужно динамически получать ID пользователя
+    }, []);
     useEffect(() => {
         // Инициализация Telegram Web App
         const initTelegramWebApp = () => {
@@ -99,9 +118,15 @@ export default function HomeComponent() {
     const initialize = async () => {
         try {
             const {userId, token, fetchedUserData} = await fetchDataAndInitialize();
+            const top = await fetchTopPlayers(userId, token);
+            const refTop = await fetchReferals(userId, token);
+            const friends = await fetchFriends(userId, token);
             setUserId(userId);
             setAuthKey(token);
             setUserData(fetchedUserData);
+            setTopPlayers(top);
+            setFriends(friends)
+            setReferals(refTop);
         } catch (error) {
             console.error('Error during initialization:', error);
         }
@@ -158,7 +183,7 @@ export default function HomeComponent() {
     };
 
     // Если страница загружается, показываем лоадер
-    if (!isImagesLoaded || isLoading || !userData || !window.Telegram) {
+    if (!isImagesLoaded || isLoading || !userData || !window.Telegram || !topPlayers || !referals) {
         return (
             <div>
                 <Spinner size='l'/>
@@ -189,6 +214,7 @@ export default function HomeComponent() {
                         </div>
                     </div>)
                 }
+
                 {
                     (currentTab === 1 || currentTab === 2) &&
                     (<div className={styles.leftButtons} style={{opacity: '0'}}>
@@ -233,8 +259,8 @@ export default function HomeComponent() {
                             }
                             {
                                 userFriendlyAddress && (
-                                    <div className={styles.topBarBtn}>
-                                        <TonConnectButton/>
+                                    <div>
+                                        <TonConnectButton />
                                     </div>
                                 )
                             }
@@ -259,15 +285,20 @@ export default function HomeComponent() {
                         setIsLogoLoaded={setIsLogoLoaded}
                         t={t}
                         registrationTime={Number(userData?.registrationDate)}
+                        utils={utils}
+                        userData={userData}
+                        token={authKey}
                     />
                 )}
-                {currentTab === 1 && (
+                {currentTab === 1 && topPlayers && (
                     <LeaderBoardCategory
                         fadeIn={fadeIn}
                         copyLinkToClipboard={copyLinkToClipboard}
                         sendLink={sendLink}
                         t={t}
                         userId={userId}
+                        topPlayers={topPlayers}
+                        friends={friends}
                     />
                 )}
                 {currentTab === 2 && (
@@ -282,13 +313,16 @@ export default function HomeComponent() {
                         sendLink={sendLink}
                         t={t}
                         userId={userId}
-                        isModalOpen={isModalOpen}
-                        setIsModalOpen={setIsModalOpen}
+                        referals={referals}
+
                     />
                 )}
                 {currentTab === 4 && (
                     <ProfileCategory
                         fadeIn={fadeIn}
+                        userData={userData}
+                        setUserData={setUserData}
+                        token={authKey}
                     />
                 )}
 
@@ -309,9 +343,10 @@ export default function HomeComponent() {
             )}
             <Tabbar style={{
                 background: 'var(--tgui--bg_color)',
+                position: 'absolute',
+                zIndex: '1000',
+                display: 'flex',
                 flexShrink: '0',
-                position: 'relative',
-                width: '100vw'
             }}>
 
                 {tabs.map(({

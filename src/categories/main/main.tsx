@@ -5,13 +5,17 @@ import {Button, Cell, Section} from "@telegram-apps/telegram-ui";
 import LightningIcon from "@/components/Icons/LightningIcon/LightningIcon";
 import CoinIcon from "@/components/Icons/CoinIcon/CoinIcon";
 import PeopleIcon from "@/components/Icons/PeopleIcon/PeopleIcon";
+import {addEnergyRequest} from "@/components/functions/addEnergyRequest";
 
 interface MainCategoryProps {
     isImagesLoaded: boolean;
     fadeIn: any;
     setIsLogoLoaded: (value: boolean) => void;
     t: (key: string) => any;
-    registrationTime: number; // Добавляем проп для времени регистрации в формате Unix timestamp
+    registrationTime: number;
+    utils: any;// Добавляем проп для времени регистрации в формате Unix timestamp
+    userData: any;
+    token: any;
 }
 
 const MainCategory: React.FC<MainCategoryProps> = ({
@@ -20,39 +24,40 @@ const MainCategory: React.FC<MainCategoryProps> = ({
                                                        setIsLogoLoaded,
                                                        t,
                                                        registrationTime, // Используем проп
+                                                       utils,
+                                                       userData,
+                                                       token
                                                    }) => {
-    const [timeLeft, setTimeLeft] = useState<number>(0);
+    const FOUR_HOURS_IN_MS = 4 * 60 * 60 * 1000; // 4 часа в миллисПочему она у него екундах
 
-    const TWO_HOURS = 2 * 60 * 60; // Время в секундах (2 часа)
-
+    const [timeLeft, setTimeLeft] = useState(userData.remainingTime);
     useEffect(() => {
-        const calculateTimeLeft = () => {
-            const currentTime = Math.floor(Date.now() / 1000); // Текущее время в Unix timestamp
-            const elapsedTime = currentTime - registrationTime; // Время, прошедшее с момента регистрации
+        const timer = setInterval(() => {
+            setTimeLeft((prevTime: number) => {
+                if (prevTime > 1000) {
+                    return prevTime - 1000; // Уменьшаем оставшееся время каждую секунду
+                } else {
+                    if (userData.energy > 10) {
+                        addEnergyRequest(userData.id, token).then((data: any) => {
+                            userData.energy = data.energy
+                        });
+                    } // передаем userId и token
+                    return FOUR_HOURS_IN_MS;
+                }
+            });
+        }, 1000);
 
-            // Если прошло больше 2 часов, перезапускаем таймер
-            if (elapsedTime >= TWO_HOURS) {
-                setTimeLeft(TWO_HOURS); // Сбрасываем таймер на 2 часа
-            } else {
-                setTimeLeft(TWO_HOURS - (elapsedTime % TWO_HOURS)); // Оставшееся время до конца 2-часового периода
-            }
-        };
+        // Очищаем таймер при размонтировании компонента
+        return () => clearInterval(timer);
+    }, []);
 
-        // Начальный расчет времени
-        calculateTimeLeft();
+    // Преобразуем миллисекунды в часы, минуты и секунды
+    const formatTime = (timeInMs: any) => {
+        const hours = Math.floor(timeInMs / (1000 * 60 * 60));
+        const minutes = Math.floor((timeInMs % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((timeInMs % (1000 * 60)) / 1000);
 
-        const interval = setInterval(() => {
-            calculateTimeLeft();
-        }, 1000); // Обновляем каждую секунду
-
-        return () => clearInterval(interval); // Чистим интервал при размонтировании
-    }, [registrationTime]);
-
-    const formatTime = (seconds: number) => {
-        const hours = Math.floor(seconds / 3600);
-        const minutes = Math.floor((seconds % 3600) / 60);
-        const secs = seconds % 60;
-        return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+        return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
     };
     return (
         <motion.div
@@ -72,23 +77,23 @@ const MainCategory: React.FC<MainCategoryProps> = ({
                         onLoad={() => setIsLogoLoaded(true)}
                     />
                 </div>
-                <div></div>
             </div>
             <div className={styles.startButton}>
                 <Button
                     mode="filled"
                     size="l"
                     stretched
+                    onClick={() => utils.openLink('https://subwaygame.vercel.app', {tryBrowser: 'chrome'})}
                 >
                     {t('startRun')}
                 </Button>
             </div>
             <div className={styles.EnergyContainer}>
                 <div className={styles.EnergyCountContainer}>
-                    <p className={styles.EnergyCount}><LightningIcon/>3/10</p>
+                    <p className={styles.EnergyCount}><LightningIcon/>{userData.energy}/10</p>
                     <p className={styles.EnergyCountTimer}>{formatTime(timeLeft)}</p>
                 </div>
-                <Button mode={'bezeled'}>
+                <Button mode={'bezeled'} disabled>
                     Watch ads to add energy!
                 </Button>
             </div>

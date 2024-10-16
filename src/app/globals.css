@@ -44,6 +44,20 @@ img {
   padding: 12px 0 !important;
 }
 
+.go157313249 {
+  min-width: 65px !important;
+  max-width: 65px !important;
+  width: 65px !important;
+  background-color: transparent !important;
+}
+.tgui-8ca550c2fc85eff5.tgui-4a83fef1f04acb0e::after {
+  border-radius: 14px !important;
+}
+
+.go3974562317 {
+  gap: 0;
+}
+
 :root {
   font-family: var(--font-family);
   background: var(--tgui--bg_color);

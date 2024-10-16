@@ -6,12 +6,19 @@ import ListElement from "@/categories/leaderboard/listElement/listElement";
 import CopyIcon from "@/components/Icons/CopyIcon/CopyIcon";
 import Header from "@/categories/leaderboard/header/header";
 
+
+type TopPlayersType = {
+    userPosition: number
+    topTen: any[];
+};
 interface LeaderBoardCategoryProps {
     fadeIn: any;
     copyLinkToClipboard: any;
     sendLink: any;
     t: any;
-    userId: any
+    userId: any;
+    topPlayers: TopPlayersType;
+    friends: any[];
 }
 
 const LeaderBoardCategory: React.FC<LeaderBoardCategoryProps> = ({
@@ -19,10 +26,12 @@ const LeaderBoardCategory: React.FC<LeaderBoardCategoryProps> = ({
                                                                      copyLinkToClipboard,
                                                                      sendLink,
                                                                      t,
-                                                                     userId
+                                                                     userId,
+                                                                     topPlayers,
+                                                                     friends
+
                                                                  }) => {
     const [currentTab, setCurrentTab] = useState(0);
-
     return (
         <motion.div
             initial="hidden"
@@ -48,26 +57,30 @@ const LeaderBoardCategory: React.FC<LeaderBoardCategoryProps> = ({
             {
                 currentTab === 0 && (
                     <div className={styles.leaderBoardList}>
-                        <Header left={'12 racers'} right={'Total points'}></Header>
-                        <ListElement name={'Bebrikh'} points={5000} position={1}/>
-                        <ListElement name={'Bebrikh'} points={5000} position={1}/>
-                        <ListElement name={'Bebrikh'} points={5000} position={1}/>
-                        <ListElement name={'Bebrikh'} points={5000} position={1}/>
-                        <ListElement name={'Bebrikh'} points={5000} position={1}/>
-                        <ListElement name={'Bebrikh'} points={5000} position={1}/>
-                        <ListElement name={'Bebrikh'} points={5000} position={1}/>
-                        <ListElement name={'Bebrikh'} points={5000} position={1}/>
-                        <ListElement name={'Bebrikh'} points={5000} position={1}/>
-                        <ListElement name={'Bebrikh'} points={5000} position={1}/>
-                        <ListElement name={'Bebrikh'} points={5000} position={1}/>
-                        <ListElement name={'Bebrikh'} points={5000} position={1}/>
+                        <Header left={`${friends?.length} racers`} right={'Total points'}></Header>
+                        {(friends.length > 0) && friends && friends?.map((player, index) => (
+                            <ListElement
+                                key={index}
+                                name={player.nickname || player.id} // используйте ID, если ника нет
+                                points={Number(player.balance)}
+                                position={index + 1} // позиция игрока, если это нужно
+                            />
+                        ))}
                     </div>
-
                 )
             }
             {
                 currentTab === 1 && (
                     <div className={styles.leaderBoardList}>
+                        <Header left={`${topPlayers?.topTen.length} racers`} right={'Total points'}></Header>
+                        {topPlayers && topPlayers?.topTen.map((player, index) => (
+                            <ListElement
+                                key={index}
+                                name={player.nickname || player.id} // используйте ID, если ника нет
+                                points={player.balance}
+                                position={index + 1} // позиция игрока, если это нужно
+                            />
+                        ))}
                     </div>
                 )
             }

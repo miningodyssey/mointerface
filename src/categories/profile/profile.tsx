@@ -2,18 +2,45 @@ import React, { useState } from "react";
 import styles from "./profile.module.css";
 import { motion } from "framer-motion";
 import Card from "@/categories/profile/Card/card";
-import { Cell, Input, TabsList } from "@telegram-apps/telegram-ui";
+import { Cell, Input, TabsList, Button } from "@telegram-apps/telegram-ui";
 import CoinIcon from "@/components/Icons/CoinIcon/CoinIcon";
 import LightningIcon from "@/components/Icons/LightningIcon/LightningIcon";
 import HeroIconPNG from "@/components/Icons/heroIcon/heroIconPNG";
+import CheckIcon from "@/components/Icons/CheckIcon/checkIcon";
+import { Icon28Edit } from "@telegram-apps/telegram-ui/dist/icons/28/edit";
+import {updateUser} from "@/components/functions/updateNickname";
+
 
 interface ProfileCategoryProps {
     fadeIn: any;
+    userData: any;  // Тип для данных пользователя
+    setUserData: (data: any) => void;  // функция для обновления данных
+    token?: string;  // Добавляем token для авторизации
 }
 
-const ProfileCategory: React.FC<ProfileCategoryProps> = ({ fadeIn }) => {
+const ProfileCategory: React.FC<ProfileCategoryProps> = ({ fadeIn, userData, setUserData, token }) => {
     const [currentTab, setCurrentTab] = useState(0);
+    const [isEditing, setIsEditing] = useState(false); // Состояние для редактирования
     const [currentSkin, setCurrentSkin] = useState(0); // Индекс текущего скина
+    const [nicknameInput, setNicknameInput] = useState(userData.nickname); // Промежуточное состояние для никнейма
+
+    // Функция для отправки запроса на обновление пользователя
+
+    // Обработчик для отслеживания изменений в поле ввода никнейма
+    const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setNicknameInput(e.target.value);
+    };
+
+    const handleEditClick = async () => {
+        if (isEditing && nicknameInput !== userData.nickname && token) {
+            // Обновляем данные пользователя с новым никнеймом
+            const updatedUserData = { ...userData, nickname: nicknameInput };
+            const updatedData = await updateUser(updatedUserData, token);
+            setUserData(updatedData);
+        }
+        // Меняем состояние редактирования
+        setIsEditing(!isEditing);
+    };
 
     const handleCardClick = (index: number) => {
         setCurrentSkin(index); // Устанавливаем выбранную карточку
@@ -27,7 +54,19 @@ const ProfileCategory: React.FC<ProfileCategoryProps> = ({ fadeIn }) => {
             className={styles.profileContainer}
         >
             <div className={styles.nickInput}>
-                <Input />
+                <div className={styles.inputWrapper}>
+                    <Input
+                        value={nicknameInput}
+                        onChange={handleNicknameChange}
+                        className={styles.inputWithButton}
+                        placeholder="Enter your nickname"
+                        defaultValue={userData.nickname}
+                        disabled={!isEditing}
+                    />
+                    <Button className={styles.saveButton} onClick={handleEditClick} style={{borderRadius: '14px'}}>
+                        {isEditing ? <CheckIcon /> : <Icon28Edit />} {/* Меняем иконку */}
+                    </Button>
+                </div>
             </div>
             <div className={styles.skinContainer}>
                 <Card

@@ -13,8 +13,7 @@ interface FriendsCategoryProps {
     sendLink: any;
     t: any;
     userId: any;
-    isModalOpen: boolean;
-    setIsModalOpen: any;
+    referals: any;
 }
 
 const FriendsCategory: React.FC<FriendsCategoryProps> = ({
@@ -23,8 +22,7 @@ const FriendsCategory: React.FC<FriendsCategoryProps> = ({
                                                              sendLink,
                                                              t,
                                                              userId,
-                                                             isModalOpen,
-                                                             setIsModalOpen
+                                                             referals
                                                          }) => {
     return (
         <motion.div
@@ -42,23 +40,19 @@ const FriendsCategory: React.FC<FriendsCategoryProps> = ({
                         Earn 10% of your friend’s points
                     </li>
                 </ul>
-                <p>You have earned <span className={styles.inlineHeading}>0</span> from your friends</p>
-                <p><span className={styles.inlineHeading}>0</span> friends invited</p>
+                <p>You have earned <span className={styles.inlineHeading}>{referals.reduce((sum: number, referal: any) => sum + Number(referal.earnedByReferer), 0)}</span> from your friends</p>
+                <p><span className={styles.inlineHeading}>{referals.length}</span> friends invited</p>
             </div>
             <div className={styles.leaderBoardList}>
-                <Header left={'Name'} right={'Total points'}></Header>
-                <ListElement name={'Bebrikh'} points={5000} position={1}/>
-                <ListElement name={'Bebrikh'} points={5000} position={1}/>points
-                <ListElement name={'Bebrikh'} points={5000} position={1}/>
-                <ListElement name={'Bebrikh'} points={5000} position={1}/>
-                <ListElement name={'Bebrikh'} points={5000} position={1}/>
-                <ListElement name={'Bebrikh'} points={5000} position={1}/>
-                <ListElement name={'Bebrikh'} points={5000} position={1}/>
-                <ListElement name={'Bebrikh'} points={5000} position={1}/>
-                <ListElement name={'Bebrikh'} points={5000} position={1}/>
-                <ListElement name={'Bebrikh'} points={5000} position={1}/>
-                <ListElement name={'Bebrikh'} points={5000} position={1}/>
-                <ListElement name={'Bebrikh'} points={5000} position={1}/>
+                <Header left={`${referals?.length} racers`} right={'Total points'}></Header>
+                { referals && (referals.length > 0) && referals?.map((player: any, index: number) => (
+                    <ListElement
+                        key={index}
+                        name={player.nickname || player.id} // используйте ID, если ника нет
+                        points={player.earnedByReferer}
+                        position={index + 1} // позиция игрока, если это нужно
+                    />
+                ))}
             </div>
             <div className={styles.inviteButton}>
                 <Button
