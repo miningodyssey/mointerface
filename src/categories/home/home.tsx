@@ -343,10 +343,13 @@ export default function HomeComponent() {
             )}
             <Tabbar style={{
                 background: 'var(--tgui--bg_color)',
-                position: 'absolute',
                 zIndex: '1000',
                 display: 'flex',
                 flexShrink: '0',
+                position: 'fixed',
+                bottom: '0',
+                left: '0',
+
             }}>
 
                 {tabs.map(({

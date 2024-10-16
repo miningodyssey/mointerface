@@ -1,318 +1,318 @@
-    .pageBody {
-        color: var(--tgui--bg_color);
-        display: flex;
-        width: 99.9%;
-        height: 99.9vh;
-        flex-direction: column;
-        background: black;
-        justify-content: center;
-        align-items: center;
-        user-select: none;
-        font-family: var(--tgui--font-family);
-    }
+        .pageBody {
+            color: var(--tgui--bg_color);
+            display: flex;
+            width: 99.9%;
+            height: 99.9vh;
+            flex-direction: column;
+            background: black;
+            justify-content: center;
+            align-items: center;
+            user-select: none;
+            font-family: var(--tgui--font-family);
+        }
 
-    .bgImage {
-        position: absolute;
-        top: 0;
-        left: 0;
-        height: 99.9vh;
-        width: 99.9vw;
-        object-fit: cover;
-        object-position: center;
-        user-select: none;
-        pointer-events: auto;
-    }
+        .bgImage {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 99.9vh;
+            width: 99.9vw;
+            object-fit: cover;
+            object-position: center;
+            user-select: none;
+            pointer-events: auto;
+        }
 
-    .interfaceContainer {
-        display: flex;
-        flex-direction: column;
-    }
-
-
-
-    .TabbarItem {
-        max-width: 100%;
-        justify-content: center;
-        align-items: center;
-        display: flex;
-        overflow: visible;
-        font-size: 80%;
-    }
-
-    .mainContent {
-        flex-grow: 1; /* Занимает оставшееся пространство */
-        overflow-y: auto; /* Включаем прокрутку, если контент превышает доступное пространство */
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-
-    .ButtonText {
-        min-width: 60vw;
-        max-width: 60vw;
-    }
-
-    .ButtonImage {
-        display: block;
-        max-width: 45vmin;
-        min-width: 60vw;
-        min-height: 15vh;
-    }
-
-    .buttonText {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        color: white;
-        font-size: 5vmin;
-        clear: both;
-        display: inline-block;
-        overflow: hidden;
-        white-space: nowrap;
-        font-weight: bold;
-        text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
-        pointer-events: none;
-    }
-
-    .modalOverlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background-color: rgba(0, 0, 0, 0.5);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 999; /* Убедитесь, что z-index достаточно высок */
-    }
-
-    .modal {
-        background: none;
-        border-radius: 8px;
-        padding: 20px;
-        position: relative;
-        max-width: 500px;
-        width: 99.9%;
-        display: flex;
-        align-items: center;
-        z-index: 1000; /* Убедитесь, что модальное окно выше overlay */
-    }
-
-    .closeButtonWrapper {
-        position: absolute;
-        top: -2.5%;
-        right: 0;
-        font-size: 24px;
-        cursor: pointer;
-        border: none;
-        background: none;
-    }
-
-
-    .closeButtonWrapper:active {
-        top: calc(-2.5% + 2px);
-    }
-
-
-    .closeButton {
-        width: 10vmax;
-    }
-
-    .imageAndDescription {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-    }
-
-    .balance, .referals {
-        font-family: var(--tgui--font-family);
-        color: white;
-        margin: 0 0 2px 5px;
-        user-select: none;
-    }
-
-
-    .referals {
-        font-size: small;
-        font-weight: 500;
-
-    }
-    .balance {
-        font-size: x-large;
-        font-weight: 700;
-    }
-
-    .totalbalance {
-        font-size: 100%;
-        margin: 0;
-        user-select: none;
-        color: white;
-    }
-
-    .muteBtn {
-        position: absolute;
-        top: 18%;
-        z-index: 1;
-        background: none;
-        border: none;
-        padding: 0;
-        font: inherit;
-        color: inherit;
-        cursor: pointer;
-        outline: none;
-    }
-
-    .totalbalance {
-        font-weight: 700;
-        margin-bottom: 10px;
-    }
-    .balanceContainer {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .taskDescriptionContainer {
-        display: flex;
-        flex-direction: column;
-        padding-left: 5px;
-    }
-
-    .taskIcon{
-        width: 12vw
-    }
-    .rewardDescription {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-    }
-    .balanceDescription, .referalsDescription {
-        position: relative;
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: flex-start;
-        background-color: transparent; /* Фон контейнера */
-        z-index: 1;
-        margin-bottom: 5px;
-    }
+        .interfaceContainer {
+            display: flex;
+            flex-direction: column;
+        }
 
 
 
+        .TabbarItem {
+            max-width: 100%;
+            justify-content: center;
+            align-items: center;
+            display: flex;
+            overflow: visible;
+            font-size: 80%;
+        }
 
-    .copyButton {
-        background: none;
-        -webkit-user-drag: none;
-        user-select: none;
-        border: none;
-        padding-right: 0;
-        cursor: pointer;
-        transition: opacity .15s ease-out;
-    }
-
-    .copyButton:hover {
-        opacity: 0.8
-    }
-
-    .userDescription {
-        width: 100%; /* Если родительский контейнер тянется на всю ширину */
-        display: flex;
-        justify-content: center; /* Горизонтальная центровка */
-        align-items: center; /* Вертикальная центровка */
-        text-align: center;
-    }
-    .InvitedModal {
-        position: absolute;
-    }
-
-    .topBarContainer {
-        width: 90vw;
-        display: flex;
-        align-items: center;
-        height: 40px;
-        justify-content: space-between;
-        z-index: 1000;
-        flex-shrink: 0;
-        padding: 35px 20px 20px;
-    }
-
-    .leftButtons, .rightButtons {
-        display: flex;
-        align-items: center;
-        flex: 0 0 auto;
-        justify-content: center;
-    }
-
-    .topBarBtn {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        color: var(--tgui--button_color);
-        z-index: 9999;
-        pointer-events: auto;
-        cursor: pointer;
-        transition: opacity .15s ease-out;
-        width: 65px;
-        box-sizing: border-box;
-    }
-    .topBarBtn:hover {
-        opacity: 0.8;
-    }
-    .topBarBtn p {
-        margin: 4px 0 0;
-        font-size: 16px;
-        font-weight: bold;
-    }
-    .topBarBtnP {
-        margin: 4px 0 0;
-        font-size: 16px;
-        font-weight: bold;
-    }
-    .coinImage {
-        right: 0;
-        top: 1%;
-        position: relative;
-        width: 3vw;
-        height: 100%;
-    }
+        .mainContent {
+            flex-grow: 1; /* Занимает оставшееся пространство */
+            overflow-y: auto; /* Включаем прокрутку, если контент превышает доступное пространство */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
 
-    @media (min-width: 559px) {
+        .ButtonText {
+            min-width: 60vw;
+            max-width: 60vw;
+        }
+
+        .ButtonImage {
+            display: block;
+            max-width: 45vmin;
+            min-width: 60vw;
+            min-height: 15vh;
+        }
+
+        .buttonText {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 5vmin;
+            clear: both;
+            display: inline-block;
+            overflow: hidden;
+            white-space: nowrap;
+            font-weight: bold;
+            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+            pointer-events: none;
+        }
+
+        .modalOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 999; /* Убедитесь, что z-index достаточно высок */
+        }
+
+        .modal {
+            background: none;
+            border-radius: 8px;
+            padding: 20px;
+            position: relative;
+            max-width: 500px;
+            width: 99.9%;
+            display: flex;
+            align-items: center;
+            z-index: 1000; /* Убедитесь, что модальное окно выше overlay */
+        }
+
         .closeButtonWrapper {
-            right: -12.5%
+            position: absolute;
+            top: -2.5%;
+            right: 0;
+            font-size: 24px;
+            cursor: pointer;
+            border: none;
+            background: none;
         }
+
+
+        .closeButtonWrapper:active {
+            top: calc(-2.5% + 2px);
+        }
+
+
         .closeButton {
-            width: 75%;
+            width: 10vmax;
         }
-    }
 
-    @media (min-width: 600px) {
+        .imageAndDescription {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+        }
+
+        .balance, .referals {
+            font-family: var(--tgui--font-family);
+            color: white;
+            margin: 0 0 2px 5px;
+            user-select: none;
+        }
+
+
+        .referals {
+            font-size: small;
+            font-weight: 500;
+
+        }
+        .balance {
+            font-size: x-large;
+            font-weight: 700;
+        }
+
+        .totalbalance {
+            font-size: 100%;
+            margin: 0;
+            user-select: none;
+            color: white;
+        }
+
+        .muteBtn {
+            position: absolute;
+            top: 18%;
+            z-index: 1;
+            background: none;
+            border: none;
+            padding: 0;
+            font: inherit;
+            color: inherit;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .totalbalance {
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        .balanceContainer {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .taskDescriptionContainer {
+            display: flex;
+            flex-direction: column;
+            padding-left: 5px;
+        }
+
         .taskIcon{
-            width: 1vw
+            width: 12vw
+        }
+        .rewardDescription {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+        }
+        .balanceDescription, .referalsDescription {
+            position: relative;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: flex-start;
+            background-color: transparent; /* Фон контейнера */
+            z-index: 1;
+            margin-bottom: 5px;
         }
 
-        .taskDescription {
-            font-size: 1vw;
+
+
+
+        .copyButton {
+            background: none;
+            -webkit-user-drag: none;
+            user-select: none;
+            border: none;
+            padding-right: 0;
+            cursor: pointer;
+            transition: opacity .15s ease-out;
         }
 
-        .taskBoardText {
-            font-size: 2vw;
+        .copyButton:hover {
+            opacity: 0.8
         }
 
-    }
+        .userDescription {
+            width: 100%; /* Если родительский контейнер тянется на всю ширину */
+            display: flex;
+            justify-content: center; /* Горизонтальная центровка */
+            align-items: center; /* Вертикальная центровка */
+            text-align: center;
+        }
+        .InvitedModal {
+            position: absolute;
+        }
 
-    @media (min-width: 1921px) {
-        .taskIcon{
-            width: 2vw
+        .topBarContainer {
+            width: 90vw;
+            display: flex;
+            align-items: center;
+            height: 40px;
+            justify-content: space-between;
+            z-index: 1000;
+            flex-shrink: 0;
+            padding: 35px 20px 20px;
         }
-        .taskDescription {
-            font-size: 0.75vw;
+
+        .leftButtons, .rightButtons {
+            display: flex;
+            align-items: center;
+            flex: 0 0 auto;
+            justify-content: center;
         }
-        .taskBoardText {
-            font-size: 1vw;
+
+        .topBarBtn {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: var(--tgui--button_color);
+            z-index: 9999;
+            pointer-events: auto;
+            cursor: pointer;
+            transition: opacity .15s ease-out;
+            width: 65px;
+            box-sizing: border-box;
         }
-    }
+        .topBarBtn:hover {
+            opacity: 0.8;
+        }
+        .topBarBtn p {
+            margin: 4px 0 0;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        .topBarBtnP {
+            margin: 4px 0 0;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        .coinImage {
+            right: 0;
+            top: 1%;
+            position: relative;
+            width: 3vw;
+            height: 100%;
+        }
+
+
+        @media (min-width: 559px) {
+            .closeButtonWrapper {
+                right: -12.5%
+            }
+            .closeButton {
+                width: 75%;
+            }
+        }
+
+        @media (min-width: 600px) {
+            .taskIcon{
+                width: 1vw
+            }
+
+            .taskDescription {
+                font-size: 1vw;
+            }
+
+            .taskBoardText {
+                font-size: 2vw;
+            }
+
+        }
+
+        @media (min-width: 1921px) {
+            .taskIcon{
+                width: 2vw
+            }
+            .taskDescription {
+                font-size: 0.75vw;
+            }
+            .taskBoardText {
+                font-size: 1vw;
+            }
+        }
