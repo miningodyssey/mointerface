@@ -1,11 +1,11 @@
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, useRef} from "react";
 import styles from "./main.module.css";
 import {motion} from "framer-motion";
 import {Button, Cell, Section} from "@telegram-apps/telegram-ui";
 import LightningIcon from "@/components/Icons/LightningIcon/LightningIcon";
 import CoinIcon from "@/components/Icons/CoinIcon/CoinIcon";
-import PeopleIcon from "@/components/Icons/PeopleIcon/PeopleIcon";
 import {addEnergyRequest} from "@/components/functions/addEnergyRequest";
+
 
 interface MainCategoryProps {
     isImagesLoaded: boolean;
@@ -31,13 +31,14 @@ const MainCategory: React.FC<MainCategoryProps> = ({
     const FOUR_HOURS_IN_MS = 4 * 60 * 60 * 1000; // 4 часа в миллисПочему она у него екундах
 
     const [timeLeft, setTimeLeft] = useState(userData.remainingTime);
+    const dailyTasksListRef = useRef<HTMLDivElement | null>(null);
     useEffect(() => {
         const timer = setInterval(() => {
             setTimeLeft((prevTime: number) => {
                 if (prevTime > 1000) {
                     return prevTime - 1000; // Уменьшаем оставшееся время каждую секунду
                 } else {
-                    if (userData.energy > 10) {
+                    if (userData.energy < 10) {
                         addEnergyRequest(userData.id, token).then((data: any) => {
                             userData.energy = data.energy
                         });
@@ -59,7 +60,57 @@ const MainCategory: React.FC<MainCategoryProps> = ({
 
         return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
     };
-    console.log(userData)
+
+
+    useEffect(() => {
+        const dailyTasksList = dailyTasksListRef.current;
+        let isDragging = false;
+        let startX: number;
+        let scrollLeft: number;
+        if (dailyTasksList) {
+            const onMouseDown = (event: MouseEvent) => {
+                isDragging = true;
+                dailyTasksList.classList.add('dragging');
+                startX = event.pageX; // Получаем координату X мыши
+                scrollLeft = dailyTasksList.scrollLeft; // Запоминаем текущую позицию прокрутки
+            };
+
+            const onMouseLeave = () => {
+                isDragging = false;
+                dailyTasksList.classList.remove('dragging');
+            };
+
+            const onMouseUp = () => {
+                isDragging = false;
+                dailyTasksList.classList.remove('dragging');
+            };
+
+            const onMouseMove = (event: MouseEvent) => {
+                if (!isDragging) return;
+                event.preventDefault();
+                const x = event.pageX;
+                const walk = (x - startX) * 1.7;
+                dailyTasksList.scrollLeft = scrollLeft - walk;
+            };
+
+            dailyTasksList.addEventListener('mousedown', onMouseDown);
+            dailyTasksList.addEventListener('mouseleave', onMouseLeave);
+            dailyTasksList.addEventListener('mouseup', onMouseUp);
+            dailyTasksList.addEventListener('mousemove', onMouseMove);
+
+            // Убираем обработчики событий при размонтировании компонента
+            return () => {
+                dailyTasksList.removeEventListener('mousedown', onMouseDown);
+                dailyTasksList.removeEventListener('mouseleave', onMouseLeave);
+                dailyTasksList.removeEventListener('mouseup', onMouseUp);
+                dailyTasksList.removeEventListener('mousemove', onMouseMove);
+            };
+        } else {
+            console.error('Element .DailyTasksList not found');
+        }
+    }, []);
+
+
     return (
         <motion.div
             initial="hidden"
@@ -100,7 +151,7 @@ const MainCategory: React.FC<MainCategoryProps> = ({
             </div>
             <div className={styles.DailyContainer}>
                 <h1 className={styles.DailyTasksH1}>Daily tasks</h1>
-                <div className={styles.DailyTasksList}>
+                <div className={styles.DailyTasksList} ref={dailyTasksListRef}>
                     <Cell
                         className={styles.Cell}
                         before={

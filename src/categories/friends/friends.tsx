@@ -4,7 +4,7 @@ import {motion} from "framer-motion";
 import ListElement from "@/categories/friends/listElement/listElement";
 import {Button} from "@telegram-apps/telegram-ui";
 import CopyIcon from "@/components/Icons/CopyIcon/CopyIcon";
-import InvitedModal from "@/components/menus/invitedModal";
+import InvitedModal from "@/components/menus/InvitedModal/invitedModal";
 import Header from "@/categories/leaderboard/header/header";
 
 interface FriendsCategoryProps {

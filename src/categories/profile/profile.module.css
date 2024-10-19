@@ -6,6 +6,27 @@
     height: 100%;
     width: 99.9vw;
     overflow: visible;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    -webkit-overflow-scrolling: auto;
+}
+
+.profileContainer::-webkit-scrollbar {
+    display: none;
+}
+
+.modalButtons {
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+}
+
+.modalText {
+    flex-direction: column-reverse;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
 }
 
 .nickInput {
@@ -136,6 +157,7 @@
     display: inline-flex;
     justify-content: space-between;
     color: var(--tgui--text_color);
+    text-overflow: ellipsis;
 }
 
 .DailyTaskName p {
@@ -166,6 +188,10 @@
     user-select: none; /* Предотвращает выделение текста при прокрутке */
     opacity: 1;
     box-sizing: border-box;
+}
+
+.Cell div:last-child {
+    min-width: 70% !important;
 }
 
 .Cell:hover {

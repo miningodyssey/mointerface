@@ -1,0 +1,47 @@
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5); /* Полупрозрачный черный фон */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* Устанавливаем высокий z-index, чтобы модальное окно было поверх других элементов */
+}
+
+.modalContent {
+    background-color: #fff; /* Белый фон для модального окна */
+    padding: 20px;
+    border-radius: 8px; /* Скругленные углы */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); /* Тень для создания эффекта поднятия */
+    text-align: center; /* Центрируем текст внутри модального окна */
+    max-width: 400px; /* Максимальная ширина модального окна */
+    width: 100%; /* Полная ширина для маленьких экранов */
+}
+
+.modalContent h2 {
+    margin-bottom: 10px; /* Отступ снизу для заголовка */
+    font-size: 18px; /* Размер шрифта для заголовка */
+}
+
+.modalContent p {
+    margin-bottom: 20px; /* Отступ снизу для параграфа */
+    font-size: 14px; /* Размер шрифта для текста */
+}
+
+.modalContent button {
+    background-color: #32E55E; /* Зеленый фон для кнопок */
+    color: #fff; /* Белый текст для кнопок */
+    border: none; /* Без рамки */
+    border-radius: 5px; /* Скругленные углы для кнопок */
+    padding: 10px 15px; /* Отступ внутри кнопок */
+    cursor: pointer; /* Указатель при наведении */
+    margin: 0 5px; /* Отступ между кнопками */
+    transition: background-color 0.3s; /* Плавный переход цвета фона */
+}
+
+.modalContent button:hover {
+    background-color: #28b44b; /* Темный зеленый при наведении */
+}

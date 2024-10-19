@@ -23,7 +23,7 @@ import WalletIcon from "@/components/Icons/WalletIcon/WalletIcon";
 import LeaderBoardCategory from "@/categories/leaderboard/leaderboard";
 import FriendsCategory from "@/categories/friends/friends";
 import TasksCategory from "@/categories/tasks/tasks";
-import InvitedModal from "@/components/menus/invitedModal";
+import InvitedModal from "@/components/menus/InvitedModal/invitedModal";
 import ProfileCategory from "@/categories/profile/profile";
 import ForwardIcon from "@/components/Icons/ForwardIcon/forwardIcon";
 import {TonConnectButton, useTonAddress, useTonConnectUI} from '@tonconnect/ui-react';

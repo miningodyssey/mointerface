@@ -15,7 +15,7 @@
     background: var(--tg-theme-bg-color);
     overflow-y: auto; /* Позволяем прокрутку по Y */
     scrollbar-width: none;
-    padding-bottom: 75px; /* Добавляем отступ снизу */
+    padding-bottom: 135px; /* Добавляем отступ снизу */
 }
 
 .textContainer {

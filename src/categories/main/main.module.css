@@ -58,22 +58,25 @@
 }
 
 .DailyContainer {
-    width: 95vw; /* Контейнер занимает всю ширину экрана */
+    width: 100vw;
     margin: 0;
     box-sizing: border-box;
-    padding-left: 0; /* Убираем отступы слева */
+    padding-left: 2.5vw;
+    display: flex;
+    flex-direction: column;
 }
 
 .DailyTasksH1 {
     color: white;
     margin-top: 0;
-    margin-bottom: 0;
+    margin-bottom: 5px;
 }
 
 .DailyTaskName {
     display: inline-flex;
     justify-content: space-between;
     color: var(--tgui--text_color);
+    text-overflow: ellipsis;
 }
 .DailyTaskName p {
     margin: 0 4px 0 0;
@@ -86,29 +89,44 @@
 }
 
 .DailyTasksList {
+    position: relative;
     display: flex;
     flex-direction: row;
-    overflow-x: auto; /* Включаем горизонтальный скролл */
+    overflow-x: auto;
     scroll-snap-type: x mandatory;
-    scrollbar-width: none; /* Скрываем скроллбар */
-    white-space: nowrap; /* Элементы не переносятся на новую строку */
-    width: 100%; /* Ширина контейнера */
-    padding: 10px 0; /* Убираем боковые отступы */
+    white-space: nowrap;
+    width: 100%;
+    padding: 0 0;
     box-sizing: border-box;
-    gap: 5px; /* Промежутки между элементами */
-    -webkit-overflow-scrolling: touch; /* Улучшаем прокрутку на iOS */
+    gap: 5px;
+    -webkit-overflow-scrolling: auto;
     user-select: none;
+    z-index: 9999;
+    height: auto;
+
+    scrollbar-width: none;
+    -ms-overflow-style: none;
 }
 
+.DailyTasksList::-webkit-scrollbar {
+    display: none;
+}
 
+.DailyTasksList.dragging {
+    cursor: grabbing;
+}
 
 .Cell {
     transition: opacity .15s ease-out;
     flex: 0 0 auto;
     width: 65%;
-    user-select: none; /* Предотвращает выделение текста при прокрутке */
+    user-select: none;
     opacity: 1;
+    position: relative;
+    z-index: 9999;
+    height: auto; /* Убедись, что высота установлена корректно */
 }
+
 .Cell:hover {
     opacity: 0.8 !important;
 }
