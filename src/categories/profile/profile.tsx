@@ -43,7 +43,7 @@ const ProfileCategory: React.FC<ProfileCategoryProps> = ({ fadeIn, userData, set
             title: `Card Title ${index + 1}`,
             subtitle: '16,000 PTS',
             selected: false,
-            purchased: Math.random() > 0.5,
+            purchased: userData.ownedSkins.includes(`Card Title ${index + 1}`),
             selectable: true,
             cost: 16000,
         }));
@@ -71,16 +71,19 @@ const ProfileCategory: React.FC<ProfileCategoryProps> = ({ fadeIn, userData, set
         const card = cardData[index];
 
         if (card.purchased) {
-            setCurrentSkin(index); // Выбор уже купленной карточки
+            // Всегда обновляем выбор для купленных карточек
+            setCurrentSkin(index);  // Устанавливаем выбранную карточку как текущую
         } else if (!card.purchased && card.selectable) {
+            // Если карточка не куплена, проверяем наличие средств и открываем модальное окно
             if (userData.balance >= card.cost) {
                 setSelectedCard(card);
-                setIsModalOpen(true); // Открываем модальное окно подтверждения покупки
+                setIsModalOpen(true);  // Открываем модальное окно для подтверждения покупки
             } else {
-                setIsInsufficientFundsModalOpen(true); // Открываем модальное окно недостатка средств
+                setIsInsufficientFundsModalOpen(true);  // Модальное окно недостатка средств
             }
         }
     };
+
 
     const handlePurchaseConfirm = async () => {
         if (selectedCard && token) {
@@ -92,7 +95,7 @@ const ProfileCategory: React.FC<ProfileCategoryProps> = ({ fadeIn, userData, set
                 ...userData,
                 balance: userData.balance - selectedCard.cost,
                 ownedSkins: [...userData.ownedSkins, selectedCard.title],
-                selectedSkin: selectedCard.title,
+                selectedSkin: selectedCard.title,  // Обновляем выбранную карточку
             };
 
             try {
@@ -103,9 +106,13 @@ const ProfileCategory: React.FC<ProfileCategoryProps> = ({ fadeIn, userData, set
             }
 
             setCardData(updatedCards);
+            setCurrentSkin(cardData.findIndex(card => card.title === selectedCard.title));  // Устанавливаем купленную карточку как текущую
             setIsModalOpen(false);
         }
     };
+
+
+
 
     const handleModalClose = () => {
         setIsModalOpen(false);
@@ -185,7 +192,7 @@ const ProfileCategory: React.FC<ProfileCategoryProps> = ({ fadeIn, userData, set
                                 title={card.title}
                                 subtitle={card.subtitle}
                                 selected={currentSkin === index}
-                                selectable={!card.purchased}
+                                selectable={card.selectable}
                                 onClick={() => handleCardClick(index)}
                                 purchased={card.purchased}
                             />
