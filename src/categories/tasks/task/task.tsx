@@ -6,24 +6,27 @@ interface TaskProps {
     subtitle: any;     // Имя участника
     after: any;
     title: any;
+    onClick: any;
 }
 
-const Task: React.FC<TaskProps> = ({ before, subtitle, after, title }) => {
+const Task: React.FC<TaskProps> = ({ before, subtitle, after, title, onClick }) => {
     return (
-        <Cell
-            className={styles.Cell}
-            before={
-                before
-            }
-            subtitle={subtitle}
-            after={
-                after
-            }
-        >
-            <div className={styles.TaskName}>
-                <p>{title}</p>
-            </div>
-        </Cell>
+        <div onClick={onClick} style={{width: '100%', display: 'flex', justifyContent: 'center'}}>
+            <Cell
+                className={styles.Cell}
+                before={
+                    before
+                }
+                subtitle={subtitle}
+                after={
+                    after
+                }
+            >
+                <div className={styles.TaskName}>
+                    <p>{title}</p>
+                </div>
+            </Cell>
+        </div>
     );
 };
 

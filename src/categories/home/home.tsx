@@ -30,6 +30,7 @@ import {TonConnectButton, useTonAddress, useTonConnectUI} from '@tonconnect/ui-r
 import {fetchTopPlayers} from "@/components/functions/fetchTopPlayers";
 import {fetchReferals} from "@/components/functions/fetchReferals";
 import {fetchFriends} from "@/components/functions/fetchFriends";
+import GameComponent from "@/game/components/GameComponent";
 
 
 const tabs = [
@@ -80,6 +81,7 @@ export default function HomeComponent() {
     const [topPlayers, setTopPlayers] = useState<TopPlayersType | null>(null);
     const [referals, setReferals] = useState([]);
     const [friends, setFriends] = useState([]);
+    const [gameButtonClicked, setGameButtonClicked] = useState(false);
     const [tonConnectUI, setOptions] = useTonConnectUI();
     const userFriendlyAddress = useTonAddress();
     const audioRef = useRef<HTMLAudioElement>(null);
@@ -89,13 +91,7 @@ export default function HomeComponent() {
     }), []);
 
 
-    // Добавь эту логику в уже существующий useEffect или туда, где определяется userId
     useEffect(() => {
-        // Например, когда пользователь авторизован
-        setUserId(1); // Здесь нужно динамически получать ID пользователя
-    }, []);
-    useEffect(() => {
-        // Инициализация Telegram Web App
         const initTelegramWebApp = () => {
             const data = initMiniApp();
             if (data && window.Telegram && window.Telegram.WebApp) {
@@ -115,32 +111,30 @@ export default function HomeComponent() {
         setSnackbarOpen(true);
     };
 
-    const initialize = async () => {
-        try {
-            const {userId, token, fetchedUserData} = await fetchDataAndInitialize();
-            const top = await fetchTopPlayers(userId, token);
-            const refTop = await fetchReferals(userId, token);
-            const friends = await fetchFriends(userId, token);
-            setUserId(userId);
-            setAuthKey(token);
-            setUserData(fetchedUserData);
-            setTopPlayers(top);
-            setFriends(friends)
-            setReferals(refTop);
-        } catch (error) {
-            console.error('Error during initialization:', error);
-        }
-    };
-
     useEffect(() => {
-        initialize().finally(() => {
-            setIsLoading(false);
-        });
+        const initialize = async () => {
+            try {
+                const { userId, token, fetchedUserData } = await fetchDataAndInitialize();
+                setUserData(fetchedUserData);
+                setUserId(userId);
+                setAuthKey(token);
+                // Загрузите топ игроков и друзей позже
+                const [top, refTop, friends] = await Promise.all([
+                    fetchTopPlayers(userId, token),
+                    fetchReferals(userId, token),
+                    fetchFriends(userId, token),
+                ]);
+                setTopPlayers(top);
+                setFriends(friends);
+                setReferals(refTop);
+            } catch (error) {
+                console.error('Error during initialization:', error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
 
-        const handleLoad = () => setIsLoading(false);
-        window.addEventListener('load', handleLoad);
-
-        return () => window.removeEventListener('load', handleLoad);
+        initialize();
     }, []);
 
     useEffect(() => {
@@ -186,11 +180,13 @@ export default function HomeComponent() {
     if (!isImagesLoaded || isLoading || !userData || !window.Telegram || !topPlayers || !referals) {
         return (
             <div>
-                <Spinner size='l'/>
+                <Spinner className={styles.Spinner} size='m'/>
             </div>
         )
     }
-    return (
+    return gameButtonClicked ? (
+        <GameComponent t={t} setGameButtonClicked={setGameButtonClicked} userData={userData} setUserData={setUserData}/>
+    ) : (
         <motion.div
             initial="hidden"
             animate="visible"
@@ -288,6 +284,8 @@ export default function HomeComponent() {
                         utils={utils}
                         userData={userData}
                         token={authKey}
+                        setGameButtonClicked={setGameButtonClicked}
+                        setUserData={setUserData}
                     />
                 )}
                 {currentTab === 1 && topPlayers && (
@@ -304,6 +302,11 @@ export default function HomeComponent() {
                 {currentTab === 2 && (
                     <TasksCategory
                         fadeIn={fadeIn}
+                        utils={utils}
+                        t={t}
+                        userid={userId}
+                        setUserData={setUserData}
+                        userData={userData}
                     />
                 )}
                 {currentTab === 3 && (

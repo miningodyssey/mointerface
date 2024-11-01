@@ -3,8 +3,8 @@ import axios from "axios";
 export const updateUser = async (updatedUserData: any, token: string) => {
     try {
         const response = await axios.put(
-            `https://miningodyssey.pw/users/update/${updatedUserData.id}`,  // URL запроса
-            updatedUserData,  // Все данные пользователя отправляем на сервер
+            `https://miningodyssey.pw/users/update/${updatedUserData.id}`,
+            updatedUserData,
             {
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -13,7 +13,13 @@ export const updateUser = async (updatedUserData: any, token: string) => {
             }
         );
         return response.data;
-    } catch (error) {
-        console.error('Error updating user:', error);
+    } catch (error: any) {
+        if (error.response && error.response.data && error.response.data.message) {
+            throw new Error(error.response.data.message);
+        } else if (error.request) {
+            throw new Error("Network error: Unable to reach the server.");
+        } else {
+            throw new Error("An unexpected error occurred while updating the user.");
+        }
     }
 };

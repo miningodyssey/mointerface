@@ -1,0 +1,47 @@
+.Spinner svg {
+    animation: spin 2s linear infinite; /* Анимация */
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(359deg); }
+}
+
+.ScoreBoard {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    padding: 10px 20px;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: #fff;
+    font-size: 1.2em;
+    font-weight: bold;
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+    z-index: 11;
+    -webkit-user-select: none;
+    user-select: none;
+}
+.PauseBtn {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 11;
+    display: none;
+}
+
+.SpinnerContainer {
+    width: 100vw;
+    height: 100vh;
+    z-index: 1000;
+    position: fixed;
+    display: flex;
+    justify-content: center;
+    left: 0;
+    top: 0;
+    align-items: center
+}
+
+.RestartMenu {
+
+}

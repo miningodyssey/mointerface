@@ -12,7 +12,6 @@ export async function fetchDataAndInitialize() {
     try {
         const data = initInitData();
         const userId = data?.user?.id || 0;
-
         const userData: CreateUserDTO = {
             referer: data?.startParam || '0',
             tgUserdata: JSON.stringify(data?.user),
@@ -22,7 +21,7 @@ export async function fetchDataAndInitialize() {
         // Отправляем запрос на аутентификацию
         const authResponse = await axios.post(`https://miningodyssey.pw/auth/register/${userId}`, userData);
         const token = authResponse.data['access_token'];
-
+        sessionStorage.setItem('token', token);
         // Отправляем запрос на создание пользователя
         const userResponse = await axios.post(
             `https://miningodyssey.pw/users/create/${userId}`,

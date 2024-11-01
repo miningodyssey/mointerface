@@ -18,6 +18,20 @@
     scrollbar-width: none;
 }
 
+.modalButtons {
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+}
+
+.modalText {
+    flex-direction: column-reverse;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
 .textContainer {
     width: 99.9vw;
     justify-content: center;

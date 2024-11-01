@@ -207,14 +207,15 @@
 .cardsContainer {
     display: flex;
     flex-wrap: wrap;
-    gap: 16px; /* Задает расстояние между карточками */
+    gap: 16px;
     box-sizing: border-box;
-    width: 90%;
+    width: 95%;
     padding-bottom: 100px;
+    justify-content: center;
 }
 
 .card {
-    flex: 1 1 calc(33.33% - 16px); /* Три карточки в строке, с учетом промежутка */
+    flex: 0 1 calc(33.33% - 16px); /* Три карточки в строке, с учетом промежутка */
     max-width: 100%; /* Максимальная ширина не превышает доступную */
     box-sizing: border-box;
 }

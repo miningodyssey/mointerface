@@ -1,0 +1,71 @@
+.pageContainer {
+    max-width: 99.9vw;
+    max-height: 99.9vh; /* Максимальная высота контейнера */
+    margin: 0 auto;
+    padding: 0 20px 40px 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow-y: auto; /* Прокрутка при необходимости */
+}
+
+.pageContainer h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 24px;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+}
+
+.formGroup {
+    margin-bottom: 15px;
+}
+
+.pageContainer label {
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.input, .textarea, .select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    box-sizing: border-box; /* Учет отступов и границ */
+}
+
+.textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.submitButton {
+    margin-top: 20px;
+    background-color: #007bff;
+    color: white;
+    font-size: 18px;
+    border: none;
+    cursor: pointer;
+}
+
+.submitButton:hover {
+    background-color: #0056b3;
+}
+
+@media (max-width: 600px) {
+    .pageContainer {
+        padding: 15px;
+    }
+
+    .pageContainer h1 {
+        font-size: 20px;
+    }
+
+    .submitButton {
+        font-size: 16px;
+    }
+}
