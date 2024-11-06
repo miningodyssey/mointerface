@@ -4,7 +4,6 @@ interface WebApp {
     enableVerticalSwipes: boolean;
     isVerticalSwipesEnabled: boolean;
     expand(): void;
-
 }
 
 interface Telegram {
