@@ -119,7 +119,7 @@ const MainCategory: React.FC<MainCategoryProps> = ({
 
     const startGame = () => {
         if (Number(userData.energy) > 0 || userData.admin === true) {
-            addEnergyRequest(userData.id, token, -1).then((data: any) => {
+            addEnergyRequest(userData.id, -1).then((data: any) => {
                 const updatedData = userData
                 updatedData.energy = data.energy
                 setUserData(updatedData)

@@ -134,7 +134,7 @@ const TasksCategory: React.FC<TasksCategoryProps> = ({ fadeIn, utils, t, userid,
                         }
                         after={
                             <div>
-                                <p style={{ color: "var(--tgui--text_color)" }}>{task.reward} PTS</p>
+                                <p className={styles.TaskReward}>{task.reward} PTS</p>
                             </div>
                         }
                         subtitle={

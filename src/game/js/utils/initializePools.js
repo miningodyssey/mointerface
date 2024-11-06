@@ -6,13 +6,13 @@ import {createObstacle} from "../objects/assets/createObstacle";
 import {createRamp} from "../objects/assets/createRamp";
 import {createRoadSegment} from "../objects/assets/createRoadSegment";
 
-export async function initializePools(coinPool, slideObstaclePool, jumpObstaclePool, obstaclePool, rampPool, roadSegmentPool, scene, modelCache) {
-    coinPool = new ObjectPool(null, 0);
-    slideObstaclePool = new ObjectPool(null, 0);
-    jumpObstaclePool = new ObjectPool(null, 0);
-    obstaclePool = new ObjectPool(null, 0);
-    rampPool = new ObjectPool(null, 0);
-    roadSegmentPool = new ObjectPool(null, 0);
+export async function initializePools(scene, modelCache) {
+    let coinPool = new ObjectPool(null, 0);
+    let slideObstaclePool = new ObjectPool(null, 0);
+    let jumpObstaclePool = new ObjectPool(null, 0);
+    let obstaclePool = new ObjectPool(null, 0);
+    let rampPool = new ObjectPool(null, 0);
+    let roadSegmentPool = new ObjectPool(null, 0);
 
     coinPool.setCreateFunction(() => createCoin(scene, 0, 0.68, 0, modelCache.coinModel));
     slideObstaclePool.setCreateFunction(() => createSlideObstacle(scene, 0, 0.5, 0, modelCache.slideObstacleModel));
@@ -27,4 +27,12 @@ export async function initializePools(coinPool, slideObstaclePool, jumpObstacleP
     obstaclePool.initialize(20)
     rampPool.initialize(6)
     roadSegmentPool.initialize(20)
+    return {
+        coinPool,
+        slideObstaclePool,
+        jumpObstaclePool,
+        obstaclePool,
+        rampPool,
+        roadSegmentPool
+    }
 }

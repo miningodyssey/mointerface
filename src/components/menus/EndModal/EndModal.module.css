@@ -1,4 +1,3 @@
-
 .modalOverlay {
     position: absolute;
     top: 0;
@@ -13,14 +12,53 @@
 }
 
 .modal {
-    background: none;
-    border-radius: 8px;
+    background-color: #1c1c1e;
+    border-radius: 16px;
     padding: 20px;
-    position: absolute;
-    max-width: 500px;
-    width: 100%;
+    max-width: 400px;
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    color: white;
+}
+
+.Timer {
+    display: none;
+    color: var(--tgui--hint_color);
+}
+
+.title {
+    font-size: 24px;
+    margin-bottom: 8px;
+}
+
+.pointsText {
+    font-size: 16px;
+    margin-bottom: 16px;
+    color: var(--tgui--hint_color);
+}
+
+.statusRow {
     display: flex;
     align-items: center;
-    z-index: 11; /* Убедитесь, что модальное окно выше overlay */
-    justify-content: center;
+    gap: 8px;
+    margin-bottom: 16px;
+    font-size: 16px;
 }
+
+.energyIcon {
+    margin: 0;
+}
+
+.quitButton {
+    border: 1px solid var(--tgui--surface_dark);
+    color: var(--tgui--text_color);
+}
+
+
+.redEnergy {
+    color: var(--tgui--destructive_text_color);
+}
+

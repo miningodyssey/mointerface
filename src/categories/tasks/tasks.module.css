@@ -18,6 +18,13 @@
     scrollbar-width: none;
 }
 
+.TaskReward {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--tgui--text_color);
+}
+
 .modalButtons {
     display: flex;
     flex-direction: row;
