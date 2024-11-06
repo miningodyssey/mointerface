@@ -15,6 +15,7 @@
         userData: any;
         setUserData: (data: any) => void;
         token?: string;
+        t: any;
     }
 
     interface CardData {
@@ -27,7 +28,7 @@
         cost: number; // Добавляем стоимость карточки
     }
 
-    const ProfileCategory: React.FC<ProfileCategoryProps> = ({ fadeIn, userData, setUserData, token }) => {
+    const ProfileCategory: React.FC<ProfileCategoryProps> = ({ fadeIn, userData, setUserData, token, t }) => {
         const [currentTab, setCurrentTab] = useState(0);
         const [isEditing, setIsEditing] = useState(false);
         const [currentSkin, setCurrentSkin] = useState(0);
@@ -53,7 +54,7 @@
 
             const defaultSkin = {
                 image: <HeroIconPNG />, // Используем любую иконку или графику для дефолтного скина
-                title: "Default Skin",
+                title: t("Default Skin"),
                 subtitle: 'This is your default skin',
                 selected: false,
                 purchased: true, // Дефолтный скин считается купленным
@@ -65,7 +66,7 @@
             // Проверяем, если у пользователя нет скинов или не выбран скин, используем дефолтный
             const hasNoSkins = userData.ownedSkins.includes('[]') || userData.ownedSkins.includes("defaultSkin");
 
-            const selectedSkinTitle = !userData.selectedSkin && hasNoSkins ? "Default Skin" : userData.selectedSkin;
+            const selectedSkinTitle = !userData.selectedSkin && hasNoSkins ? t("Default Skin") : userData.selectedSkin;
             const selectedCardIndex = cardData.findIndex((card) => card.title === selectedSkinTitle);
 
             // Устанавливаем текущий скин
@@ -86,12 +87,12 @@
                 try {
                     const updatedData = await updateUser(updatedUserData, token);
                     if (!updatedData) {
-                        throw new Error("Failed to update nickname.");
+                        throw new Error(t("Failed to update nickname."));
                     } else {
                         setUserData(updatedData);
                     }
                 } catch (error: any) {
-                    setErrorMessage(error.message || "An error occurred while updating the nickname.");
+                    setErrorMessage(error.message || t("An error occurred while updating the nickname."));
                     setErrorModalOpen(true); // Открываем модальное окно с ошибкой
                     setNicknameInput(userData.nickname); // Возвращаем старый ник, если произошла ошибка
                 }
@@ -172,7 +173,7 @@
                             value={nicknameInput}
                             onChange={handleNicknameChange}
                             className={styles.inputWithButton}
-                            placeholder="Enter your nickname"
+                            placeholder={t("Enter your nickname")}
                             disabled={!isEditing}
                         />
                         <Button className={styles.saveButton} onClick={handleEditClick} style={{ borderRadius: '14px' }}>
@@ -184,7 +185,7 @@
                     <Card
                         image={<HeroIconPNG />}
                         title={`Skin ${currentSkin + 1}`}
-                        subtitle={'Current skin'}
+                        subtitle={t('Current skin')}
                         selectable={false}
                         purchased={true} // Текущий скин всегда куплен
                     />
@@ -220,9 +221,9 @@
                 </div>
                 <div style={{ height: '42px', width: '100%', display: 'flex', justifyContent: 'center', marginBottom: '10px' }}>
                     <TabsList style={{ width: '90%', height: '100%' }}>
-                        <TabsList.Item selected={currentTab === 0} onClick={() => setCurrentTab(0)}>Skins</TabsList.Item>
-                        <TabsList.Item selected={currentTab === 1} onClick={() => setCurrentTab(1)}>Levels</TabsList.Item>
-                        <TabsList.Item selected={currentTab === 2} onClick={() => setCurrentTab(2)}>Power-ups</TabsList.Item>
+                        <TabsList.Item selected={currentTab === 0} onClick={() => setCurrentTab(0)}>{t('Skins')}</TabsList.Item>
+                        <TabsList.Item selected={currentTab === 1} onClick={() => setCurrentTab(1)}>{t('Levels')}</TabsList.Item>
+                        <TabsList.Item selected={currentTab === 2} onClick={() => setCurrentTab(2)}>{t('Power-ups')}</TabsList.Item>
                     </TabsList>
                 </div>
                 {currentTab === 0 && (
@@ -250,13 +251,13 @@
                     header={<Modal.Header />}
                 >
                     <Placeholder
-                        header="Do you want to purchase this card?"
-                        description="This action cannot be undone."
+                        header={t("Do you want to purchase this card?")}
+                        description={t("This action cannot be undone.")}
                         className={styles.modalText}
                     >
                         <div className={styles.modalButtons}>
-                            <Button onClick={handlePurchaseConfirm}>Confirm Purchase</Button>
-                            <Button onClick={handleModalClose}>Cancel</Button>
+                            <Button onClick={handlePurchaseConfirm}>{t("Confirm Purchase")}</Button>
+                            <Button onClick={handleModalClose}>{t("Cancel")}</Button>
                         </div>
                     </Placeholder>
                 </Modal>
@@ -268,8 +269,8 @@
                     header={<Modal.Header />}
                 >
                     <Placeholder
-                        header="Insufficient funds"
-                        description="You do not have enough points to purchase this card."
+                        header={t("Insufficient funds")}
+                        description={t("You do not have enough points to purchase this card.")}
                         className={styles.modalText}
                     >
                         <div className={styles.modalButtons}>
@@ -284,12 +285,12 @@
                     header={<Modal.Header />}
                 >
                     <Placeholder
-                        header="Error"
+                        header={t("Error")}
                         description={errorMessage}
                         className={styles.modalText}
                     >
                         <div className={styles.modalButtons}>
-                            <Button onClick={handleErrorModalClose}>Close</Button>
+                            <Button onClick={handleErrorModalClose}>{t("Close")}</Button>
                         </div>
                     </Placeholder>
                 </Modal>

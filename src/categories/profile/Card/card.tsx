@@ -2,6 +2,7 @@ import React from 'react';
 import styles from './card.module.css';
 import CheckIcon from "@/components/Icons/CheckIcon/checkIcon";
 import UsdIcon from "@/components/Icons/UsdIcon/UsdIcon";
+import {useTranslation} from "react-i18next";
 
 interface CardProps {
     image: any;
@@ -14,12 +15,14 @@ interface CardProps {
 }
 
 const Card: React.FC<CardProps> = ({ image, title, subtitle, selected = false, selectable = false, purchased = false, onClick }) => {
+    const {t} = useTranslation();
+
     const handleClick = () => {
         if (selectable && onClick) {
             onClick();
         }
     };
-
+    const purchasedLocalization = t("Purchased" as any)
     return (
         <div
             className={`${styles.card} ${selected ? styles.selected : ''} ${selectable ? styles.selectable : ''}`}
@@ -43,7 +46,7 @@ const Card: React.FC<CardProps> = ({ image, title, subtitle, selected = false, s
                 <p
                     className={`${styles.cardSubtitle} ${!purchased && !selected && selectable ? styles.greenSubtitle : ''}`}
                 >
-                    {purchased ? 'Purchased' : subtitle}
+                    {purchased ? purchasedLocalization : subtitle}
                 </p>
             </div>
         </div>

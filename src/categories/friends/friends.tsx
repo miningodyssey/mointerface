@@ -31,21 +31,27 @@ const FriendsCategory: React.FC<FriendsCategoryProps> = ({
             variants={fadeIn}
             className={styles.friendsContainer}>
             <div className={styles.textContainer}>
-                <h1>Complete tasks and earn points!</h1>
+                <h1>{t("Complete tasks and earn points!")}</h1>
                 <ul className={styles.advantageList}>
                     <li>
-                        Get 5,000 points for every friend invited
+                        {t("Get 5,000 points for every friend invited")}
                     </li>
                     <li>
-                        Earn 10% of your friend’s points
+                        {t("Earn 10% of your friend's points")}
                     </li>
                 </ul>
-                <p>You have earned <span className={styles.inlineHeading}>{referals.reduce((sum: number, referal: any) => sum + Number(referal.earnedByReferer), 0)}</span> from your friends</p>
-                <p><span className={styles.inlineHeading}>{referals.length}</span> friends invited</p>
+                <p>
+                    {t("You have earned")}
+                    <span
+                        className={styles.inlineHeading}>{referals.reduce((sum: number, referal: any) => sum + Number(referal.earnedByReferer), 0)}
+                    </span>
+                    {t("from your friends")}
+                </p>
+                <p><span className={styles.inlineHeading}>{referals.length}</span> {t("friends invited")}</p>
             </div>
             <div className={styles.leaderBoardList}>
-                <Header left={`${referals?.length} racers`} right={'Total points'}></Header>
-                { referals && (referals.length > 0) && referals?.map((player: any, index: number) => (
+                <Header left={`${referals?.length} ${t('racers')}`} right={t('Total points')}></Header>
+                {referals && (referals.length > 0) && referals?.map((player: any, index: number) => (
                     <ListElement
                         key={index}
                         name={player.nickname || player.id} // используйте ID, если ника нет
@@ -67,7 +73,7 @@ const FriendsCategory: React.FC<FriendsCategoryProps> = ({
                     className={styles.copyButton}
                     onClick={() => copyLinkToClipboard(Number(userId))}
                 >
-                    <CopyIcon />
+                    <CopyIcon/>
                 </button>
             </div>
 

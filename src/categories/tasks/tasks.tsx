@@ -41,7 +41,7 @@ const TasksCategory: React.FC<TasksCategoryProps> = ({ fadeIn, utils, t, userid,
                 const fetchedTasks = await fetchTasks();
                 setTasks(fetchedTasks);
             } catch (error) {
-                console.error("Ошибка при загрузке задач:", error);
+                console.error("Error in tasks loading:", error);
             }
         };
 
@@ -60,8 +60,8 @@ const TasksCategory: React.FC<TasksCategoryProps> = ({ fadeIn, utils, t, userid,
                     updatedUserData.balance = Number(updatedUserData.balance) + Number(task.reward);
                     setUserData(updatedUserData);
                     task.completed = true
-                    // Устанавливаем сообщение и открываем модальное окно
-                    setSuccessMessage(`Задание "${task.taskTitle}" выполнено!`);
+                    const msg: string = t("Task") + " " + task.taskTitle + t("completed")
+                    setSuccessMessage(msg);
                     setCompletedModalOpen(true);
                 });
                 try {
@@ -91,8 +91,8 @@ const TasksCategory: React.FC<TasksCategoryProps> = ({ fadeIn, utils, t, userid,
         >
             <div>
                 <div className={styles.textContainer}>
-                    <h2>Complete tasks and earn points!</h2>
-                    <p>Check for daily tasks updates</p>
+                    <h2>{t("Complete tasks and earn points!")}</h2>
+                    <p>{t("Check for daily tasks updates")}</p>
                 </div>
             </div>
             <div
@@ -109,13 +109,13 @@ const TasksCategory: React.FC<TasksCategoryProps> = ({ fadeIn, utils, t, userid,
                         selected={currentTab === 0}
                         onClick={() => setCurrentTab(0)}
                     >
-                        Active
+                        {t("Active")}
                     </TabsList.Item>
                     <TabsList.Item
                         selected={currentTab === 1}
                         onClick={() => setCurrentTab(1)}
                     >
-                        All
+                        {t("All")}
                     </TabsList.Item>
                 </TabsList>
             </div>
@@ -156,12 +156,12 @@ const TasksCategory: React.FC<TasksCategoryProps> = ({ fadeIn, utils, t, userid,
                 header={<Modal.Header />}
             >
                 <Placeholder
-                    header="Успех!"
+                    header={t("Success!")}
                     description={successMessage}
                     className={styles.modalText}
                 >
                     <div className={styles.modalButtons}>
-                        <Button onClick={handleModalClose}>Закрыть</Button>
+                        <Button onClick={handleModalClose}>{t("Close")}</Button>
                     </div>
                 </Placeholder>
             </Modal>

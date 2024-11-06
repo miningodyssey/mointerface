@@ -40,24 +40,24 @@ const LeaderBoardCategory: React.FC<LeaderBoardCategoryProps> = ({
             className={styles.leaderBoardContainer}>
             <div>
                 <div className={styles.textContainer}>
-                    <h2>Become the best runner!</h2>
-                    <p>See where you stand and challenge top runners</p>
+                    <h2>{t('Become the best runner!')}</h2>
+                    <p>{t("See where you stand and challenge top runners")}</p>
                 </div>
             </div>
             <div style={{height: '42px', width: '100%', display: 'flex', justifyContent:'center', marginBottom: '10px'}}>
                 <TabsList style={{width: '90%', height: '100%'}}>
                     <TabsList.Item selected={currentTab === 0} onClick={() => setCurrentTab(0)}>
-                        Friends
+                        {t('Friends')}
                     </TabsList.Item>
                     <TabsList.Item selected={currentTab === 1} onClick={() => setCurrentTab(1)}>
-                        Global
+                        {t('Global')}
                     </TabsList.Item>
                 </TabsList>
             </div>
             {
                 currentTab === 0 && (
                     <div className={styles.leaderBoardList}>
-                        <Header left={`${friends?.length} racers`} right={'Total points'}></Header>
+                        <Header left={`${friends?.length} ${t('racers')}`} right={t('Total points')}></Header>
                         {(friends.length > 0) && friends && friends?.map((player, index) => (
                             <ListElement
                                 key={index}
@@ -72,7 +72,7 @@ const LeaderBoardCategory: React.FC<LeaderBoardCategoryProps> = ({
             {
                 currentTab === 1 && (
                     <div className={styles.leaderBoardList}>
-                        <Header left={`${topPlayers?.topTen.length} racers`} right={'Total points'}></Header>
+                        <Header left={`${friends?.length} ${t('racers')}`} right={t('Total points')}></Header>
                         {topPlayers && topPlayers?.topTen.map((player, index) => (
                             <ListElement
                                 key={index}

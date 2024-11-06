@@ -49,7 +49,6 @@ export default function HomeComponent() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [isMuted, setIsMuted] = useState(true);
-    const [currentTab, setCurrentTab] = useState(tabs[0].id);
     const [topPlayers, setTopPlayers] = useState<TopPlayersType | null>(null);
     const [referals, setReferals] = useState([]);
     const [friends, setFriends] = useState([]);
@@ -89,6 +88,7 @@ export default function HomeComponent() {
             Icon: <UserIcon/>
         },
     ]
+    const [currentTab, setCurrentTab] = useState(tabs[0].id);
 
     useEffect(() => {
         const initTelegramWebApp = () => {
@@ -325,6 +325,7 @@ export default function HomeComponent() {
                         userData={userData}
                         setUserData={setUserData}
                         token={authKey}
+                        t={t}
                     />
                 )}
 
