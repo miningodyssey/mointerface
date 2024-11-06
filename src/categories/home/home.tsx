@@ -3,7 +3,6 @@
 import React, {useState, useEffect, useCallback, useMemo, useRef} from 'react';
 import styles from './home.module.css';
 import {initMiniApp, initUtils} from '@telegram-apps/sdk';
-import {user} from "@/types/user.type";
 import {Snackbar, Spinner, Tabbar} from '@telegram-apps/telegram-ui';
 import '@telegram-apps/telegram-ui/dist/styles.css';
 import {useTranslation} from 'react-i18next';
@@ -33,33 +32,6 @@ import {fetchFriends} from "@/components/functions/fetchFriends";
 import GameComponent from "@/game/components/GameComponent";
 
 
-const tabs = [
-    {
-        id: 0,
-        text: "Home",
-        Icon: <HomeIcon/>
-    },
-    {
-        id: 1,
-        text: "Leaderboard",
-        Icon: <ChartIcon/>
-    },
-    {
-        id: 2,
-        text: "Tasks",
-        Icon: <TasksIcon/>
-    },
-    {
-        id: 3,
-        text: "Friends",
-        Icon: <FriendsIcon/>
-    },
-    {
-        id: 4,
-        text: "Profile",
-        Icon: <UserIcon/>
-    },
-]
 
 type TopPlayersType = {
     userPosition: number
@@ -90,6 +62,33 @@ export default function HomeComponent() {
         visible: {opacity: 1, transition: {duration: 0.5}},
     }), []);
 
+    const tabs = [
+        {
+            id: 0,
+            text: t("Home" as any),
+            Icon: <HomeIcon/>
+        },
+        {
+            id: 1,
+            text: t("Leaderboard" as any),
+            Icon: <ChartIcon/>
+        },
+        {
+            id: 2,
+            text: t("Tasks" as any),
+            Icon: <TasksIcon/>
+        },
+        {
+            id: 3,
+            text: t("Friends" as any),
+            Icon: <FriendsIcon/>
+        },
+        {
+            id: 4,
+            text: t("Profile" as any),
+            Icon: <UserIcon/>
+        },
+    ]
 
     useEffect(() => {
         const initTelegramWebApp = () => {
@@ -206,7 +205,7 @@ export default function HomeComponent() {
                     (<div className={styles.leftButtons}>
                         <div className={styles.topBarBtn}>
                             <SettingsIcon/>
-                            <p>Settings</p>
+                            <p>{t("Settings" as any)}</p>
                         </div>
                     </div>)
                 }
@@ -216,7 +215,7 @@ export default function HomeComponent() {
                     (<div className={styles.leftButtons} style={{opacity: '0'}}>
                         <div className={styles.topBarBtn}>
                             <SettingsIcon/>
-                            <p>Settings</p>
+                            <p>{t("Settings" as any)}</p>
                         </div>
                     </div>)
                 }
@@ -225,7 +224,7 @@ export default function HomeComponent() {
                     (<div className={styles.leftButtons}>
                         <div className={styles.topBarBtn} onClick={() => sendLink(userId)}>
                             <ForwardIcon/>
-                            <p>Share</p>
+                            <p>{t("Share" as any)}</p>
                         </div>
                     </div>)
                 }
@@ -249,7 +248,7 @@ export default function HomeComponent() {
                                 !userFriendlyAddress && (
                                     <div className={styles.topBarBtn}  onClick={() => tonConnectUI.openModal()}>
                                         <WalletIcon/>
-                                        <p>Wallet</p>
+                                        <p>{t("Wallet" as any)}</p>
                                     </div>
                                 )
                             }
@@ -268,7 +267,7 @@ export default function HomeComponent() {
                     (<div className={styles.rightButtons} style={{opacity: '0'}}>
                         <div className={styles.topBarBtn}>
                             <WalletIcon/>
-                            <p>Wallet</p>
+                            <p>{t("Wallet" as any)}</p>
                         </div>
                     </div>)
                 }

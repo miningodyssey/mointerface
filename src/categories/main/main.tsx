@@ -178,11 +178,11 @@ const MainCategory: React.FC<MainCategoryProps> = ({
                         <p className={styles.EnergyCountTimer} style={{display:'none'}}>{formatTime(timeLeft)}</p>
                     </div>
                     <Button mode={'bezeled'} disabled>
-                        Watch ads to add energy!
+                        {t('WatchAd')}
                     </Button>
                 </div>
                 <div className={styles.DailyContainer}>
-                    <h1 className={styles.DailyTasksH1}>Daily tasks</h1>
+                    <h1 className={styles.DailyTasksH1}>{t("Daily tasks")}</h1>
                     <div className={styles.DailyTasksList} ref={dailyTasksListRef}>
                         <Cell
                             className={styles.Cell}
