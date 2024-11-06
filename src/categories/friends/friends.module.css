@@ -1,0 +1,101 @@
+.friendsContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 10;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0; /* Ограничиваем контейнер шириной экрана */
+    bottom: 0; /* Ограничиваем контейнер высотой экрана */
+    height: 100%;
+    max-height: calc(100vh - 70px); /* Максимальная высота - 100% от высоты окна браузера */
+    overflow-y: auto; /* Прокрутка по Y, если содержимое превышает высоту */
+}
+
+
+.leaderBoardList {
+    width: 100%;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    background: var(--tg-theme-bg-color);
+    overflow-y: auto; /* Позволяем прокрутку по Y */
+    scrollbar-width: none;
+    padding-bottom: 75px; /* Добавляем отступ снизу */
+}
+
+.textContainer {
+    box-sizing: border-box;
+    width: 100%;
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+    color: white;
+    text-align: start;
+    padding: 32px 20px 0 20px;
+}
+.textContainer h1 {
+    margin: 0
+}
+
+.textContainer p {
+    margin-bottom: 24px;
+    color: var(--tgui--hint_color);
+}
+
+.textContainer p:last-child {
+    margin-top: 0;
+}
+
+.inlineHeading {
+    font-size: 1.1rem; /* Пример размера текста */
+    font-weight: bold; /* Пример стиля заголовка */
+    color: white;
+}
+
+.advantageList {
+    display: flex;
+    flex-direction: column;
+    padding-left: 20px;
+    margin-bottom: 0;
+}
+.advantageList li {
+    color: var(--tgui--hint_color);
+    font-size: large;
+    font-weight: normal;
+    margin-bottom: 8px;
+}
+
+.advantageList li:last-child {
+    margin-bottom: 16px;
+}
+
+.advantageList li::marker {
+    color: var(--tg-theme-button-color); /* Цвет кружка */
+}
+
+.inviteButton {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    display: inline-flex;
+    background: linear-gradient(to top, black, transparent);
+    box-sizing: border-box;
+    padding: 12px;
+}
+
+
+.copyButton {
+    background: none;
+    -webkit-user-drag: none;
+    user-select: none;
+    border: none;
+    padding-right: 0;
+    cursor: pointer;
+    transition: opacity .15s ease-out;
+}
+
+.copyButton:hover {
+    opacity: 0.8
+}

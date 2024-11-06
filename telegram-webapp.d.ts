@@ -1,6 +1,8 @@
 interface WebApp {
     setHeaderColor(color: string): void;
-    disableVerticalSwipes: boolean;
+    disableVerticalSwipes(): void;
+    enableVerticalSwipes: boolean;
+    isVerticalSwipesEnabled: boolean;
     expand(): void;
 }
 

@@ -1,0 +1,6 @@
+.icon {
+    width: 24px;
+    height: 100%;
+    position: relative;
+    color: var(--moody-logo-color);
+}

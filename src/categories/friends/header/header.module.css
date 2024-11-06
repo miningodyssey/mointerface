@@ -1,0 +1,16 @@
+.listElement {
+    display: flex;
+    justify-content: space-between;
+    padding: 16px 16px 8px 16px;
+    border-bottom: 1px solid #ccc;
+    color: white;
+    width: 100%; /* Изменяем на 100% для корректной ширины */
+    box-sizing: border-box; /* Учитываем отступы и границы */
+}
+.left {
+    color: var(--tgui--hint_color);
+}
+
+.right {
+    color: var(--tgui--hint_color);;
+}

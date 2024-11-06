@@ -1,0 +1,26 @@
+
+.Cell {
+    transition: opacity .15s ease-out;
+    flex: 0 0 auto;
+    width: 95%;
+    user-select: none; /* Предотвращает выделение текста при прокрутке */
+    opacity: 1;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+    background: var(--cell-bg-color) !important;
+}
+.Cell:hover {
+    opacity: 0.8 !important;
+    background: var(--cell-bg-color) !important;
+}
+
+
+.TaskName {
+    display: inline-flex;
+    justify-content: space-between;
+    color: var(--tgui--text_color);
+}
+.TaskName p {
+    color: var(--tgui--text_color);
+    margin: 0 4px 0 0;
+}

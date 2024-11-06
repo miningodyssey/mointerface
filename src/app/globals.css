@@ -19,6 +19,45 @@ img {
   -webkit-user-drag: none;    /* Запрещает перетаскивание изображения */
 }
 
+.tgui-aeab497081949a15 {
+  overflow: visible !important;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  font-size: 85% !important;
+}
+
+.tgui-64cd0db020a9bacf {
+  padding: 6px 8px 8px !important;
+}
+
+.tgui-b8dfba0b5c3d054c {
+  border-radius: 12px !important;
+  background: var(--tgui--bg_color);
+}
+.tgui-b8dfba0b5c3d054c:hover {
+  background: var(--tgui--bg_color) !important;
+  opacity: var(--tgui--button--hovered-opacity) !important;
+}
+
+.tgui-8735a62be5a8b8a7 {
+  padding: 12px 0 !important;
+}
+
+.go157313249 {
+  min-width: 65px !important;
+  max-width: 65px !important;
+  width: 65px !important;
+  background-color: transparent !important;
+}
+.tgui-8ca550c2fc85eff5.tgui-4a83fef1f04acb0e::after {
+  border-radius: 14px !important;
+}
+
+.go3974562317 {
+  gap: 0;
+}
+
 :root {
   font-family: var(--font-family);
   background: var(--tgui--bg_color);
