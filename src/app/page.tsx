@@ -7,7 +7,7 @@ import {TonConnectUIProvider} from "@tonconnect/ui-react";
 export default function Home() {
 
     return (
-        <TonConnectUIProvider manifestUrl="https://untitled7-three.vercel.app/tonconnect-manifest.json">
+        <TonConnectUIProvider manifestUrl="https://game.miningodyssey.pw/tonconnect-manifest.json">
             <HomeComponent/>
         </TonConnectUIProvider>
         );
