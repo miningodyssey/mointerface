@@ -398,22 +398,6 @@ export const GameComponent: React.FC<GameComponentInterface> = ({t, setGameButto
                 return false;
             }
 
-            function updateCoins() {
-                for (let i = coinsInPath.length - 1; i >= 0; i--) {
-                    const coin = coinsInPath[i];
-                    coin.rotate(BABYLON.Axis.Y, coinRotationSpeed, BABYLON.Space.LOCAL);
-
-                    if (BABYLON.Vector3.Distance(hero.position, coin.position) < 0.4) {
-                        score += 1;
-                        coinPool.release(coin);
-                        coinsInPath.splice(i, 1);
-                    } else if (coin.position.z < -2) {
-                        coinPool.release(coin);
-                        coinsInPath.splice(i, 1);
-                    }
-                }
-            }
-
             engine.runRenderLoop(renderLoop);
             window.addEventListener("resize", function () {
                 engine.resize();
@@ -534,27 +518,71 @@ export const GameComponent: React.FC<GameComponentInterface> = ({t, setGameButto
             }
 
 
-            function updateAndCleanObjects(objects: any[], speed: number, threshold: number, pool: any, dt: number) {
+            function updateAndCleanObjects(
+                objects: any[],
+                speed: number,
+                threshold: number,
+                dt: number,
+                rampPool: any,
+                coinPool: any,
+                jumpObstaclePool: any,
+                slideObstaclePool: any,
+                obstaclePool: any
+            ) {
                 for (let i = objects.length - 1; i >= 0; i--) {
                     const obj = objects[i];
 
-                    // Перемещение объекта вдоль оси Z
                     obj.position.z += speed * dt;
-                    if (obj.physicsImpostor) {
-                    }
 
                     if (obj.type === 'coin') {
-                        obj.rotate(BABYLON.Axis.Y, 0.01 * dt, BABYLON.Space.LOCAL);
-                        updateScoreDisplay(scoreDisplay, score);
+                        obj.rotate(BABYLON.Axis.Y, coinRotationSpeed, BABYLON.Space.LOCAL);
                         if (BABYLON.Vector3.Distance(hero.position, obj.position) < 0.4) {
                             score += 1;
-                            pool.release(obj);
-                            objects.splice(i, 1);
+                            updateScoreDisplay(scoreDisplay, score);
+                            coinPool.release(obj);  // Возвращаем монету в пул coinPool
+                            objects.splice(i, 1);   // Удаляем из массива объектов
                         }
                     }
+                    else if (obj.type === 'ramp') {
+                        if (obj.position.z < threshold && obj.isEnabled()) {
+                            objects.splice(i, 1);
+                            rampPool.release(obj);  // Возвращаем рампу в пул rampPool
+                        }
+                    }
+                    else if (obj.type === 'jumpObstacle') {
+                        if (obj.position.z < threshold && obj.isEnabled()) {
+                            objects.splice(i, 1);
+                            jumpObstaclePool.release(obj);  // Возвращаем jumpObstacle в пул jumpObstaclePool
+                        }
+                    }
+                    else if (obj.type === 'slideObstacle') {
+                        if (obj.position.z < threshold && obj.isEnabled()) {
+                            objects.splice(i, 1);
+                            slideObstaclePool.release(obj);  // Возвращаем slideObstacle в пул slideObstaclePool
+                        }
+                    }
+                    else if (obj.type === 'bigObstacle') {
+                        if (obj.position.z < threshold && obj.isEnabled()) {
+                            objects.splice(i, 1);
+                            obstaclePool.release(obj);  // Возвращаем обычное препятствие в пул obstaclePool
+                        }
+                    }
+
+                    // Если объект вышел за пределы (по оси Z), возвращаем его в соответствующий пул
                     if (obj.position.z < threshold && obj.isEnabled()) {
-                        objects.splice(i, 1);
-                        pool.release(obj);
+                        objects.splice(i, 1);  // Убираем объект из списка
+                        // В зависимости от типа объекта, возвращаем его в нужный пул
+                        if (obj.type === 'ramp') {
+                            rampPool.release(obj);
+                        } else if (obj.type === 'coin') {
+                            coinPool.release(obj);
+                        } else if (obj.type === 'jumpObstacle') {
+                            jumpObstaclePool.release(obj);
+                        } else if (obj.type === 'slideObstacle') {
+                            slideObstaclePool.release(obj);
+                        } else if (obj.type === 'bigObstacle') {
+                            obstaclePool.release(obj);
+                        }
                     }
                 }
             }
@@ -630,19 +658,65 @@ export const GameComponent: React.FC<GameComponentInterface> = ({t, setGameButto
                         frameCount = 0
                     }
                     // Двигаем препятствия
-                    updateAndCleanObjects(obstaclesInPath, -rollingSpeed, -2, obstaclePool, dt);
+                    updateAndCleanObjects(
+                        obstaclesInPath,
+                        -rollingSpeed,
+                        -2,
+                        dt,
+                        rampPool,
+                        coinPool,
+                        jumpObstaclePool,
+                        slideObstaclePool,
+                        obstaclePool
+                    );
 
+                    updateAndCleanObjects(
+                        coinsInPath,
+                        -rollingSpeed,
+                        0,
+                        dt,
+                        rampPool,
+                        coinPool,
+                        jumpObstaclePool,
+                        slideObstaclePool,
+                        obstaclePool
+                    );
 
-                    updateAndCleanObjects(coinsInPath, -rollingSpeed, 0, coinPool, dt);
+                    updateAndCleanObjects(
+                        newCoins,
+                        -rollingSpeed,
+                        0,
+                        dt,
+                        rampPool,
+                        coinPool,
+                        jumpObstaclePool,
+                        slideObstaclePool,
+                        obstaclePool
+                    );
 
+                    updateAndCleanObjects(
+                        newObstacles,
+                        -rollingSpeed,
+                        -2,
+                        dt,
+                        rampPool,
+                        coinPool,
+                        jumpObstaclePool,
+                        slideObstaclePool,
+                        obstaclePool
+                    );
 
-                    updateAndCleanObjects(newCoins, -rollingSpeed, 0, coinPool, dt);
-
-
-                    updateAndCleanObjects(newObstacles, -rollingSpeed, -2, obstaclePool, dt);
-
-
-                    updateAndCleanObjects(roadInPath, -rollingSpeed, -segmentLength, roadSegmentPool, dt);
+                    updateAndCleanObjects(
+                        roadInPath,
+                        -rollingSpeed,
+                        -segmentLength,
+                        dt,
+                        rampPool,
+                        coinPool,
+                        jumpObstaclePool,
+                        slideObstaclePool,
+                        obstaclePool
+                    );
 
                     // Обновляем коллизии и удаление препятствий
                     for (const obstacle of obstaclesInPath) {
