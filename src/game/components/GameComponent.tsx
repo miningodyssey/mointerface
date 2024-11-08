@@ -16,14 +16,15 @@ import {updateScoreDisplay} from "@/game/js/utils/updateScoreDisplay";
 import {isHeroOnRamp} from "@/game/js/utils/isHeroOnRamp";
 import {endGame} from "@/game/js/utils/endGame";
 import {isHeroOnTopOfObstacle} from "@/game/js/utils/isHeroOnTopOfObstacle";
-import {setupDesktopRenderingPipeline, setupMobileRenderingPipeline} from "@/game/js/utils/settings";
+import {
+    setupRenderingPipeline
+} from "@/game/js/utils/settings";
 import {releaseObstacle} from "@/game/js/utils/releaseObstacle";
 import {Button, Spinner} from "@telegram-apps/telegram-ui";
 import styles from './GameComponent.module.css'
 import EndModal from "@/components/menus/EndModal/EndModal";
 import PauseModal from "@/components/menus/PauseModal/PauseModal";
 import {addEnergyRequest} from "@/components/functions/addEnergyRequest";
-import {disposeHero} from "@/game/js/utils/recreateHero";
 import {refreshGameState} from "@/game/js/utils/refreshGameState";
 import {initializePools} from "@/game/js/utils/initializePools";
 import {clearScene} from "@/game/js/utils/clearScene";
@@ -40,9 +41,10 @@ interface GameComponentInterface {
     setGameButtonClicked: any;
     userData: any;
     setUserData: any;
+    settings: any;
 }
 
-export const GameComponent: React.FC<GameComponentInterface> = ({t, setGameButtonClicked, userData, setUserData}) => {
+export const GameComponent: React.FC<GameComponentInterface> = ({t, setGameButtonClicked, userData, setUserData, settings}) => {
     const canvasRef = useRef<any>(null);
     const platformRef = useRef<HTMLDivElement | null>(null);
     const scoreDisplayRef = useRef<HTMLDivElement | null>(null);
@@ -165,12 +167,7 @@ export const GameComponent: React.FC<GameComponentInterface> = ({t, setGameButto
             mapSize = (device === 'mobile') ? 128 : 1024;
 
             // Настройка графики для мобильных устройств
-            if (device === 'mobile') {
-                engine.setHardwareScalingLevel(0.4);
-                setupMobileRenderingPipeline(engine, scene, camera);
-            } else {
-                setupDesktopRenderingPipeline(engine, scene, camera);
-            }
+            setupRenderingPipeline(engine, scene, camera, settings)
 
             await initializePhysics(scene, ammoLoaded); // Инициализация физики
             modelCache = await loadAllMeshes(scene);

@@ -1,0 +1,84 @@
+/* Основные стили для модального окна */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.3s ease;
+    z-index: 1000;
+}
+
+.modalContent {
+    background: var(--tgui--bg_color);
+    border-radius: 10px;
+    padding: 2.5%;
+    width: 95%;
+    color: var(--tgui--text_color);
+    box-sizing: border-box;
+}
+
+.modalHeader {
+    font-size: 20px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.closeBtn {
+    font-size: 55px;
+    cursor: pointer;
+}
+
+.modalItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 10px 0;
+}
+
+.modalItem div {
+    width: 100%;
+}
+
+
+.toggleSwitch input {
+    display: none;
+}
+
+.sliderRound {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 20px;
+}
+
+.sliderRound:before {
+    position: absolute;
+    content: "";
+    height: 14px;
+    width: 14px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+.toggleSwitch input:checked + .sliderRound {
+    background-color: #4CAF50;
+}
+
+.toggleSwitch input:checked + .sliderRound:before {
+    transform: translateX(20px);
+}

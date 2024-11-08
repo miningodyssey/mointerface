@@ -1,4 +1,4 @@
-    import React, { useEffect, useState } from "react";
+    import React, {useEffect, useRef, useState} from "react";
     import styles from "./profile.module.css";
     import { motion } from "framer-motion";
     import Card from "@/categories/profile/Card/card";
@@ -16,6 +16,7 @@
         setUserData: (data: any) => void;
         token?: string;
         t: any;
+        ref: any;
     }
 
     interface CardData {
@@ -28,7 +29,7 @@
         cost: number; // Добавляем стоимость карточки
     }
 
-    const ProfileCategory: React.FC<ProfileCategoryProps> = ({ fadeIn, userData, setUserData, token, t }) => {
+    const ProfileCategory: React.FC<ProfileCategoryProps> = ({ fadeIn, userData, setUserData, token, t, ref }) => {
         const [currentTab, setCurrentTab] = useState(0);
         const [isEditing, setIsEditing] = useState(false);
         const [currentSkin, setCurrentSkin] = useState(0);
@@ -39,7 +40,6 @@
         const [selectedCard, setSelectedCard] = useState<CardData | null>(null);
         const [errorModalOpen, setErrorModalOpen] = useState(false); // Модальное окно для ошибки
         const [errorMessage, setErrorMessage] = useState("");
-
         useEffect(() => {
             // Создаем массив карточек и помечаем купленные
             let cardData = [...Array(12)].map((_, index) => ({
@@ -76,6 +76,7 @@
 
             setCardData(cardData);
         }, [userData]);
+
 
         const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
             setNicknameInput(e.target.value);
@@ -166,7 +167,7 @@
         };
 
         return (
-            <motion.div initial="hidden" animate="visible" variants={fadeIn} className={styles.profileContainer}>
+            <motion.div initial="hidden" animate="visible" variants={fadeIn} className={styles.profileContainer} ref={ref}>
                 <div className={styles.nickInput}>
                     <div className={styles.inputWrapper}>
                         <Input

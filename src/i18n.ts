@@ -40,6 +40,11 @@ i18n
                     "Settings": "Settings",
                     "Wallet": "Wallet",
                     "Share": "Share",
+                    "Continue?": "Continue?",
+                    "Keep on running!": "Keep on running!",
+                    "Quit run": "Quit run",
+                    "pointsToRecord": "{{scoreDifference}} points to personal record!",
+                    "newRecord": "Congratulations! You set a new record!"
                 }
             },
             ru: {
@@ -101,7 +106,20 @@ i18n
                     "Confirm Purchase": "Купить",
                     "Insufficient funds": "Недостаточно средств",
                     "You do not have enough points to purchase this card.": "У вас недостаточно очков для покупки этой карты.",
-                    "Purchased": "Куплено"
+                    "Purchased": "Куплено",
+                    "Game Settings": "Настройки игры",
+                    "Graphics Quality": "Качество графики",
+                    "Anti-Aliasing": "Анти-алиасинг",
+                    "Texture Resolution": "Разрешение текстур",
+                    "Pause": "Пауза",
+                    "Current score": "Текущий счёт",
+                    "Watch ads and earn 1,000pts": "Смотри рекламу и получи 1,000 очков",
+                    "Resume Game": "Продолжить игру",
+                    "Continue?": "Продолжить?",
+                    "Keep on running!": "Продолжай бежать!",
+                    "Quit run": "Выйти из забега",
+                    "pointsToRecord": "{{scoreDifference}} очков до личного рекорда!",
+                    "newRecord": "Поздравляем! Вы побили свой рекорд!"
 
 
 

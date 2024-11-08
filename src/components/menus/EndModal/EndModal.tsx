@@ -37,8 +37,8 @@ const EndModal = forwardRef<HTMLDivElement, EndModalInterface>(({
         const personalRecord = userData.personalRecord || 0;
         const scoreDifference = personalRecord - score;
         scoreMessage = scoreDifference > 0
-            ? `${scoreDifference} очков до личного рекорда!`
-            : "Поздравляем! Вы побили свой рекорд!";
+            ? t('pointsToRecord', { scoreDifference })
+            : t('newRecord');
 
     }
     EndModal.displayName = 'EndModal';
@@ -67,7 +67,7 @@ const EndModal = forwardRef<HTMLDivElement, EndModalInterface>(({
                     ref={restartButtonRef}
                     style={{ marginBottom: '10px' }}
                 >
-                    Keep on running!
+                    {t('Keep on running!')}
                 </Button>
                 <Button
                     stretched
@@ -75,7 +75,7 @@ const EndModal = forwardRef<HTMLDivElement, EndModalInterface>(({
                     className={styles.quitButton}
                     ref={backToMenuRef}
                 >
-                    Quit run
+                    {t('Quit run')}
                 </Button>
             </div>
         </motion.div>

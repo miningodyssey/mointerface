@@ -30,7 +30,8 @@ import {fetchTopPlayers} from "@/components/functions/fetchTopPlayers";
 import {fetchReferals} from "@/components/functions/fetchReferals";
 import {fetchFriends} from "@/components/functions/fetchFriends";
 import GameComponent from "@/game/components/GameComponent";
-
+import {SettingsModal} from "@/components/menus/SettingsModal/SettingsModal";
+import {updateUserSettings} from "@/components/functions/updateUserSettings";
 
 
 type TopPlayersType = {
@@ -52,10 +53,18 @@ export default function HomeComponent() {
     const [topPlayers, setTopPlayers] = useState<TopPlayersType | null>(null);
     const [referals, setReferals] = useState([]);
     const [friends, setFriends] = useState([]);
+    const [isSettingsOpen, setIsSettingsOpen] = useState(false);
     const [gameButtonClicked, setGameButtonClicked] = useState(false);
     const [tonConnectUI, setOptions] = useTonConnectUI();
     const userFriendlyAddress = useTonAddress();
     const audioRef = useRef<HTMLAudioElement>(null);
+    const categoryRef = useRef<HTMLDivElement>(null)
+    const [settings, setSettings] = useState({
+        graphicsQuality: 50,
+        antiAliasingEnabled: true,
+        textureResolution: 50,
+    });
+
     const fadeIn = useMemo(() => ({
         hidden: {opacity: 0},
         visible: {opacity: 1, transition: {duration: 0.5}},
@@ -109,15 +118,21 @@ export default function HomeComponent() {
     const handleSnackbarOpen = () => {
         setSnackbarOpen(true);
     };
-
+    const updateSettings = (settings: any) => {
+        setIsSettingsOpen(false);
+        setSettings(settings)
+        updateUserSettings(userId, settings)
+    }
     useEffect(() => {
         const initialize = async () => {
             try {
-                const { userId, token, fetchedUserData } = await fetchDataAndInitialize();
+                const {userId, token, fetchedUserData} = await fetchDataAndInitialize();
                 setUserData(fetchedUserData);
                 setUserId(userId);
                 setAuthKey(token);
-                // Загрузите топ игроков и друзей позже
+                if (fetchedUserData.settings) {
+                    setSettings(fetchedUserData.settings)
+                }
                 const [top, refTop, friends] = await Promise.all([
                     fetchTopPlayers(userId, token),
                     fetchReferals(userId, token),
@@ -134,6 +149,55 @@ export default function HomeComponent() {
         };
 
         initialize();
+    }, []);
+
+    useEffect(() => {
+        const category = categoryRef.current;
+        let isDragging = false;
+        let startY: number;
+        let scrollTop: number;
+
+        if (category) {
+            const onMouseDown = (event: MouseEvent) => {
+                isDragging = true;
+                category.classList.add('dragging');
+                startY = event.pageY; // Получаем координату Y мыши
+                scrollTop = category.scrollTop; // Запоминаем текущую позицию прокрутки по вертикали
+            };
+
+            const onMouseLeave = () => {
+                isDragging = false;
+                category.classList.remove('dragging');
+            };
+
+            const onMouseUp = () => {
+                isDragging = false;
+                category.classList.remove('dragging');
+            };
+
+            const onMouseMove = (event: MouseEvent) => {
+                if (!isDragging) return;
+                event.preventDefault();
+                const y = event.pageY;
+                const walk = (y - startY) * 1.7; // Определяем дистанцию для прокрутки
+                category.scrollTop = scrollTop - walk; // Прокручиваем по вертикали
+            };
+
+            category.addEventListener('mousedown', onMouseDown);
+            category.addEventListener('mouseleave', onMouseLeave);
+            category.addEventListener('mouseup', onMouseUp);
+            category.addEventListener('mousemove', onMouseMove);
+
+            // Убираем обработчики событий при размонтировании компонента
+            return () => {
+                category.removeEventListener('mousedown', onMouseDown);
+                category.removeEventListener('mouseleave', onMouseLeave);
+                category.removeEventListener('mouseup', onMouseUp);
+                category.removeEventListener('mousemove', onMouseMove);
+            };
+        } else {
+            console.error('Element .category not found');
+        }
     }, []);
 
     useEffect(() => {
@@ -184,7 +248,7 @@ export default function HomeComponent() {
         )
     }
     return gameButtonClicked ? (
-        <GameComponent t={t} setGameButtonClicked={setGameButtonClicked} userData={userData} setUserData={setUserData}/>
+        <GameComponent t={t} setGameButtonClicked={setGameButtonClicked} userData={userData} setUserData={setUserData} settings={settings}/>
     ) : (
         <motion.div
             initial="hidden"
@@ -203,7 +267,9 @@ export default function HomeComponent() {
             <div className={styles.topBarContainer}>
                 {currentTab === 0 &&
                     (<div className={styles.leftButtons}>
-                        <div className={styles.topBarBtn}>
+                        <div className={styles.topBarBtn} onClick={() => {
+                            setIsSettingsOpen(true)
+                        }}>
                             <SettingsIcon/>
                             <p>{t("Settings" as any)}</p>
                         </div>
@@ -246,7 +312,7 @@ export default function HomeComponent() {
                         <div className={styles.rightButtons}>
                             {
                                 !userFriendlyAddress && (
-                                    <div className={styles.topBarBtn}  onClick={() => tonConnectUI.openModal()}>
+                                    <div className={styles.topBarBtn} onClick={() => tonConnectUI.openModal()}>
                                         <WalletIcon/>
                                         <p>{t("Wallet" as any)}</p>
                                     </div>
@@ -255,7 +321,7 @@ export default function HomeComponent() {
                             {
                                 userFriendlyAddress && (
                                     <div>
-                                        <TonConnectButton />
+                                        <TonConnectButton/>
                                     </div>
                                 )
                             }
@@ -321,6 +387,7 @@ export default function HomeComponent() {
                 )}
                 {currentTab === 4 && (
                     <ProfileCategory
+                        ref={categoryRef}
                         fadeIn={fadeIn}
                         userData={userData}
                         setUserData={setUserData}
@@ -344,6 +411,10 @@ export default function HomeComponent() {
                 <InvitedModal t={t} setIsModalOpen={setIsModalOpen} sendLink={sendLink} userID={userId}
                               className={styles.InvitedModal}/>
             )}
+            {isSettingsOpen && (
+                <SettingsModal settings={settings} onSettingsChange={updateSettings}></SettingsModal>
+            )
+            }
             <Tabbar style={{
                 background: 'var(--tgui--bg_color)',
                 zIndex: '1000',

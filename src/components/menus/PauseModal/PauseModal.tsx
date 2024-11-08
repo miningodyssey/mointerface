@@ -1,4 +1,4 @@
-import React, {forwardRef, Ref, useMemo} from "react";
+import React, {forwardRef, Ref, useEffect, useMemo, useRef} from "react";
 import styles from './PauseModal.module.css';
 import {motion} from 'framer-motion';
 import {Button, Placeholder} from "@telegram-apps/telegram-ui";
@@ -27,6 +27,56 @@ const PauseModal = forwardRef<HTMLDivElement, PauseModalInterface>(({
         hidden: {opacity: 0},
         visible: {opacity: 1, transition: {duration: 0.5}},
     }), []);
+    const modalOverlayRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const modalOverlay = modalOverlayRef.current;
+        let isDragging = false;
+        let startY: number;
+        let scrollTop: number;
+
+        if (modalOverlay) {
+            const onMouseDown = (event: MouseEvent) => {
+                isDragging = true;
+                modalOverlay.classList.add('dragging');
+                startY = event.pageY; // Получаем координату Y мыши
+                scrollTop = modalOverlay.scrollTop; // Запоминаем текущую позицию прокрутки по вертикали
+            };
+
+            const onMouseLeave = () => {
+                isDragging = false;
+                modalOverlay.classList.remove('dragging');
+            };
+
+            const onMouseUp = () => {
+                isDragging = false;
+                modalOverlay.classList.remove('dragging');
+            };
+
+            const onMouseMove = (event: MouseEvent) => {
+                if (!isDragging) return;
+                event.preventDefault();
+                const y = event.pageY;
+                const walk = (y - startY) * 1.7; // Определяем дистанцию для прокрутки
+                modalOverlay.scrollTop = scrollTop - walk; // Прокручиваем по вертикали
+            };
+
+            modalOverlay.addEventListener('mousedown', onMouseDown);
+            modalOverlay.addEventListener('mouseleave', onMouseLeave);
+            modalOverlay.addEventListener('mouseup', onMouseUp);
+            modalOverlay.addEventListener('mousemove', onMouseMove);
+
+            // Убираем обработчики событий при размонтировании компонента
+            return () => {
+                modalOverlay.removeEventListener('mousedown', onMouseDown);
+                modalOverlay.removeEventListener('mouseleave', onMouseLeave);
+                modalOverlay.removeEventListener('mouseup', onMouseUp);
+                modalOverlay.removeEventListener('mousemove', onMouseMove);
+            };
+        } else {
+            console.error('Element .modalOverlay not found');
+        }
+    }, []);
     let score = 0;
     if (scoreDisplay) {
         score = parseInt(scoreDisplay.replace("Score: ", ""), 10);
@@ -39,7 +89,7 @@ const PauseModal = forwardRef<HTMLDivElement, PauseModalInterface>(({
             variants={fadeIn}
             ref={ref}
         >
-            <div className={styles.modal}>
+            <div className={styles.modal} ref={modalOverlayRef}>
                 <div className={styles.header}>
                     <span>{t('Pause')}</span>
                 </div>
@@ -53,7 +103,7 @@ const PauseModal = forwardRef<HTMLDivElement, PauseModalInterface>(({
                     {t('Watch ads and earn 1,000pts')}
                 </Button>
                 <div className={styles.tasks}>
-                    <h2 className={styles.taskHeader}>Tasks</h2>
+                    <h2 className={styles.taskHeader}>{t("Tasks")}</h2>
                     <Task
                         key={0}
                         before={
@@ -128,7 +178,7 @@ const PauseModal = forwardRef<HTMLDivElement, PauseModalInterface>(({
                     onClick={() => setIsPaused(false)}
                     className={styles.resumeButton}
                 >
-                    {t('ResumeGame')}
+                    {t('Resume Game')}
                 </Button>
                 <Button
                     stretched

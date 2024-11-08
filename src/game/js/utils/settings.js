@@ -1,22 +1,29 @@
 import * as BABYLON from "babylonjs";
 
-export function setupMobileRenderingPipeline(engine, scene, camera) {
-    const defaultPipeline = new BABYLON.DefaultRenderingPipeline("defaultPipeline", false, scene, [camera]);
-    engine.setHardwareScalingLevel(0.5);
-    defaultPipeline.bloomEnabled = false;
-    defaultPipeline.fxaaEnabled = false;
-    defaultPipeline.bloomThreshold = 0.0125;
-    defaultPipeline.bloomScale = 0.1;
-    defaultPipeline.bloomWeight = 0.1;
-    defaultPipeline.bloomKernel = 8;
-}
+export function setupRenderingPipeline(engine, scene, camera, settings) {
+    const { graphicsQuality, antiAliasingEnabled, textureResolution } = settings;
 
-export function setupDesktopRenderingPipeline(engine, scene, camera) {
-    const defaultPipeline = new BABYLON.DefaultRenderingPipeline("defaultPipeline", true, scene, [camera]);
-    engine.setHardwareScalingLevel(1);
-    defaultPipeline.bloomEnabled = true;
-    defaultPipeline.bloomThreshold = 0.001;
-    defaultPipeline.bloomScale = 0.7;
-    defaultPipeline.bloomWeight = 0.7;
-    defaultPipeline.bloomKernel = 128;
+    // Настроим масштабирование в зависимости от качества графики
+    engine.setHardwareScalingLevel(1 - graphicsQuality / 100);
+
+    const defaultPipeline = new BABYLON.DefaultRenderingPipeline(
+        "defaultPipeline",
+        true,
+        scene,
+        [camera]
+    );
+
+    // Настройка анти-алиасинга
+    defaultPipeline.fxaaEnabled = antiAliasingEnabled;
+
+    // Настройка разрешения текстур
+    scene.texturesEnabled = true;
+    scene.textureQuality = textureResolution;
+
+    // Дополнительные параметры для пост-обработки
+    defaultPipeline.bloomEnabled = graphicsQuality > 50;
+    defaultPipeline.bloomThreshold = 0.01 * (100 - graphicsQuality);
+    defaultPipeline.bloomScale = 0.5 * (graphicsQuality / 100);
+    defaultPipeline.bloomWeight = 0.3;
+    defaultPipeline.bloomKernel = graphicsQuality > 75 ? 128 : 32;
 }
