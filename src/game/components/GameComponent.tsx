@@ -570,7 +570,6 @@ export const GameComponent: React.FC<GameComponentInterface> = ({t, setGameButto
                     // Проверка состояния игры
                     if (gamePaused || document.visibilityState === "hidden") return;
 
-                    updateCoins();
                     updateScoreDisplay(scoreDisplay, score);
                     if (hero.physicsImpostor && hero.physicsImpostor.getLinearVelocity().y > 4 && frameCount % 30 === 0) {
                         hero.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(0, 0, 0));
