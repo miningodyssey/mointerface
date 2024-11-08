@@ -534,9 +534,28 @@ export const GameComponent: React.FC<GameComponentInterface> = ({t, setGameButto
             }
 
 
-            function moveElements(elements: any, rollingSpeed: any, originalRollingSpeed: any, dt: any) {
-                for (const element of elements) {
-                    element.position.z -= rollingSpeed * dt;
+            function updateAndCleanObjects(objects: any[], speed: number, threshold: number, pool: any, dt: number) {
+                for (let i = objects.length - 1; i >= 0; i--) {
+                    const obj = objects[i];
+
+                    // Перемещение объекта вдоль оси Z
+                    obj.position.z += speed * dt;
+                    if (obj.physicsImpostor) {
+                    }
+
+                    if (obj.type === 'coin') {
+                        obj.rotate(BABYLON.Axis.Y, 0.01 * dt, BABYLON.Space.LOCAL);
+                        updateScoreDisplay(scoreDisplay, score);
+                        if (BABYLON.Vector3.Distance(hero.position, obj.position) < 0.4) {
+                            score += 1;
+                            pool.release(obj);
+                            objects.splice(i, 1);
+                        }
+                    }
+                    if (obj.position.z < threshold && obj.isEnabled()) {
+                        objects.splice(i, 1);
+                        pool.release(obj);
+                    }
                 }
             }
 
@@ -612,44 +631,27 @@ export const GameComponent: React.FC<GameComponentInterface> = ({t, setGameButto
                         frameCount = 0
                     }
                     // Двигаем препятствия
-                    moveElements(obstaclesInPath, rollingSpeed, originalRollingSpeed, dt);
+                    updateAndCleanObjects(obstaclesInPath, -rollingSpeed, -2, obstaclePool, dt);
+
+
+                    updateAndCleanObjects(coinsInPath, -rollingSpeed, 0, coinPool, dt);
+
+
+                    updateAndCleanObjects(newCoins, -rollingSpeed, 0, coinPool, dt);
+
+
+                    updateAndCleanObjects(newObstacles, -rollingSpeed, -2, obstaclePool, dt);
+
+
+                    updateAndCleanObjects(roadInPath, -rollingSpeed, -segmentLength, roadSegmentPool, dt);
 
                     // Обновляем коллизии и удаление препятствий
                     for (const obstacle of obstaclesInPath) {
-                        if (obstacle.position.z < -2 && obstacle.isEnabled()) {
-                            spatialGrid.clearZone(obstacle.position.x, obstacle.position.z, obstacle.radius);
-                            obstaclesInPath.splice(obstaclesInPath.indexOf(obstacle), 1);
-                            releaseObstacle(obstacle, obstaclePool, jumpObstaclePool, slideObstaclePool, rampPool);
-                        } else {
                             if (obstacle.position.z < 10) {
                                 handleObstacleCollision(hero, obstacle, dt);
                             }
-                        }
                     }
 
-                    // Двигаем монеты
-                    moveElements(coinsInPath, rollingSpeed, originalRollingSpeed, dt);
-
-                    // Обновляем удаление монет
-                    for (const coin of coinsInPath) {
-                        coin.rotate(BABYLON.Axis.Y, 0.01 * dt, BABYLON.Space.LOCAL);
-                        if (coin.position.z < 0 && coin.isEnabled()) {
-                            coinsInPath.splice(coinsInPath.indexOf(coin), 1);
-                            coinPool.release(coin);
-                        }
-                    }
-
-                    // Перемещаем новые препятствия в основной массив
-
-
-                    // Двигаем новые монеты
-                    moveElements(newCoins, rollingSpeed, originalRollingSpeed, dt);
-
-                    // Двигаем новые препятствия
-                    moveElements(newObstacles, rollingSpeed, originalRollingSpeed, dt);
-
-                    // Двигаем сегменты дороги
-                    moveElements(roadInPath, rollingSpeed, originalRollingSpeed, dt);
 
                     updateRoadSegments(scene, heroBaseY, hero, roadBox, roadSegmentPool, roadInPath, segmentLength);
                     updateSky(sky, dt);
