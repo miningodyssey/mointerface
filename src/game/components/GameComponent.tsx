@@ -44,7 +44,13 @@ interface GameComponentInterface {
     settings: any;
 }
 
-export const GameComponent: React.FC<GameComponentInterface> = ({t, setGameButtonClicked, userData, setUserData, settings}) => {
+export const GameComponent: React.FC<GameComponentInterface> = ({
+                                                                    t,
+                                                                    setGameButtonClicked,
+                                                                    userData,
+                                                                    setUserData,
+                                                                    settings
+                                                                }) => {
     const canvasRef = useRef<any>(null);
     const platformRef = useRef<HTMLDivElement | null>(null);
     const scoreDisplayRef = useRef<HTMLDivElement | null>(null);
@@ -59,6 +65,7 @@ export const GameComponent: React.FC<GameComponentInterface> = ({t, setGameButto
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
     const [scriptsLoaded, setScriptsLoaded] = useState(false);
     const [sceneCreated, setSceneCreated] = useState(false);
+    const [score, setScore] = useState(0);
     const setIsPaused = (isPaused: boolean) => {
         if (pauseMenuContRef.current) {
             pauseMenuContRef.current.style.display = isPaused ? 'block' : 'none';
@@ -248,7 +255,7 @@ export const GameComponent: React.FC<GameComponentInterface> = ({t, setGameButto
             const occupiedPositions = new Set();
             let gameEnded = false
             let isGrounded = true;
-            let laneChangeSpeed = 5;
+            let laneChangeSpeed = 1;
             let coinRotationSpeed = 0.05;
             let hero = create[0][0];
             let animations = create[1]
@@ -342,43 +349,48 @@ export const GameComponent: React.FC<GameComponentInterface> = ({t, setGameButto
 
             let startX: any, startY: any, endX: any, endY: any;
 
-            const activateHandling = () => {
-                window.addEventListener("keydown", (event) => {
-                    const result = handleKeyDown(event, rollingSpeed, create, currentLane, leftLane, rightLane, isGrounded, lastJumpTime, jumpCooldown, isLaneBlocked, hero, sliding);
-                    if (result) {
-                        currentLane = result.currentLane;
-                        lastJumpTime = result.lastJumpTime;
-                        isGrounded = result.isGrounded;
-                    }
-                });
-
-                canvas.addEventListener("pointerdown", (event: any) => {
-                    const result = handlePointerDown(event, startX, startY);
-                    startX = result.startX;
-                    startY = result.startY;
-                });
-
-                canvas.addEventListener("pointermove", (event: any) => {
-                    const result = handlePointerMove(event, startX, startY, endX, endY);
-                    if (result) {
-                        endX = result.endX;
-                        endY = result.endY;
-                    }
-                });
-
-                canvas.addEventListener("pointerup", () => {
-                    const result = handlePointerUp(startX, startY, endX, endY, rollingSpeed, create, currentLane, leftLane, rightLane, isGrounded, lastJumpTime, jumpCooldown, isLaneBlocked, hero, startSlide, previousLane);
-                    if (result) {
-                        const {deltaX, deltaY} = result; // Вы можете изменить возвращаемые значения в handlePointerUp, чтобы вернуть deltaX и deltaY
-                        const pos = handleSwipe(deltaX, deltaY, rollingSpeed, create, currentLane, leftLane, rightLane, isGrounded, lastJumpTime, jumpCooldown, isLaneBlocked, hero, sliding, previousLane);
-                        currentLane = pos.currentLane;
-                        previousLane = pos.previousLane;
-                        lastJumpTime = pos.lastJumpTime;
-                        isGrounded = pos.isGrounded;
-
-                    }
-                });
+            function onKeyDown(event: any) {
+                const result = handleKeyDown(event, rollingSpeed, create, currentLane, leftLane, rightLane, isGrounded, lastJumpTime, jumpCooldown, isLaneBlocked, hero, sliding);
+                if (result) {
+                    currentLane = result.currentLane;
+                    lastJumpTime = result.lastJumpTime;
+                    isGrounded = result.isGrounded;
+                }
             }
+
+            function onPointerDown(event: any) {
+                const result = handlePointerDown(event, startX, startY);
+                startX = result.startX;
+                startY = result.startY;
+            }
+
+            function onPointerMove(event: any) {
+                const result = handlePointerMove(event, startX, startY, endX, endY);
+                if (result) {
+                    endX = result.endX;
+                    endY = result.endY;
+                }
+            }
+
+            function onPointerUp() {
+                const result = handlePointerUp(startX, startY, endX, endY, rollingSpeed, create, currentLane, leftLane, rightLane, isGrounded, lastJumpTime, jumpCooldown, isLaneBlocked, hero, startSlide, previousLane);
+                if (result) {
+                    const {deltaX, deltaY} = result;
+                    const pos = handleSwipe(deltaX, deltaY, rollingSpeed, create, currentLane, leftLane, rightLane, isGrounded, lastJumpTime, jumpCooldown, isLaneBlocked, hero, sliding, previousLane);
+                    currentLane = pos.currentLane;
+                    previousLane = pos.previousLane;
+                    lastJumpTime = pos.lastJumpTime;
+                    isGrounded = pos.isGrounded;
+                }
+            }
+
+            const activateHandling = () => {
+                window.addEventListener("keydown", onKeyDown);
+                canvas.addEventListener("pointerdown", onPointerDown);
+                canvas.addEventListener("pointermove", onPointerMove);
+                canvas.addEventListener("pointerup", onPointerUp);
+            }
+
             activateHandling();
 
 
@@ -443,14 +455,19 @@ export const GameComponent: React.FC<GameComponentInterface> = ({t, setGameButto
             function handleObstacleCollision(hero: any, obstacle: any, dt: any) {
                 if (isHeroOnTopOfObstacle(hero, obstacle)) {
                     if (isHeroOnRamp(hero, obstacle, engine, isJumping)) {
-                        hero.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(0, 0, 0));
+                        if (!isJumping) {
+                            hero.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(0, 0, 0));
+                        }
                         return
                     }
-                    if ((obstacle.type === 'wagon' || obstacle.type === 'ramp')) {
-                        if (!isJumping && isGrounded && (1.5 < hero.position.y && hero.position.y < 1.8)) {
-                            hero.physicsImpostor.setLinearVelocity(BABYLON.Vector3.Zero());
-                            hero.physicsImpostor.setAngularVelocity(BABYLON.Vector3.Zero());
-                        }
+                }
+                if ((obstacle.type === 'ramp') || (obstacle.type === 'wagon')) {
+                    if ((!isJumping) && (1.2 < hero.position.y && hero.position.y < 1.5) && (obstacle.type === 'ramp')) {
+                        hero.physicsImpostor.setLinearVelocity(BABYLON.Vector3.Zero());
+                        hero.physicsImpostor.setAngularVelocity(BABYLON.Vector3.Zero());
+                        return;
+                    }
+                    if ((1.2 < hero.position.y && hero.position.y < 1.5)) {
                         return;
                     }
                 }
@@ -461,20 +478,21 @@ export const GameComponent: React.FC<GameComponentInterface> = ({t, setGameButto
                         if (!isJumping) {
                             endGame(gameEnded, gamePaused, rollingSpeed, updateGame, create, hasAnimationEnded, scene, hero, setIsModalOpen, endMenu, pauseButton, userData, setUserData, (score - prevSessionScore), score);
                             prevSessionScore = score;
-                            removeAllEventListeners(canvas)
+                            removeAllEventListeners(canvas, onKeyDown, onPointerDown, onPointerUp, onPointerMove)
                         }
                     } else if (obstacle.type === 'slide') {
                         if (!isSliding) {
                             endGame(gameEnded, gamePaused, rollingSpeed, updateGame, create, hasAnimationEnded, scene, hero, setIsModalOpen, endMenu, pauseButton, userData, setUserData, (score - prevSessionScore), score);
                             prevSessionScore = score;
-                            removeAllEventListeners(canvas)
+                            removeAllEventListeners(canvas, onKeyDown, onPointerDown, onPointerUp, onPointerMove)
                         }
                     } else if (obstacle.type === 'wagon') {
                         hero.physicsImpostor.setLinearVelocity(BABYLON.Vector3.Zero());
                         hero.physicsImpostor.setAngularVelocity(BABYLON.Vector3.Zero());
                         endGame(gameEnded, gamePaused, rollingSpeed, updateGame, create, hasAnimationEnded, scene, hero, setIsModalOpen, endMenu, pauseButton, userData, setUserData, (score - prevSessionScore), score);
                         prevSessionScore = score;
-                        removeAllEventListeners(canvas)
+                        removeAllEventListeners(canvas, onKeyDown, onPointerDown, onPointerUp, onPointerMove)
+                        console.log(hero.position)
 
                     } else {
                         hero.physicsImpostor.setLinearVelocity(BABYLON.Vector3.Zero());
@@ -509,10 +527,8 @@ export const GameComponent: React.FC<GameComponentInterface> = ({t, setGameButto
 
             function updateLightDirection() {
                 if (sun) {
-                    // Получаем позицию игрока
                     const heroPosition = hero.getAbsolutePosition();
 
-                    // Направляем свет в сторону игрока
                     sun.direction = heroPosition.subtract(sun.position).normalize();
                 }
             }
@@ -538,40 +554,35 @@ export const GameComponent: React.FC<GameComponentInterface> = ({t, setGameButto
                         obj.rotate(BABYLON.Axis.Y, coinRotationSpeed, BABYLON.Space.LOCAL);
                         if (BABYLON.Vector3.Distance(hero.position, obj.position) < 0.4) {
                             score += 1;
+                            setScore(score);
                             updateScoreDisplay(scoreDisplay, score);
                             coinPool.release(obj);  // Возвращаем монету в пул coinPool
                             objects.splice(i, 1);   // Удаляем из массива объектов
                         }
-                    }
-                    else if (obj.type === 'ramp') {
+                    } else if (obj.type === 'ramp') {
                         if (obj.position.z < threshold && obj.isEnabled()) {
                             objects.splice(i, 1);
                             rampPool.release(obj);  // Возвращаем рампу в пул rampPool
                         }
-                    }
-                    else if (obj.type === 'jumpObstacle') {
+                    } else if (obj.type === 'jumpObstacle') {
                         if (obj.position.z < threshold && obj.isEnabled()) {
                             objects.splice(i, 1);
                             jumpObstaclePool.release(obj);  // Возвращаем jumpObstacle в пул jumpObstaclePool
                         }
-                    }
-                    else if (obj.type === 'slideObstacle') {
+                    } else if (obj.type === 'slideObstacle') {
                         if (obj.position.z < threshold && obj.isEnabled()) {
                             objects.splice(i, 1);
-                            slideObstaclePool.release(obj);  // Возвращаем slideObstacle в пул slideObstaclePool
+                            slideObstaclePool.release(obj);
                         }
-                    }
-                    else if (obj.type === 'bigObstacle') {
+                    } else if (obj.type === 'bigObstacle') {
                         if (obj.position.z < threshold && obj.isEnabled()) {
                             objects.splice(i, 1);
-                            obstaclePool.release(obj);  // Возвращаем обычное препятствие в пул obstaclePool
+                            obstaclePool.release(obj);
                         }
                     }
 
-                    // Если объект вышел за пределы (по оси Z), возвращаем его в соответствующий пул
                     if (obj.position.z < threshold && obj.isEnabled()) {
-                        objects.splice(i, 1);  // Убираем объект из списка
-                        // В зависимости от типа объекта, возвращаем его в нужный пул
+                        objects.splice(i, 1);
                         if (obj.type === 'ramp') {
                             rampPool.release(obj);
                         } else if (obj.type === 'coin') {
@@ -587,6 +598,34 @@ export const GameComponent: React.FC<GameComponentInterface> = ({t, setGameButto
                 }
             }
 
+            const pauseGame = () => {
+                savedRollingSpeed = rollingSpeed;
+                rollingSpeed = 0;
+                gamePaused = true
+                if (pauseButton) {
+                    pauseButton.style.display = 'none';
+                }
+                if (scoreDisplay) {
+                    scoreDisplay.style.display = 'none';
+                }
+            }
+
+            function handleVisibilityChange() {
+                if (document.hidden) {
+                    setIsPaused(true)
+                    pauseGame();
+                }
+            }
+            function handleBlur() {
+                if (rollingSpeed !== 0) {
+                    setIsPaused(true)
+                    pauseGame();
+                }
+            }
+            document.addEventListener("visibilitychange", handleVisibilityChange);
+
+            window.addEventListener('blur', handleBlur);
+
             function updateGame() {
                 let dt = engine.getDeltaTime() / 1000;
                 try {
@@ -594,9 +633,6 @@ export const GameComponent: React.FC<GameComponentInterface> = ({t, setGameButto
                         endMenu.style.display = 'none'
                     }
                     updateLightDirection();
-
-                    // Проверка состояния игры
-                    if (gamePaused || document.visibilityState === "hidden") return;
 
                     updateScoreDisplay(scoreDisplay, score);
                     if (hero.physicsImpostor && hero.physicsImpostor.getLinearVelocity().y > 4 && frameCount % 30 === 0) {
@@ -720,9 +756,9 @@ export const GameComponent: React.FC<GameComponentInterface> = ({t, setGameButto
 
                     // Обновляем коллизии и удаление препятствий
                     for (const obstacle of obstaclesInPath) {
-                            if (obstacle.position.z < 10) {
-                                handleObstacleCollision(hero, obstacle, dt);
-                            }
+                        if (obstacle.position.z < 10) {
+                            handleObstacleCollision(hero, obstacle, dt);
+                        }
                     }
 
 
@@ -735,19 +771,10 @@ export const GameComponent: React.FC<GameComponentInterface> = ({t, setGameButto
             }
 
             scene.registerBeforeRender(updateGame);
+
             if (pauseButton) {
                 pauseButton.style.display = 'block'
-                pauseButton.addEventListener('click', () => {
-                    savedRollingSpeed = rollingSpeed;
-                    rollingSpeed = 0;
-                    gamePaused = true
-                    if (pauseButton) {
-                        pauseButton.style.display = 'none';
-                    }
-                    if (scoreDisplay) {
-                        scoreDisplay.style.display = 'none';
-                    }
-                })
+                pauseButton.addEventListener('click', pauseGame)
             }
             if (resumeButton) {
                 resumeButton.addEventListener('click', () => {
@@ -788,6 +815,7 @@ export const GameComponent: React.FC<GameComponentInterface> = ({t, setGameButto
                     newCoins.length = 0;
                     newObstacles.length = 0;
                     clearTaskQueue(taskQueue);
+                    activateHandling()
                     isFirstSpawn = true;
                     firstSpawn();
                     rollingSpeed = 14;
@@ -805,7 +833,8 @@ export const GameComponent: React.FC<GameComponentInterface> = ({t, setGameButto
                         setUserData(updatedData);
                         setIsModalOpen(false);
                     });
-
+                    refreshGameState()
+                    currentLane = middleLane
                     scene.registerBeforeRender(updateGame);
 
                     if (pauseButton) {
@@ -819,7 +848,9 @@ export const GameComponent: React.FC<GameComponentInterface> = ({t, setGameButto
                 rollingSpeed = 14;
 
             }
+
         }
+
 
         return () => {
             if (restartButton) {
@@ -859,7 +890,7 @@ export const GameComponent: React.FC<GameComponentInterface> = ({t, setGameButto
             </span>
             <span ref={pauseMenuContRef} style={{display: 'none'}}>
                 <PauseModal
-                    scoreDisplay={scoreDisplayRef.current?.textContent}
+                    scoreDisplay={score}
                     setIsPaused={setIsPaused}
                     resumeButtonRef={resumeButtonRef}
                     backToMenuRef={backToMenuOnPauseMenuRef}

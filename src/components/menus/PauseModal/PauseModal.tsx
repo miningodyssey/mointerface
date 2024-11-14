@@ -1,4 +1,4 @@
-import React, {forwardRef, Ref, useEffect, useMemo, useRef} from "react";
+import React, {forwardRef, Ref, useEffect, useMemo, useRef, useState} from "react";
 import styles from './PauseModal.module.css';
 import {motion} from 'framer-motion';
 import {Button, Placeholder} from "@telegram-apps/telegram-ui";
@@ -10,7 +10,7 @@ interface PauseModalInterface {
     setIsPaused: (value: boolean) => void;
     resumeButtonRef: Ref<HTMLButtonElement>;
     backToMenuRef: Ref<HTMLButtonElement>;
-    scoreDisplay: any;
+    scoreDisplay: number;
     t: any;
     className?: string;
 }
@@ -77,10 +77,7 @@ const PauseModal = forwardRef<HTMLDivElement, PauseModalInterface>(({
             console.error('Element .modalOverlay not found');
         }
     }, []);
-    let score = 0;
-    if (scoreDisplay) {
-        score = parseInt(scoreDisplay.replace("Score: ", ""), 10);
-    }
+
     return (
         <motion.div
             className={`${styles.modalOverlay} ${className}`}
@@ -95,7 +92,7 @@ const PauseModal = forwardRef<HTMLDivElement, PauseModalInterface>(({
                 </div>
                 <div className={styles.score}>
                     <span>{t('Current score')}</span>
-                    <h2><CoinIcon/>{score}</h2>
+                    <h2><CoinIcon/>{scoreDisplay}</h2>
                 </div>
                 <Button
                     mode="bezeled"

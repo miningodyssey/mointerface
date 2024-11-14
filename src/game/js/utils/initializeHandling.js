@@ -66,11 +66,11 @@ export function handlePointerUp(startX, startY, endX, endY, rollingSpeed, create
     }
 }
 
-export function removeAllEventListeners(canvas) {
-    window.removeEventListener("keydown", handleKeyDown);
-    canvas.removeEventListener("pointerdown", handlePointerDown);
-    canvas.removeEventListener("pointermove", handlePointerMove);
-    canvas.removeEventListener("pointerup", handlePointerUp);
+export function removeAllEventListeners(canvas, onKeyDown, onPointerDown, onPointerUp, onPointerMove) {
+    window.removeEventListener("keydown", onKeyDown);
+    canvas.removeEventListener("pointerdown", onPointerDown);
+    canvas.removeEventListener("pointermove", onPointerMove);
+    canvas.removeEventListener("pointerup", onPointerUp);
 }
 
 export function handleSwipe(deltaX, deltaY, rollingSpeed, create, currentLane, leftLane, rightLane, isGrounded, lastJumpTime, jumpCooldown, isLaneBlocked, hero, startSlide, previousLane) {

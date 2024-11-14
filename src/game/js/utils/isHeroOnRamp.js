@@ -1,4 +1,4 @@
-import BABYLON from "babylonjs";
+import * as BABYLON from "babylonjs";
 
 export function isHeroOnRamp(hero, ramp, engine, isJumping) {
     const dt = engine.getDeltaTime() / 1000;
@@ -22,13 +22,7 @@ export function isHeroOnRamp(hero, ramp, engine, isJumping) {
 
     if (isOnRamp) {
         if (!isJumping) {
-            // Сброс вертикальной скорости
-            hero.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(0, 0, 0), hero.getAbsolutePosition()); // Negative impulse downwards
-            hero.physicsImpostor.setAngularVelocity(BABYLON.Vector3.Zero());
-
-            // Снижение вертикальной позиции, чтобы предотвратить подлет
             if (hero.position.y > 1.8) {
-                hero.position.y = Math.max(hero.position.y - (0.1 * dt), 1.8);
             }
         }
         return true;

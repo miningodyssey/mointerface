@@ -7,6 +7,10 @@ export function endGame(gameEnded, gamePaused, rollingSpeed, updateGame, create,
     endMenu.style.display = 'block';
     pauseButton.style.display = 'none';
     const animationGroup = create[1][4];
+    if ("vibrate" in navigator) {
+        navigator.vibrate(200); // Вибрация на 200 мс
+    }
+
     if (!hasAnimationEnded) {
         hasAnimationEnded = true
         animationGroup.start(false, 1.0, animationGroup.from, animationGroup.to);
