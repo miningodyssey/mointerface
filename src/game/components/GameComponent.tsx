@@ -62,7 +62,7 @@ export const GameComponent: React.FC<GameComponentInterface> = ({
     const pauseButtonRef = useRef<HTMLButtonElement | null>(null);
     const resumeButtonRef = useRef<HTMLButtonElement | null>(null);
 
-    const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
+    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const [scriptsLoaded, setScriptsLoaded] = useState(false);
     const [sceneCreated, setSceneCreated] = useState(false);
     const [score, setScore] = useState(0);
@@ -324,14 +324,14 @@ export const GameComponent: React.FC<GameComponentInterface> = ({
                         }
                     });
 
-                    animations[5].start();
+                    animations[2].start();
                     isSliding = true;
 
                     if (!isGrounded) {
                         hero.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(0, -2, 0), hero.getAbsolutePosition()); // Negative impulse downwards
                         hero.physicsImpostor.setAngularVelocity(BABYLON.Vector3.Zero()); // Reset angular velocity
                     }
-                    animations[5].onAnimationEndObservable.addOnce(() => {
+                    animations[2].onAnimationEndObservable.addOnce(() => {
                         stopSliding();
                     });
                 }
@@ -492,7 +492,6 @@ export const GameComponent: React.FC<GameComponentInterface> = ({
                         endGame(gameEnded, gamePaused, rollingSpeed, updateGame, create, hasAnimationEnded, scene, hero, setIsModalOpen, endMenu, pauseButton, userData, setUserData, (score - prevSessionScore), score);
                         prevSessionScore = score;
                         removeAllEventListeners(canvas, onKeyDown, onPointerDown, onPointerUp, onPointerMove)
-                        console.log(hero.position)
 
                     } else {
                         hero.physicsImpostor.setLinearVelocity(BABYLON.Vector3.Zero());
@@ -611,20 +610,25 @@ export const GameComponent: React.FC<GameComponentInterface> = ({
             }
 
             function handleVisibilityChange() {
-                if (document.hidden) {
+                if (document.hidden && !gamePaused) {
                     setIsPaused(true)
                     pauseGame();
                 }
             }
+
             function handleBlur() {
-                if (rollingSpeed !== 0) {
+                if (!gamePaused) {
                     setIsPaused(true)
                     pauseGame();
                 }
             }
+
             document.addEventListener("visibilitychange", handleVisibilityChange);
 
             window.addEventListener('blur', handleBlur);
+
+            let hasCreatedObstacles = false; // Флаг для отслеживания вызова функции
+
 
             function updateGame() {
                 let dt = engine.getDeltaTime() / 1000;
@@ -689,10 +693,44 @@ export const GameComponent: React.FC<GameComponentInterface> = ({
                         isFirstSpawn = false
                         isAddingObstacle = false;
                         if (rollingSpeed < 25) {
-                            rollingSpeed += 0.1;
+                            rollingSpeed += 1.5;
                         }
                         frameCount = 0
                     }
+
+                    if (obstaclesInPath.length === 0 && coinsInPath.length === 0 && newObstacles.length === 0 && newCoins.length === 0) {
+                        if (!hasCreatedObstacles) {
+                            addObstaclesAndCoins(
+                                gamePaused,
+                                leftLane,
+                                middleLane,
+                                rightLane,
+                                hero,
+                                engine,
+                                scene,
+                                newObstacles,
+                                newCoins,
+                                heroBaseY,
+                                roadBox,
+                                coinRotationSpeed,
+                                modelCache,
+                                isFirstSpawn,
+                                PATTERN_WEIGHTS,
+                                taskQueue,
+                                coinPool,
+                                slideObstaclePool,
+                                obstaclePool,
+                                jumpObstaclePool,
+                                rampPool,
+                                occupiedPositions,
+                                spatialGrid
+                            );
+                            hasCreatedObstacles = true;
+                        }
+                    } else {
+                        hasCreatedObstacles = false;
+                    }
+
                     // Двигаем препятствия
                     updateAndCleanObjects(
                         obstaclesInPath,

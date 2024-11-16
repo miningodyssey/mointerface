@@ -6,7 +6,7 @@ export function endGame(gameEnded, gamePaused, rollingSpeed, updateGame, create,
     setIsModalOpen(true);
     endMenu.style.display = 'block';
     pauseButton.style.display = 'none';
-    const animationGroup = create[1][4];
+    const animationGroup = create[1][5];
     if ("vibrate" in navigator) {
         navigator.vibrate(200); // Вибрация на 200 мс
     }

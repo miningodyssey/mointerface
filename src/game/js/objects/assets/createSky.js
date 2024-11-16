@@ -1,6 +1,6 @@
 export async function createSky(scene) {
     try {
-        const result = await BABYLON.SceneLoader.ImportMeshAsync("", '././models/', "sky.glb", scene);
+        const result = await BABYLON.SceneLoader.ImportMeshAsync("", '././models/sky/', "sky.glb", scene);
 
         if (!result.meshes || result.meshes.length === 0) {
             console.error("Модели не найдены в sky.glb");

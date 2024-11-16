@@ -1,5 +1,5 @@
 export async function createHero(scene) {
-  const { meshes, animationGroups } = await BABYLON.SceneLoader.ImportMeshAsync("", "/Jake/", "lastfix1.glb", scene);
+  const { meshes, animationGroups } = await BABYLON.SceneLoader.ImportMeshAsync("", "/models/heroes/", "Original version.glb", scene);
   const model = meshes[0];
   model.scaling = new BABYLON.Vector3(5, 5, 5);
   model.rotation = new BABYLON.Vector3(0, 0, 0);
