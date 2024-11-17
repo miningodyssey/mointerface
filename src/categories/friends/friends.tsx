@@ -55,7 +55,7 @@ const FriendsCategory: React.FC<FriendsCategoryProps> = ({
                     <ListElement
                         key={index}
                         name={player.nickname || player.id} // используйте ID, если ника нет
-                        points={Number(player.earnedByReferer)}
+                        points={Math.floor(Number(player.earnedByReferer))}
                         position={index + 1} // позиция игрока, если это нужно
                     />
                 ))}
