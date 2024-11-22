@@ -25,13 +25,15 @@ import TasksCategory from "@/categories/tasks/tasks";
 import InvitedModal from "@/components/menus/InvitedModal/invitedModal";
 import ProfileCategory from "@/categories/profile/profile";
 import ForwardIcon from "@/components/Icons/ForwardIcon/forwardIcon";
-import {TonConnectButton, useTonAddress, useTonConnectUI} from '@tonconnect/ui-react';
+import {TonConnectButton, useTonAddress, useTonConnectModal, useTonConnectUI} from '@tonconnect/ui-react';
 import {fetchTopPlayers} from "@/components/functions/fetchTopPlayers";
 import {fetchReferals} from "@/components/functions/fetchReferals";
 import {fetchFriends} from "@/components/functions/fetchFriends";
 import GameComponent from "@/game/components/GameComponent";
 import {SettingsModal} from "@/components/menus/SettingsModal/SettingsModal";
 import {updateUserSettings} from "@/components/functions/updateUserSettings";
+import {detectPlatform} from "@/game/js/utils/detectPlatforms";
+import {useTonConnect} from "@/hooks/useTonConnect";
 
 
 type TopPlayersType = {
@@ -55,6 +57,7 @@ export default function HomeComponent() {
     const [friends, setFriends] = useState([]);
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
     const [gameButtonClicked, setGameButtonClicked] = useState(false);
+    const { sender, walletAddress, tonClient } = useTonConnect();
     const [tonConnectUI, setOptions] = useTonConnectUI();
     const userFriendlyAddress = useTonAddress();
     const audioRef = useRef<HTMLAudioElement>(null);
@@ -64,7 +67,6 @@ export default function HomeComponent() {
         antiAliasingEnabled: true,
         textureResolution: 50,
     });
-
     const fadeIn = useMemo(() => ({
         hidden: {opacity: 0},
         visible: {opacity: 1, transition: {duration: 0.5}},
@@ -106,6 +108,13 @@ export default function HomeComponent() {
                 window.Telegram.WebApp.disableVerticalSwipes();
                 window.Telegram.WebApp.isVerticalSwipesEnabled = false;
                 window.Telegram.WebApp.expand()
+                try {
+                    if (detectPlatform() !== 'desktop') {
+                        window.Telegram.WebApp.requestFullscreen()
+                    }
+                } catch (e) {
+
+                }
             }
             if (window.TelegramWebviewProxy) {
                 window.TelegramWebviewProxy.postEvent('web_app_setup_swipe_behavior', {allow_vertical_swipe: false});
@@ -151,6 +160,9 @@ export default function HomeComponent() {
         initialize();
     }, []);
 
+    const handleConnectWallet = useCallback(() => {
+        tonConnectUI.openModal();
+    }, [tonConnectUI]);
     useEffect(() => {
         const category = categoryRef.current;
         let isDragging = false;
@@ -301,7 +313,7 @@ export default function HomeComponent() {
                                 <p className={styles.totalbalance}>{t('totalBalance' as any)}</p>
                                 <div className={styles.balanceDescription}>
                                     <CoinIcon/>
-                                    <p className={styles.balance}>{userData?.balance || 0}</p>
+                                    <p className={styles.balance}>{Math.floor(Number(userData?.balance)) || 0}</p>
                                 </div>
                             </div>
                         </div>
@@ -312,7 +324,9 @@ export default function HomeComponent() {
                         <div className={styles.rightButtons}>
                             {
                                 !userFriendlyAddress && (
-                                    <div className={styles.topBarBtn} onClick={() => tonConnectUI.openModal()}>
+                                    <div className={styles.topBarBtn} onClick={() => {
+                                        tonConnectUI.openModal()
+                                    }}>
                                         <WalletIcon/>
                                         <p>{t("Wallet" as any)}</p>
                                     </div>
@@ -392,7 +406,10 @@ export default function HomeComponent() {
                         userData={userData}
                         setUserData={setUserData}
                         token={authKey}
+                        tonClient={tonClient}
                         t={t}
+                        walletAddress={walletAddress}
+                        sender={sender}
                     />
                 )}
 

@@ -43,7 +43,7 @@ const FriendsCategory: React.FC<FriendsCategoryProps> = ({
                 <p>
                     {t("You have earned ")}
                     <span
-                        className={styles.inlineHeading}>{referals.reduce((sum: number, referal: any) => sum + Number(referal.earnedByReferer), 0)}
+                        className={styles.inlineHeading}>{Math.floor(Number(referals.reduce((sum: number, referal: any) => sum + Number(referal.earnedByReferer), 0)))}
                     </span>
                     {t(" from your friends")}
                 </p>

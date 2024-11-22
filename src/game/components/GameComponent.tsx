@@ -130,7 +130,7 @@ export const GameComponent: React.FC<GameComponentInterface> = ({
         let newCoins: any[] = [];
         let create: any[]
         let sky: any
-        let device: any = detectPlatform(pl)
+        let device: any = detectPlatform()
         let modelCache = {
             subwayModel: null,
             rampModel: null,
@@ -162,14 +162,13 @@ export const GameComponent: React.FC<GameComponentInterface> = ({
             camera.rotation.x = 0.15;
             camera.rotationAutoUpdate = false;
             camera.position = new BABYLON.Vector3(0, 1.45, 2.65);
-            // Создание освещения
-            light = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(0, 1, 0), scene);
-            light.intensity = 0.7;
 
-            sun = new BABYLON.DirectionalLight("sun", new BABYLON.Vector3(-1, -1, 0), scene);
-            sun.position = new BABYLON.Vector3(0, 6, -2);
-            sun.intensity = 0.7;
+            const hemiLight = new BABYLON.HemisphericLight("hemiLight", new BABYLON.Vector3(0, 1, 0), scene);
+            hemiLight.intensity = 0.8;
 
+            const sunLight = new BABYLON.DirectionalLight("sunLight", new BABYLON.Vector3(-1, -1, 0), scene);
+            sunLight.position = new BABYLON.Vector3(0, 6, 0);
+            sunLight.intensity = 1.5;
             // Определение размера карты
             mapSize = (device === 'mobile') ? 128 : 1024;
 
@@ -177,7 +176,7 @@ export const GameComponent: React.FC<GameComponentInterface> = ({
             setupRenderingPipeline(engine, scene, camera, settings)
 
             await initializePhysics(scene, ammoLoaded); // Инициализация физики
-            modelCache = await loadAllMeshes(scene);
+            modelCache = await loadAllMeshes(scene, userData.selectedWagon, userData.selectedSlideObstacle, userData.selectedJumpObstacle, userData.selectedRoad);
             ({
                 coinPool,
                 slideObstaclePool,
@@ -187,7 +186,7 @@ export const GameComponent: React.FC<GameComponentInterface> = ({
                 roadSegmentPool
             } = await initializePools(scene, modelCache));
 
-            create = await createHero(scene);
+            create = await createHero(scene, userData.selectedSkin);
             sky = await createSky(scene);
             createRoadSegments(
                 scene, 0.45, -1, 20, roadSegmentPool, roadInPath, 4.5
@@ -698,7 +697,7 @@ export const GameComponent: React.FC<GameComponentInterface> = ({
                         frameCount = 0
                     }
 
-                    if (obstaclesInPath.length === 0 && coinsInPath.length === 0 && newObstacles.length === 0 && newCoins.length === 0) {
+                    if (obstaclesInPath.length === 0 && coinsInPath.length === 0 && newObstacles.length === 0 && newCoins.length === 0 && !isFirstSpawn) {
                         if (!hasCreatedObstacles) {
                             addObstaclesAndCoins(
                                 gamePaused,

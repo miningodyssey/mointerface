@@ -1,8 +1,6 @@
-export function detectPlatform(platform) {
-    // Если platform не передан, используем platform от navigator
-    if (!platform) {
-        platform = navigator.platform.toLowerCase();
-    }
+export function detectPlatform() {
+
+    const platform = navigator.platform.toLowerCase();
 
     // Убедимся, что platform - это строка
     if (typeof platform !== 'string') {

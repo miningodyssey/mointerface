@@ -1,13 +1,13 @@
 import { applyMipMappingToModel } from "@/game/js/utils/mipMapping";
 
-export async function loadAllMeshes(scene) {
+export async function loadAllMeshes(scene, wagon, slideObstacle, jumpObstacle, road) {
     const meshNames = [
-        { name: 'train', file: 'Train1.glb', cacheKey: 'subwayModel' },
+        { name: 'train', file: `${wagon}.glb`, cacheKey: 'subwayModel' },
         { name: 'coins', file: 'coin.glb', cacheKey: 'coinModel' },
-        { name: 'slideObstacles', file: 'slideObstacle.glb', cacheKey: 'slideObstacleModel' },
-        { name: 'jumpObstacles', file: 'jumpObstacle.glb', cacheKey: 'jumpObstacleModel' },
+        { name: 'slideObstacles', file: `${slideObstacle}.glb`, cacheKey: 'slideObstacleModel' },
+        { name: 'jumpObstacles', file: `${jumpObstacle}.glb`, cacheKey: 'jumpObstacleModel' },
         { name: 'ramps', file: 'ramp.glb', cacheKey: 'rampModel' },
-        { name: 'roads', file: 'Road1.glb', cacheKey: 'roadModel' },
+        { name: 'roads', file: `${road}.glb`, cacheKey: 'roadModel' },
         { name: 'sky', file: 'SKY(SPEHE1).glb', cacheKey: 'skyModel' }
     ];
 

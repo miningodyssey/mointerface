@@ -9,7 +9,7 @@
 
 .ScoreBoard {
     position: absolute;
-    top: 20px;
+    top: 10vh;
     right: 20px;
     padding: 10px 20px;
     background-color: rgba(0, 0, 0, 0.7);
@@ -24,7 +24,7 @@
 }
 .PauseBtn {
     position: absolute;
-    top: 20px;
+    top: 10vh;
     left: 20px;
     z-index: 11;
     display: none;
