@@ -22,7 +22,7 @@ interface ProfileCategoryProps {
     token?: string;
     t: any;
     tonClient: any;
-    walletAddress: any;
+    walletAddress: Address | null;
     ref: any;
     sender: any;
 }
