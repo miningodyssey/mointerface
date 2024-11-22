@@ -2,7 +2,7 @@
     color: var(--tgui--bg_color);
     display: flex;
     width: 99.9%;
-    height: 99.9vh;
+    height: 90vh;
     flex-direction: column;
     background: black;
     justify-content: center;
@@ -241,14 +241,14 @@
 }
 
 .topBarContainer {
-    width: 100vw;
+    width: 98vw;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 20px 20px 20px;
     z-index: 1000;
     flex-shrink: 0;
     box-sizing: border-box;
+    padding: 20px 20px 20px;
 }
 
 .userDescription {

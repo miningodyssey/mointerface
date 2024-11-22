@@ -237,7 +237,6 @@ const ProfileCategory: React.FC<ProfileCategoryProps> = ({fadeIn, userData, setU
             console.log("Jetton Master created successfully");
 
             console.log("Getting user's USDT address...");
-            const walletAddressObj = Address.parse(walletAddress);
             const usersUsdtAddress = await jettonMaster.getWalletAddress(walletAddress);
             console.log("User USDT Address:", usersUsdtAddress.toString());
 
