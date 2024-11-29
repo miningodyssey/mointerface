@@ -57,7 +57,7 @@ export default function HomeComponent() {
     const [friends, setFriends] = useState([]);
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
     const [gameButtonClicked, setGameButtonClicked] = useState(false);
-    const { sender, walletAddress, tonClient } = useTonConnect();
+    const { sender, walletAddress, tonClient, network } = useTonConnect();
     const [tonConnectUI, setOptions] = useTonConnectUI();
     const userFriendlyAddress = useTonAddress();
     const audioRef = useRef<HTMLAudioElement>(null);
@@ -406,10 +406,8 @@ export default function HomeComponent() {
                         userData={userData}
                         setUserData={setUserData}
                         token={authKey}
-                        tonClient={tonClient}
                         t={t}
-                        walletAddress={walletAddress}
-                        sender={sender}
+                        userid={userId}
                     />
                 )}
 

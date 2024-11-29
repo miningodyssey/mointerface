@@ -1,30 +1,40 @@
-import React, {useCallback, useEffect, useRef, useState} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import styles from "./profile.module.css";
 import {motion} from "framer-motion";
 import Card from "@/categories/profile/Card/card";
-import {Cell, Input, TabsList, Button, Placeholder, Modal} from "@telegram-apps/telegram-ui";
+import {Button, Cell, Input, Modal, Placeholder, TabsList} from "@telegram-apps/telegram-ui";
 import CoinIcon from "@/components/Icons/CoinIcon/CoinIcon";
 import HeroIconPNG from "@/components/Icons/heroIcon/heroIconPNG";
 import CheckIcon from "@/components/Icons/CheckIcon/checkIcon";
 import {Icon28Edit} from "@telegram-apps/telegram-ui/dist/icons/28/edit";
 import {updateUser} from "@/components/functions/updateUser";
 import {updateCacheWithSelection} from "@/components/functions/updateCacheWithSelection";
-import {useTonConnectModal} from "@tonconnect/ui-react";
-import {JettonMaster, toNano} from "ton";
-import {JettonWallet} from "@/wrappers/JettonWallet";
+import {useTonConnectModal, useTonConnectUI} from "@tonconnect/ui-react";
 import {Address} from "@ton/core";
 import {useGenerateId} from "@/hooks/useGenerateId";
+import {useTonConnect} from "@/hooks/useTonConnect";
+import {toNano} from "ton";
+import {JettonMaster} from "@ton/ton";
+import {JettonWallet} from "@/wrappers/JettonWallet";
+import crypto from 'crypto';
+
 
 interface ProfileCategoryProps {
     fadeIn: any;
     userData: any;
+    userid: any;
     setUserData: (data: any) => void;
     token?: string;
     t: any;
-    tonClient: any;
-    walletAddress: Address | null;
     ref: any;
-    sender: any;
+}
+
+interface RestoredItems {
+    ownedSkins: string[],
+    ownedWagons: string[],
+    ownedRoads: string[],
+    ownedJumpObstacles: string[],
+    ownedSlideObstacles: string[],
 }
 
 interface CardData {
@@ -38,7 +48,15 @@ interface CardData {
     cost: number;
 }
 
-const ProfileCategory: React.FC<ProfileCategoryProps> = ({fadeIn, userData, setUserData, token, t, ref, tonClient, walletAddress, sender}) => {
+interface ParsedComment {
+    cardId: string;
+    cost: number;
+    wallet: string;
+    userid: string;
+}
+
+
+const ProfileCategory: React.FC<ProfileCategoryProps> = ({fadeIn, userData, setUserData, token, t, ref, userid}) => {
 
     const defaultWagon = "defaultWagon";
     const defaultSkin = "defaultSkin";
@@ -54,6 +72,8 @@ const ProfileCategory: React.FC<ProfileCategoryProps> = ({fadeIn, userData, setU
     const [selectedJumpObstacle, setSelectedJumpObstacle] = useState(userData.selectedJumpObstacle);
     const [selectedSlideObstacle, setSelectedSlideObstacle] = useState(userData.selectedSlideObstacle);
     const [nicknameInput, setNicknameInput] = useState(userData.nickname);
+    const { sender, walletAddress, tonClient, network } = useTonConnect();
+    const [tonConnectUI] = useTonConnectUI();
     const [cardData, setCardData] = useState<CardData[]>([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const orderId = useGenerateId();
@@ -62,6 +82,8 @@ const ProfileCategory: React.FC<ProfileCategoryProps> = ({fadeIn, userData, setU
     const [selectedCard, setSelectedCard] = useState<CardData | null>(null);
     const [errorModalOpen, setErrorModalOpen] = useState(false); // Модальное окно для ошибки
     const [errorMessage, setErrorMessage] = useState("");
+    const encryptionKey = '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef';
+    const key = Buffer.from(encryptionKey.slice(0, 32));
 
 
     const categories = [
@@ -69,7 +91,7 @@ const ProfileCategory: React.FC<ProfileCategoryProps> = ({fadeIn, userData, setU
             name: t("Skins"),
             tag: 'Skins',
             items: [
-                { id: "defaultSkin", title: t("Default Skin"), cost: 0, purchased: true },
+                { id: "defaultSkin", title: t("Default"), cost: 0, purchased: true },
                 { id: "blackSkin", title: "Black", cost: 5000, purchased: userData.ownedSkins?.includes("blackSkin") },
                 { id: "blueSkin", title: "Blue", cost: 5000, purchased: userData.ownedSkins?.includes("blueSkin") },
                 { id: "telegramSkin", title: "Telegram", cost: 10000, purchased: userData.ownedSkins?.includes("telegramSkin") },
@@ -85,7 +107,7 @@ const ProfileCategory: React.FC<ProfileCategoryProps> = ({fadeIn, userData, setU
             name: t("Wagons"),
             tag: 'Wagons',
             items: [
-                { id: "defaultWagon", title: t("Default Wagon"), cost: 0, purchased: true },
+                { id: "defaultWagon", title: t("Default"), cost: 0, purchased: true },
                 { id: "orangeWagon", title: t("Orange"), cost: 5000, purchased: userData.ownedWagons?.includes("orangeWagon") },
             ],
             selected: selectedWagon || "defaultWagon",
@@ -95,7 +117,7 @@ const ProfileCategory: React.FC<ProfileCategoryProps> = ({fadeIn, userData, setU
             name: t("Roads"),
             tag: 'Roads',
             items: [
-                { id: "defaultRoad", title: t("Default Road"), cost: 0, purchased: true },
+                { id: "defaultRoad", title: t("Default"), cost: 0, purchased: true },
                 { id: "forestRoad", title: t("Forest"), cost: 5000, purchased: userData.ownedRoads?.includes("forestRoad") },
             ],
             selected: selectedRoad || "defaultRoad",
@@ -215,6 +237,167 @@ const ProfileCategory: React.FC<ProfileCategoryProps> = ({fadeIn, userData, setU
             setIsInsufficientFundsModalOpen(true);
         }
     };
+    const decodeHexToString = (hex: string): string => {
+        try {
+            const cleanHex = hex.replace(/^0+/, ''); // Убираем ведущие нули
+            const asciiString = cleanHex.match(/.{2}/g)?.map(byte => String.fromCharCode(parseInt(byte, 16))).join('');
+            return asciiString || '';
+        } catch (error) {
+            console.error("Failed to decode hex string:", error);
+            return ''; // Возвращаем пустую строку при ошибке
+        }
+    };
+
+    const processHexBlocks = (input: string): string[] => {
+        try {
+            // Ищем блоки формата x{...}
+            const blocks = input.match(/x\{[0-9A-Fa-f]+\}/g) || [];
+            const sortedBlocks = blocks
+                .map(block => block.slice(2, -1)) // Убираем 'x{' и '}'
+                .map(decodeHexToString) // Декодируем каждую строку
+            return sortedBlocks
+        } catch (error) {
+            console.error("Failed to process hex blocks:", error);
+            return [];
+        }
+    };
+
+    function joinEncryptedParts(array: string[]): string {
+        const regex = /^[a-fA-F0-9]+:[a-fA-F0-9]+$/;
+
+        let foundIndex = -1;
+
+        // Найти индекс первого элемента, который удовлетворяет условию
+        for (let i = 0; i < array.length; i++) {
+            if (regex.test(array[i])) {
+                foundIndex = i;
+                break;
+            }
+        }
+
+        // Если ничего не найдено, вернуть массив как есть
+        if (foundIndex === -1) {
+            return '';
+        }
+
+        // Объединяем все элементы начиная с найденного
+        // Возвращаем массив с неизменённой начальной частью и сконкатенированной строкой
+        return array.slice(foundIndex).join('');
+    }
+
+
+    function encryptComment(text: string, key: Buffer): string {
+        const iv = crypto.randomBytes(16); // Генерация корректного IV длиной 16 байт
+        const cipher = crypto.createCipheriv("aes-256-cbc", key, iv);
+        let encrypted = cipher.update(text, "utf8", "hex");
+        encrypted += cipher.final("hex");
+        return `${iv.toString("hex")}:${encrypted}`; // Корректная конкатенация IV и зашифрованного текста
+    }
+
+    function decryptComment(encryptedData: string, key: Buffer): string {
+        try {
+            const [ivHex, encryptedText] = encryptedData.split(":");
+            if (!ivHex || !encryptedText) {
+                throw new Error("Invalid encrypted data format");
+            }
+            const iv = Buffer.from(ivHex, 'hex');
+            const decipher = crypto.createDecipheriv("aes-256-cbc", key, iv);
+            let decrypted = decipher.update(encryptedText, "hex", "utf8");
+            decrypted += decipher.final("utf8");
+            return decrypted;
+        } catch (error) {
+            return "skip";
+        }
+    }
+
+
+    const getCommentsFromTransactions = async (address: Address, key: Buffer) => {
+        try {
+            if (!tonClient) {
+                console.error("TON Client is not initialized");
+                return;
+            }
+            if (!walletAddress) {
+                console.error("Wallet address is missing");
+                return;
+            }
+            const transactions = await tonClient.getTransactions(address, { limit: 100 });
+            let result: string[] = []
+            transactions.forEach((transaction: any) => {
+                if (transaction.inMessage && transaction.inMessage.body) {
+                    const slice = transaction.inMessage.body.toString();
+                    const comments = processHexBlocks(slice);
+                    const comment = joinEncryptedParts(comments);
+                    const decryptedComment = decryptComment(comment, key)
+                    if (decryptedComment !== 'skip') {
+                        result.push(decryptedComment);
+                    }
+                }
+            });
+            return result
+        } catch (error) {
+            console.error("Error fetching transactions:", error);
+        }
+    };
+
+
+    const restorePurchases = (comments: string[]) => {
+        const restoredItems: RestoredItems = {
+            ownedSkins: [],
+            ownedWagons: [],
+            ownedRoads: [],
+            ownedJumpObstacles: [],
+            ownedSlideObstacles: [],
+        };
+
+        const currentUserId = userid;
+        comments.forEach((comment) => {
+            try {
+                const parsedComment: ParsedComment = JSON.parse(comment);
+                if ((parsedComment.userid !== currentUserId) || (parsedComment.userid === undefined)) {
+                    return;
+                }
+
+                const { cardId } = parsedComment;
+
+                if (cardId.includes("Skin")) {
+                    restoredItems.ownedSkins.push(cardId);
+                } else if (cardId.includes("Wagon")) {
+                    restoredItems.ownedWagons.push(cardId);
+                } else if (cardId.includes("Road")) {
+                    restoredItems.ownedRoads.push(cardId);
+                } else if (cardId.includes("JumpObstacle")) {
+                    restoredItems.ownedJumpObstacles.push(cardId);
+                } else if (cardId.includes("SlideObstacle")) {
+                    restoredItems.ownedSlideObstacles.push(cardId);
+                }
+            } catch (error) {
+                console.error("Ошибка при обработке комментария:", comment, error);
+            }
+        });
+
+        // Обновление данных пользователя, если были восстановлены покупки
+        if (Object.values(restoredItems).some((items) => items.length > 0)) {
+            const updatedUserData = {
+                ...userData,
+                ...Object.keys(restoredItems).reduce((acc, key) => {
+                    // Указываем, что key будет ключом типа RestoredItems
+                    const itemKey = key as keyof RestoredItems;
+                    return {
+                        ...acc,
+                        [itemKey]: Array.from(new Set([...(userData[itemKey] || []), ...restoredItems[itemKey]])), // Уникальные элементы
+                    };
+                }, {}),
+            };
+
+            setUserData(updatedUserData);
+            const updatedData = await updateUser(updatedUserData);
+            console.log("Покупки успешно восстановлены:", restoredItems);
+        } else {
+            console.log("Нет новых покупок для восстановления.");
+        }
+    };
+
 
 
     const handlePurchaseConfirm = async () => {
@@ -230,28 +413,32 @@ const ProfileCategory: React.FC<ProfileCategoryProps> = ({fadeIn, userData, setU
                 return;
             }
 
-            console.log("Creating Jetton Master...");
-            const jettonMaster = tonClient.open(
-                JettonMaster.create(Address.parse("EQAE95N7Kj2SJ5r2aP9q9goPMpmV08O2phPIOxVIsRRI6c_6"))
+
+            const address = Address.parse('EQAlJGeNUbvGTOTy6e3XDdYyJvqBLvQBlmassTT3OxVloMN4');
+            const jettonMaster = tonClient.open(JettonMaster.create(address));
+            const usersUsdtAddress: Address = await jettonMaster.getWalletAddress(walletAddress);
+            const jettonWallet = tonClient.open(JettonWallet.createFromAddress(usersUsdtAddress));
+            const encryptedComment = encryptComment(
+                JSON.stringify({
+                    cardId: selectedCard.id,
+                    cost: selectedCard.cost,
+                    wallet: "EQAE95N7Kj2SJ5r2aP9q9goPMpmV08O2phPIOxVIsRRI6c_6",
+                    userid: userid
+                }),
+                key,
             );
-            console.log("Jetton Master created successfully");
-
-            console.log("Getting user's USDT address...");
-            const usersUsdtAddress = await jettonMaster.getWalletAddress(walletAddress);
-            console.log("User USDT Address:", usersUsdtAddress.toString());
-
-            const jettonWallet = tonClient.open(
-                JettonWallet.createFromAddress(usersUsdtAddress)
-            );
-            console.log("Jetton Wallet created successfully:", jettonWallet);
-
-            console.log("Sending transfer...");
+            setIsModalOpen(false);
+            const comments = await getCommentsFromTransactions(walletAddress, key)
+            console.log(comments)
+            if (comments !== undefined && comments.length !== 0) {
+                await restorePurchases(comments);
+            }
             await jettonWallet.sendTransfer(sender, {
                 fwdAmount: BigInt(1),
-                comment: orderId,
-                jettonAmount: BigInt(selectedCard.cost * 1e9),
+                comment: encryptedComment,
+                jettonAmount: BigInt(selectedCard.cost * 10 ** 9),
                 toAddress: Address.parse('EQAE95N7Kj2SJ5r2aP9q9goPMpmV08O2phPIOxVIsRRI6c_6'),
-                value: toNano('0.038'),
+                value: toNano('0.01'),
             });
 
             console.log("Transfer sent successfully");
@@ -262,17 +449,14 @@ const ProfileCategory: React.FC<ProfileCategoryProps> = ({fadeIn, userData, setU
                 [`owned${categories[currentTab].tag}`]: [...userData[`owned${categories[currentTab].tag}`], selectedCard.id],
                 [`selected${categories[currentTab].tag.slice(0, -1)}`]: selectedCard.id,
             };
-
             const updatedData = await updateUser(updatedUserData);
             setUserData(updatedData);
-            setIsModalOpen(false);
         } catch (error) {
             console.error("Error during payment process:", error);
             setErrorMessage(t("Payment failed"));
             setErrorModalOpen(true);
         }
     };
-
 
 
     const handleConnectWallet = useCallback(() => {
