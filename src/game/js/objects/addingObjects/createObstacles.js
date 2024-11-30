@@ -1,6 +1,7 @@
 import {executeTasks} from "../../utils/queue.js";
 
 export function createObstacles(
+    hero,
     taskQueue,
     scene,
     heroBaseY,
@@ -17,6 +18,7 @@ export function createObstacles(
     MAX_OBSTACLES_PER_CALL,
     obstaclePool,
     rampPool,
+    handleObstacleCollision,
     callback
 ) {
     const tasks = [];
@@ -32,7 +34,12 @@ export function createObstacles(
                 if (newRamp) {
                     newRamp.position.set(lane, pos.y, rampZPosition);
                     newRamp.setEnabled(true);
-
+                    if (newRamp.physicsImpostor && !newRamp.collisionHandlerAdded) {
+                        newRamp.physicsImpostor.registerOnPhysicsCollide(hero.physicsImpostor, (main, collided) => {
+                            handleObstacleCollision(hero, newRamp)
+                        });
+                        newRamp.collisionHandlerAdded = true;  // Устанавливаем флаг, чтобы не добавлять обработчик повторно
+                    }
                     roadBox.addChild(newRamp);
                     obstaclesInPath.push(newRamp);
                     spatialGrid.markAreaAsOccupied(lane, rampZPosition, 0.5);
@@ -71,6 +78,12 @@ export function createObstacles(
                         const newObstacle = obstaclePool.acquire();
                         const pos = newObstacle.position.clone()
                         if (newObstacle) {
+                            if (newObstacle.physicsImpostor && !newObstacle.collisionHandlerAdded) {
+                                newObstacle.physicsImpostor.registerOnPhysicsCollide(hero.physicsImpostor, (main, collided) => {
+                                    handleObstacleCollision(hero, newObstacle)
+                                });
+                                newObstacle.collisionHandlerAdded = true;  // Устанавливаем флаг
+                            }
                             newObstacle.position.set(lane, pos.y, currentPositionZ);
                             newObstacle.setEnabled(true);
 

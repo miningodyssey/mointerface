@@ -391,7 +391,7 @@ const ProfileCategory: React.FC<ProfileCategoryProps> = ({fadeIn, userData, setU
             };
 
             setUserData(updatedUserData);
-            const updatedData = await updateUser(updatedUserData);
+            updateUser(updatedUserData);
             console.log("Покупки успешно восстановлены:", restoredItems);
         } else {
             console.log("Нет новых покупок для восстановления.");
