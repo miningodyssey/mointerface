@@ -7,7 +7,7 @@ export function handleJump(hero, create) {
             }
         });
         hero.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(0, 4, 0));
-        create[1][3].start();
+        create[1][1].start();
         return false
 
 }

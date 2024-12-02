@@ -62,7 +62,7 @@ export const GameComponent: React.FC<GameComponentInterface> = ({
     const pauseButtonRef = useRef<HTMLButtonElement | null>(null);
     const resumeButtonRef = useRef<HTMLButtonElement | null>(null);
 
-    const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
+    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const [scriptsLoaded, setScriptsLoaded] = useState(false);
     const [sceneCreated, setSceneCreated] = useState(false);
     const [score, setScore] = useState(0);
@@ -120,6 +120,7 @@ export const GameComponent: React.FC<GameComponentInterface> = ({
         let rampPool: any
         let canJump: any = true
         let isFirstSpawn: any = true
+        let Ammo: any;
         let isJumping: any = false
         let roadSegmentPool: any
         let obstaclesInPath: any[] = [];
@@ -130,7 +131,7 @@ export const GameComponent: React.FC<GameComponentInterface> = ({
         let newCoins: any[] = [];
         let create: any[]
         let sky: any
-        let device: any = detectPlatform(pl)
+        let device: any = detectPlatform()
         let modelCache = {
             subwayModel: null,
             rampModel: null,
@@ -162,22 +163,21 @@ export const GameComponent: React.FC<GameComponentInterface> = ({
             camera.rotation.x = 0.15;
             camera.rotationAutoUpdate = false;
             camera.position = new BABYLON.Vector3(0, 1.45, 2.65);
-            // Создание освещения
-            light = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(0, 1, 0), scene);
-            light.intensity = 0.7;
 
-            sun = new BABYLON.DirectionalLight("sun", new BABYLON.Vector3(-1, -1, 0), scene);
-            sun.position = new BABYLON.Vector3(0, 6, -2);
-            sun.intensity = 0.7;
+            const hemiLight = new BABYLON.HemisphericLight("hemiLight", new BABYLON.Vector3(0, 1, 0), scene);
+            hemiLight.intensity = 0.8;
 
+            const sunLight = new BABYLON.DirectionalLight("sunLight", new BABYLON.Vector3(-1, -1, 0), scene);
+            sunLight.position = new BABYLON.Vector3(0, 6, 0);
+            sunLight.intensity = 1.5;
             // Определение размера карты
             mapSize = (device === 'mobile') ? 128 : 1024;
 
             // Настройка графики для мобильных устройств
             setupRenderingPipeline(engine, scene, camera, settings)
 
-            await initializePhysics(scene, ammoLoaded); // Инициализация физики
-            modelCache = await loadAllMeshes(scene);
+            Ammo = await initializePhysics(scene, ammoLoaded); // Инициализация физики
+            modelCache = await loadAllMeshes(scene, userData.selectedWagon, userData.selectedSlideObstacle, userData.selectedJumpObstacle, userData.selectedRoad);
             ({
                 coinPool,
                 slideObstaclePool,
@@ -187,7 +187,7 @@ export const GameComponent: React.FC<GameComponentInterface> = ({
                 roadSegmentPool
             } = await initializePools(scene, modelCache));
 
-            create = await createHero(scene);
+            create = await createHero(scene, userData.selectedSkin);
             sky = await createSky(scene);
             createRoadSegments(
                 scene, 0.45, -1, 20, roadSegmentPool, roadInPath, 4.5
@@ -306,15 +306,14 @@ export const GameComponent: React.FC<GameComponentInterface> = ({
                         jumpObstaclePool,
                         rampPool,
                         occupiedPositions,
-                        spatialGrid
+                        spatialGrid,
+                        handleCollisionWrapper,
+                        Ammo
                     );
-                    newObstacles.forEach(obstacle => gameObjects.add(obstacle)); // Добавляем в Set
-                    newCoins.forEach(coin => gameObjects.add(coin));
                 }
 
             }
             firstSpawn();
-
             function startSlide() {
                 // Остановить все другие анимации героя
                 if (!isSliding) {
@@ -324,14 +323,14 @@ export const GameComponent: React.FC<GameComponentInterface> = ({
                         }
                     });
 
-                    animations[5].start();
+                    animations[2].start();
                     isSliding = true;
 
                     if (!isGrounded) {
                         hero.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(0, -2, 0), hero.getAbsolutePosition()); // Negative impulse downwards
                         hero.physicsImpostor.setAngularVelocity(BABYLON.Vector3.Zero()); // Reset angular velocity
                     }
-                    animations[5].onAnimationEndObservable.addOnce(() => {
+                    animations[2].onAnimationEndObservable.addOnce(() => {
                         stopSliding();
                     });
                 }
@@ -425,81 +424,33 @@ export const GameComponent: React.FC<GameComponentInterface> = ({
             }
 
 
-            function isHeroCollidingWithObstacle(hero: any, obstacle: any, dt: any) {
-                const heroBoundingBox = hero.getBoundingInfo().boundingBox;
-                const obstacleBoundingBox = obstacle.getBoundingInfo().boundingBox;
 
-                const heroMin = heroBoundingBox.minimumWorld;
-                const heroMax = heroBoundingBox.maximumWorld;
-                const obstacleMin = obstacleBoundingBox.minimumWorld;
-                const obstacleMax = obstacleBoundingBox.maximumWorld;
-                let isHorizontallyInside = (
-                    currentLane === obstacle.position.x &&
-                    heroMin.z > (obstacleMin.z - 0.5) &&
-                    heroMax.z < obstacleMax.z
-                );
-
-                if (obstacle.type === 'wagon') {
-                    isHorizontallyInside = (
-                        currentLane === obstacle.position.x &&
-                        heroMin.z > obstacleMin.z - (1.475) &&
-                        heroMax.z < obstacleMax.z
-                    );
-                }
-
-                const isVerticallyAligned = heroMin.y < obstacleMax.y && heroMax.y > obstacleMin.y;
-
-                return isHorizontallyInside && isVerticallyAligned;
-            }
 
             function handleObstacleCollision(hero: any, obstacle: any, dt: any) {
-                if (isHeroOnTopOfObstacle(hero, obstacle)) {
-                    if (isHeroOnRamp(hero, obstacle, engine, isJumping)) {
-                        if (!isJumping) {
-                            hero.physicsImpostor.setLinearVelocity(new BABYLON.Vector3(0, 0, 0));
-                        }
-                        return
-                    }
+                if (obstacle.type === 'ramp') {
+                    return
                 }
-                if ((obstacle.type === 'ramp') || (obstacle.type === 'wagon')) {
-                    if ((!isJumping) && (1.2 < hero.position.y && hero.position.y < 1.5) && (obstacle.type === 'ramp')) {
-                        hero.physicsImpostor.setLinearVelocity(BABYLON.Vector3.Zero());
-                        hero.physicsImpostor.setAngularVelocity(BABYLON.Vector3.Zero());
-                        return;
-                    }
-                    if ((1.2 < hero.position.y && hero.position.y < 1.5)) {
-                        return;
-                    }
-                }
-
-                if (isHeroCollidingWithObstacle(hero, obstacle, dt)) {
-
-                    if (obstacle.type === 'jump') {
-                        if (!isJumping) {
-                            endGame(gameEnded, gamePaused, rollingSpeed, updateGame, create, hasAnimationEnded, scene, hero, setIsModalOpen, endMenu, pauseButton, userData, setUserData, (score - prevSessionScore), score);
-                            prevSessionScore = score;
-                            removeAllEventListeners(canvas, onKeyDown, onPointerDown, onPointerUp, onPointerMove)
-                        }
-                    } else if (obstacle.type === 'slide') {
-                        if (!isSliding) {
-                            endGame(gameEnded, gamePaused, rollingSpeed, updateGame, create, hasAnimationEnded, scene, hero, setIsModalOpen, endMenu, pauseButton, userData, setUserData, (score - prevSessionScore), score);
-                            prevSessionScore = score;
-                            removeAllEventListeners(canvas, onKeyDown, onPointerDown, onPointerUp, onPointerMove)
-                        }
-                    } else if (obstacle.type === 'wagon') {
-                        hero.physicsImpostor.setLinearVelocity(BABYLON.Vector3.Zero());
-                        hero.physicsImpostor.setAngularVelocity(BABYLON.Vector3.Zero());
+                if (obstacle.type === 'jump' && !isJumping) {
+                    endGame(gameEnded, gamePaused, rollingSpeed, updateGame, create, hasAnimationEnded, scene, hero, setIsModalOpen, endMenu, pauseButton, userData, setUserData, (score - prevSessionScore), score);
+                    prevSessionScore = score;
+                    removeAllEventListeners(canvas, onKeyDown, onPointerDown, onPointerUp, onPointerMove)
+                } else if (obstacle.type === 'slide' && !isSliding) {
                         endGame(gameEnded, gamePaused, rollingSpeed, updateGame, create, hasAnimationEnded, scene, hero, setIsModalOpen, endMenu, pauseButton, userData, setUserData, (score - prevSessionScore), score);
                         prevSessionScore = score;
                         removeAllEventListeners(canvas, onKeyDown, onPointerDown, onPointerUp, onPointerMove)
-                        console.log(hero.position)
+                } else if (obstacle.type === 'wagon' && (hero.position.y < 1)) {
+                    hero.physicsImpostor.setLinearVelocity(BABYLON.Vector3.Zero());
+                    hero.physicsImpostor.setAngularVelocity(BABYLON.Vector3.Zero());
+                    endGame(gameEnded, gamePaused, rollingSpeed, updateGame, create, hasAnimationEnded, scene, hero, setIsModalOpen, endMenu, pauseButton, userData, setUserData, (score - prevSessionScore), score);
+                    prevSessionScore = score;
+                    removeAllEventListeners(canvas, onKeyDown, onPointerDown, onPointerUp, onPointerMove)
 
-                    } else {
-                        hero.physicsImpostor.setLinearVelocity(BABYLON.Vector3.Zero());
-                        hero.physicsImpostor.setAngularVelocity(BABYLON.Vector3.Zero());
-                        hero.position.copyFrom(hero.position);
-                    }
                 }
+            }
+
+            function handleCollisionWrapper(hero: any, obstacle: any) {
+                let dt = engine.getDeltaTime() / 1000;
+                handleObstacleCollision(hero, obstacle, dt);
             }
 
             let hasAnimationEnded = false;
@@ -547,9 +498,7 @@ export const GameComponent: React.FC<GameComponentInterface> = ({
             ) {
                 for (let i = objects.length - 1; i >= 0; i--) {
                     const obj = objects[i];
-
                     obj.position.z += speed * dt;
-
                     if (obj.type === 'coin') {
                         obj.rotate(BABYLON.Axis.Y, coinRotationSpeed, BABYLON.Space.LOCAL);
                         if (BABYLON.Vector3.Distance(hero.position, obj.position) < 0.4) {
@@ -561,26 +510,25 @@ export const GameComponent: React.FC<GameComponentInterface> = ({
                         }
                     } else if (obj.type === 'ramp') {
                         if (obj.position.z < threshold && obj.isEnabled()) {
-                            objects.splice(i, 1);
                             rampPool.release(obj);  // Возвращаем рампу в пул rampPool
+                            objects.splice(i, 1);
                         }
                     } else if (obj.type === 'jumpObstacle') {
                         if (obj.position.z < threshold && obj.isEnabled()) {
-                            objects.splice(i, 1);
                             jumpObstaclePool.release(obj);  // Возвращаем jumpObstacle в пул jumpObstaclePool
+                            objects.splice(i, 1);
                         }
                     } else if (obj.type === 'slideObstacle') {
                         if (obj.position.z < threshold && obj.isEnabled()) {
-                            objects.splice(i, 1);
                             slideObstaclePool.release(obj);
-                        }
-                    } else if (obj.type === 'bigObstacle') {
-                        if (obj.position.z < threshold && obj.isEnabled()) {
                             objects.splice(i, 1);
+                        }
+                    } else if (obj.type === 'wagon') {
+                        if (obj.position.z < threshold && obj.isEnabled()) {
                             obstaclePool.release(obj);
+                            objects.splice(i, 1);
                         }
                     }
-
                     if (obj.position.z < threshold && obj.isEnabled()) {
                         objects.splice(i, 1);
                         if (obj.type === 'ramp') {
@@ -591,12 +539,13 @@ export const GameComponent: React.FC<GameComponentInterface> = ({
                             jumpObstaclePool.release(obj);
                         } else if (obj.type === 'slideObstacle') {
                             slideObstaclePool.release(obj);
-                        } else if (obj.type === 'bigObstacle') {
+                        } else if (obj.type === 'wagon') {
                             obstaclePool.release(obj);
                         }
                     }
                 }
             }
+
 
             const pauseGame = () => {
                 savedRollingSpeed = rollingSpeed;
@@ -611,20 +560,25 @@ export const GameComponent: React.FC<GameComponentInterface> = ({
             }
 
             function handleVisibilityChange() {
-                if (document.hidden) {
+                if (document.hidden && !gamePaused) {
                     setIsPaused(true)
                     pauseGame();
                 }
             }
+
             function handleBlur() {
-                if (rollingSpeed !== 0) {
+                if (!gamePaused) {
                     setIsPaused(true)
                     pauseGame();
                 }
             }
+
             document.addEventListener("visibilitychange", handleVisibilityChange);
 
             window.addEventListener('blur', handleBlur);
+
+            let hasCreatedObstacles = false; // Флаг для отслеживания вызова функции
+
 
             function updateGame() {
                 let dt = engine.getDeltaTime() / 1000;
@@ -659,6 +613,8 @@ export const GameComponent: React.FC<GameComponentInterface> = ({
                             const element = newCoins[i];
                             coinsInPath.push(element);
                         }
+
+
                         newObstacles.length = 0;
                         newCoins.length = 0;
                         addObstaclesAndCoins(
@@ -684,16 +640,53 @@ export const GameComponent: React.FC<GameComponentInterface> = ({
                             jumpObstaclePool,
                             rampPool,
                             occupiedPositions,
-                            spatialGrid
+                            spatialGrid,
+                            handleCollisionWrapper,
+                            Ammo
                         );
                         isFirstSpawn = false
                         isAddingObstacle = false;
                         if (rollingSpeed < 25) {
-                            rollingSpeed += 0.1;
+                            rollingSpeed += 0.8;
                         }
                         frameCount = 0
                     }
-                    // Двигаем препятствия
+                    if (obstaclesInPath.length === 0 && coinsInPath.length === 0 && newObstacles.length === 0 && newCoins.length === 0 && !isFirstSpawn) {
+                        if (!hasCreatedObstacles) {
+                            addObstaclesAndCoins(
+                                gamePaused,
+                                leftLane,
+                                middleLane,
+                                rightLane,
+                                hero,
+                                engine,
+                                scene,
+                                newObstacles,
+                                newCoins,
+                                heroBaseY,
+                                roadBox,
+                                coinRotationSpeed,
+                                modelCache,
+                                isFirstSpawn,
+                                PATTERN_WEIGHTS,
+                                taskQueue,
+                                coinPool,
+                                slideObstaclePool,
+                                obstaclePool,
+                                jumpObstaclePool,
+                                rampPool,
+                                occupiedPositions,
+                                spatialGrid,
+                                handleCollisionWrapper,
+                                Ammo
+                            );
+                            hasCreatedObstacles = true;
+                            frameCount = 0;
+                        }
+                    } else {
+                        hasCreatedObstacles = false;
+                    }
+
                     updateAndCleanObjects(
                         obstaclesInPath,
                         -rollingSpeed,
@@ -753,14 +746,6 @@ export const GameComponent: React.FC<GameComponentInterface> = ({
                         slideObstaclePool,
                         obstaclePool
                     );
-
-                    // Обновляем коллизии и удаление препятствий
-                    for (const obstacle of obstaclesInPath) {
-                        if (obstacle.position.z < 10) {
-                            handleObstacleCollision(hero, obstacle, dt);
-                        }
-                    }
-
 
                     updateRoadSegments(scene, heroBaseY, hero, roadBox, roadSegmentPool, roadInPath, segmentLength);
                     updateSky(sky, dt);
@@ -835,6 +820,7 @@ export const GameComponent: React.FC<GameComponentInterface> = ({
                     });
                     refreshGameState()
                     currentLane = middleLane
+                    previousLane = middleLane
                     scene.registerBeforeRender(updateGame);
 
                     if (pauseButton) {

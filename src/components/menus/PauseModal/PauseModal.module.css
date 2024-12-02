@@ -13,7 +13,7 @@
     scrollbar-width: none;
     -ms-overflow-style: none;
     -webkit-overflow-scrolling: auto;
-
+    user-select: none;
 }
 
 .modal {

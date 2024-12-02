@@ -4,6 +4,7 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
+    margin-top: 10px;
 }
 
 .mainContainer {
@@ -21,6 +22,7 @@
     width: 99.9vw;
     justify-content: center;
     display: flex;
+    margin-bottom: 10px;
 }
 
 .logo {

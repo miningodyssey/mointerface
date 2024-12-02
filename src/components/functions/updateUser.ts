@@ -1,7 +1,13 @@
 import axios from "axios";
 
-export const updateUser = async (updatedUserData: any, token: string) => {
+export const updateUser = async (updatedUserData: any) => {
     try {
+        const token = sessionStorage.getItem("token");
+
+        if (!token) {
+            throw new Error("Token is missing. Please log in first.");
+        }
+
         const response = await axios.put(
             `https://miningodyssey.pw/users/update/${updatedUserData.id}`,
             updatedUserData,

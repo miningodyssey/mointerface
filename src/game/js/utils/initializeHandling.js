@@ -10,7 +10,7 @@ export function handleKeyDown(event, rollingSpeed, create, currentLane, leftLane
                 }
             });
             currentLane -= 0.5;
-            create[1][1].start();
+            create[1][4].start();
         }
     } else if (event.keyCode === 39) { // Right arrow
         if (currentLane !== rightLane && !isLaneBlocked(currentLane + 0.5)) {
@@ -20,7 +20,7 @@ export function handleKeyDown(event, rollingSpeed, create, currentLane, leftLane
                 }
             });
             currentLane += 0.5;
-            create[1][2].start();
+            create[1][3].start();
         }
     } else if (event.keyCode === 38) { // Up arrow (jump)
         if (isGrounded && (((Date.now() - lastJumpTime) >= jumpCooldown * 1000))) {
@@ -84,7 +84,7 @@ export function handleSwipe(deltaX, deltaY, rollingSpeed, create, currentLane, l
                     }
                 });
                 currentLane += 0.5;
-                create[1][2].start();
+                create[1][4].start();
             }
         } else {
             if (currentLane !== leftLane && !isLaneBlocked(currentLane - 0.5)) {
@@ -94,7 +94,7 @@ export function handleSwipe(deltaX, deltaY, rollingSpeed, create, currentLane, l
                     }
                 });
                 currentLane -= 0.5;
-                create[1][1].start();
+                create[1][3].start();
             }
         }
     } else {

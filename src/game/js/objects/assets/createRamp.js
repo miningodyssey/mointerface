@@ -31,7 +31,7 @@ export function createRamp(scene, x, y, z, modelCache) {
     rampClone.rotation = new BABYLON.Vector3(-Math.PI / 16, Math.PI, 0);
 
     // Устанавливаем физический импостер для коллизионной коробкис 
-    const impostor = new BABYLON.PhysicsImpostor(
+    collisionBox.physicsImpostor = new BABYLON.PhysicsImpostor(
         collisionBox,
         BABYLON.PhysicsImpostor.BoxImpostor,
         { mass: 0, restitution: 0, friction: 0 },

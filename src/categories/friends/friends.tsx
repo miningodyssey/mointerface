@@ -43,7 +43,7 @@ const FriendsCategory: React.FC<FriendsCategoryProps> = ({
                 <p>
                     {t("You have earned ")}
                     <span
-                        className={styles.inlineHeading}>{referals.reduce((sum: number, referal: any) => sum + Number(referal.earnedByReferer), 0)}
+                        className={styles.inlineHeading}>{Math.floor(Number(referals.reduce((sum: number, referal: any) => sum + Number(referal.earnedByReferer), 0)))}
                     </span>
                     {t(" from your friends")}
                 </p>
@@ -55,7 +55,7 @@ const FriendsCategory: React.FC<FriendsCategoryProps> = ({
                     <ListElement
                         key={index}
                         name={player.nickname || player.id} // используйте ID, если ника нет
-                        points={player.earnedByReferer}
+                        points={Math.floor(Number(player.earnedByReferer))}
                         position={index + 1} // позиция игрока, если это нужно
                     />
                 ))}

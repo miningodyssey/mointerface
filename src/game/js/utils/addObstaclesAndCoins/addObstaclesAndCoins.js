@@ -27,13 +27,15 @@ export function addObstaclesAndCoins(
     jumpObstaclePool,
     rampPool,
     occupiedPositions,
-    SpatialGrid
+    SpatialGrid,
+    handleObstacleCollision,
+    ammo
 ) {
     if (gamePaused) return;
     const MINIMUM_WAGON_DISTANCE = 3.19;
-    const OBSTACLE_DISTANCE = -1;
+    const OBSTACLE_DISTANCE = 5;
     const MINIMUM_COIN_DISTANCE = 1;
-    const FIXED_RAMP_DISTANCE = 2.9;
+    const FIXED_RAMP_DISTANCE = 3.3;
     const MAX_OBSTACLES_PER_CALL = 9;
     const MAX_COINS_PER_CALL = 24;
     const startZ = hero.position.z + 50;
@@ -58,6 +60,7 @@ export function addObstaclesAndCoins(
     }
 
     createObstacles(
+        hero,
         taskQueue,
         scene,
         heroBaseY,
@@ -74,6 +77,8 @@ export function addObstaclesAndCoins(
         MAX_OBSTACLES_PER_CALL,
         obstaclePool,
         isFirstSpawn ? null : rampPool,
+        handleObstacleCollision,
+        ammo,
         () => {
             createCoins(
                 taskQueue,
@@ -126,5 +131,4 @@ export function addObstaclesAndCoins(
         }
     );
 }
-
 
