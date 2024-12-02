@@ -19,6 +19,7 @@ export function createObstacles(
     obstaclePool,
     rampPool,
     handleObstacleCollision,
+    Ammo,
     callback
 ) {
     const tasks = [];
@@ -33,6 +34,7 @@ export function createObstacles(
                 const pos = newRamp.position.clone()
                 if (newRamp) {
                     newRamp.position.set(lane, pos.y, rampZPosition);
+
                     newRamp.setEnabled(true);
                     if (newRamp.physicsImpostor && !newRamp.collisionHandlerAdded) {
                         newRamp.physicsImpostor.registerOnPhysicsCollide(hero.physicsImpostor, (main, collided) => {
@@ -73,7 +75,7 @@ export function createObstacles(
 
             for (let j = 0; j < numWagons; j++) {
                 const currentPositionZ = z + j * MINIMUM_WAGON_DISTANCE;
-                if (obstaclesCreated < MAX_OBSTACLES_PER_CALL && spatialGrid.isAreaFree(lane, currentPositionZ, 3.27)) {
+                if (obstaclesCreated < MAX_OBSTACLES_PER_CALL && spatialGrid.isAreaFree(lane, currentPositionZ, 5.8)) {
                     tasks.push(() => {
                         const newObstacle = obstaclePool.acquire();
                         const pos = newObstacle.position.clone()
@@ -89,7 +91,7 @@ export function createObstacles(
 
                             roadBox.addChild(newObstacle);
                             obstaclesInPath.push(newObstacle);
-                            spatialGrid.markAreaAsOccupied(lane, currentPositionZ, 0.5);
+                            spatialGrid.markAreaAsOccupied(lane, currentPositionZ, 3);
                             obstaclesCreated++;
                             const clonedMesh = newObstacle.getChildMeshes(false)[0];
                             if (clonedMesh) {

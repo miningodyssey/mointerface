@@ -9,6 +9,6 @@ export async function initializePhysics(scene, ammoLoaded) {
   const gravityVector = new BABYLON.Vector3(0, -14.81, 0);
   const physicsPlugin = new BABYLON.AmmoJSPlugin();
   scene.enablePhysics(gravityVector, physicsPlugin);
-  scene.getPhysicsEngine().setTimeStep(1 / 120);
+  scene.getPhysicsEngine().setTimeStep(1 / 240);
   return ammo;
 }

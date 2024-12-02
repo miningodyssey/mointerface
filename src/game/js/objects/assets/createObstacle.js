@@ -24,15 +24,10 @@ export function createObstacle(scene, x, y, z, modelCache) {
     // Делаем obstacleTop дочерним элементом collisionBox
     obstacleTop.parent = collisionBox;
 
-    // Устанавливаем физический импостер для коллизионной коробки
-    collisionBox.physicsImpostor = new BABYLON.PhysicsImpostor(collisionBox, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 1, restitution: 0, friction: 0.5 }, scene);
+    collisionBox.physicsImpostor = new BABYLON.PhysicsImpostor(collisionBox, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, restitution: 0, friction: 0.5 }, scene);
 
-    collisionBox.physicsImpostor.physicsBody.setActivationState(4);
-    collisionBox.physicsImpostor.physicsBody.setCollisionFlags(2);
-
-    // Включаем CCD
-    collisionBox.physicsImpostor.physicsBody.setCcdMotionThreshold(0.01);
-    collisionBox.physicsImpostor.physicsBody.setCcdSweptSphereRadius(1.6);
+    collisionBox.physicsImpostor.physicsBody.setCcdMotionThreshold(1e-7);
+    collisionBox.physicsImpostor.physicsBody.setCcdSweptSphereRadius(4);
     collisionBox.type = 'wagon';
     collisionBox.isReusable = true;
     return collisionBox;

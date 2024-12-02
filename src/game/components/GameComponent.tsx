@@ -307,15 +307,13 @@ export const GameComponent: React.FC<GameComponentInterface> = ({
                         rampPool,
                         occupiedPositions,
                         spatialGrid,
-                        handleCollisionWrapper
+                        handleCollisionWrapper,
+                        Ammo
                     );
-                    newObstacles.forEach(obstacle => gameObjects.add(obstacle)); // Добавляем в Set
-                    newCoins.forEach(coin => gameObjects.add(coin));
                 }
 
             }
             firstSpawn();
-
             function startSlide() {
                 // Остановить все другие анимации героя
                 if (!isSliding) {
@@ -426,32 +424,7 @@ export const GameComponent: React.FC<GameComponentInterface> = ({
             }
 
 
-            function isHeroCollidingWithObstacle(hero: any, obstacle: any, dt: any) {
-                const heroBoundingBox = hero.getBoundingInfo().boundingBox;
-                const obstacleBoundingBox = obstacle.getBoundingInfo().boundingBox;
 
-                const heroMin = heroBoundingBox.minimumWorld;
-                const heroMax = heroBoundingBox.maximumWorld;
-                const obstacleMin = obstacleBoundingBox.minimumWorld;
-                const obstacleMax = obstacleBoundingBox.maximumWorld;
-                let isHorizontallyInside = (
-                    currentLane === obstacle.position.x &&
-                    heroMin.z > (obstacleMin.z - 0.5) &&
-                    heroMax.z < obstacleMax.z
-                );
-
-                if (obstacle.type === 'wagon') {
-                    isHorizontallyInside = (
-                        currentLane === obstacle.position.x &&
-                        heroMin.z > obstacleMin.z - (1.475) &&
-                        heroMax.z < obstacleMax.z
-                    );
-                }
-
-                const isVerticallyAligned = heroMin.y < obstacleMax.y && heroMax.y > obstacleMin.y;
-
-                return isHorizontallyInside && isVerticallyAligned;
-            }
 
             function handleObstacleCollision(hero: any, obstacle: any, dt: any) {
                 if (obstacle.type === 'ramp') {
@@ -465,7 +438,7 @@ export const GameComponent: React.FC<GameComponentInterface> = ({
                         endGame(gameEnded, gamePaused, rollingSpeed, updateGame, create, hasAnimationEnded, scene, hero, setIsModalOpen, endMenu, pauseButton, userData, setUserData, (score - prevSessionScore), score);
                         prevSessionScore = score;
                         removeAllEventListeners(canvas, onKeyDown, onPointerDown, onPointerUp, onPointerMove)
-                } else if (obstacle.type === 'wagon' && (hero.position.y < 1.3)) {
+                } else if (obstacle.type === 'wagon' && (hero.position.y < 1)) {
                     hero.physicsImpostor.setLinearVelocity(BABYLON.Vector3.Zero());
                     hero.physicsImpostor.setAngularVelocity(BABYLON.Vector3.Zero());
                     endGame(gameEnded, gamePaused, rollingSpeed, updateGame, create, hasAnimationEnded, scene, hero, setIsModalOpen, endMenu, pauseButton, userData, setUserData, (score - prevSessionScore), score);
@@ -525,37 +498,38 @@ export const GameComponent: React.FC<GameComponentInterface> = ({
             ) {
                 for (let i = objects.length - 1; i >= 0; i--) {
                     const obj = objects[i];
-
-                    // Проверяем, есть ли у объекта физический импостер
-                    if (obj.physicsImpostor) {
-                        // Получаем текущее положение объекта из физики
-                        const impostor = obj.physicsImpostor;
-                        const physicsBody = impostor.physicsBody;
-
-                        const transform = new Ammo.btTransform();
-                        physicsBody.getWorldTransform(transform);
-
-                        const origin = transform.getOrigin();
-                        const newZ = origin.z() + speed * dt;
-
-                        transform.setOrigin(new Ammo.btVector3(origin.x(), origin.y(), newZ));
-                        physicsBody.setWorldTransform(transform);
-
-                        impostor.updateFromPhysics();
-                    } else {
-                        obj.position.z += speed * dt;
-                    }
-
+                    obj.position.z += speed * dt;
                     if (obj.type === 'coin') {
                         obj.rotate(BABYLON.Axis.Y, coinRotationSpeed, BABYLON.Space.LOCAL);
                         if (BABYLON.Vector3.Distance(hero.position, obj.position) < 0.4) {
                             score += 1;
                             setScore(score);
                             updateScoreDisplay(scoreDisplay, score);
-                            coinPool.release(obj);
+                            coinPool.release(obj);  // Возвращаем монету в пул coinPool
+                            objects.splice(i, 1);   // Удаляем из массива объектов
+                        }
+                    } else if (obj.type === 'ramp') {
+                        if (obj.position.z < threshold && obj.isEnabled()) {
+                            rampPool.release(obj);  // Возвращаем рампу в пул rampPool
                             objects.splice(i, 1);
                         }
-                    } else if (obj.position.z < threshold && obj.isEnabled()) {
+                    } else if (obj.type === 'jumpObstacle') {
+                        if (obj.position.z < threshold && obj.isEnabled()) {
+                            jumpObstaclePool.release(obj);  // Возвращаем jumpObstacle в пул jumpObstaclePool
+                            objects.splice(i, 1);
+                        }
+                    } else if (obj.type === 'slideObstacle') {
+                        if (obj.position.z < threshold && obj.isEnabled()) {
+                            slideObstaclePool.release(obj);
+                            objects.splice(i, 1);
+                        }
+                    } else if (obj.type === 'wagon') {
+                        if (obj.position.z < threshold && obj.isEnabled()) {
+                            obstaclePool.release(obj);
+                            objects.splice(i, 1);
+                        }
+                    }
+                    if (obj.position.z < threshold && obj.isEnabled()) {
                         objects.splice(i, 1);
                         if (obj.type === 'ramp') {
                             rampPool.release(obj);
@@ -565,7 +539,7 @@ export const GameComponent: React.FC<GameComponentInterface> = ({
                             jumpObstaclePool.release(obj);
                         } else if (obj.type === 'slideObstacle') {
                             slideObstaclePool.release(obj);
-                        } else if (obj.type === 'bigObstacle') {
+                        } else if (obj.type === 'wagon') {
                             obstaclePool.release(obj);
                         }
                     }
@@ -639,6 +613,8 @@ export const GameComponent: React.FC<GameComponentInterface> = ({
                             const element = newCoins[i];
                             coinsInPath.push(element);
                         }
+
+
                         newObstacles.length = 0;
                         newCoins.length = 0;
                         addObstaclesAndCoins(
@@ -665,16 +641,16 @@ export const GameComponent: React.FC<GameComponentInterface> = ({
                             rampPool,
                             occupiedPositions,
                             spatialGrid,
-                            handleCollisionWrapper
+                            handleCollisionWrapper,
+                            Ammo
                         );
                         isFirstSpawn = false
                         isAddingObstacle = false;
                         if (rollingSpeed < 25) {
-                            rollingSpeed += 1.5;
+                            rollingSpeed += 0.8;
                         }
                         frameCount = 0
                     }
-
                     if (obstaclesInPath.length === 0 && coinsInPath.length === 0 && newObstacles.length === 0 && newCoins.length === 0 && !isFirstSpawn) {
                         if (!hasCreatedObstacles) {
                             addObstaclesAndCoins(
@@ -701,15 +677,16 @@ export const GameComponent: React.FC<GameComponentInterface> = ({
                                 rampPool,
                                 occupiedPositions,
                                 spatialGrid,
-                                handleCollisionWrapper
+                                handleCollisionWrapper,
+                                Ammo
                             );
                             hasCreatedObstacles = true;
+                            frameCount = 0;
                         }
                     } else {
                         hasCreatedObstacles = false;
                     }
 
-                    // Двигаем препятствия
                     updateAndCleanObjects(
                         obstaclesInPath,
                         -rollingSpeed,
@@ -769,14 +746,6 @@ export const GameComponent: React.FC<GameComponentInterface> = ({
                         slideObstaclePool,
                         obstaclePool
                     );
-
-                    // Обновляем коллизии и удаление препятствий
-                    for (const obstacle of obstaclesInPath) {
-                        if (obstacle.position.z < 10) {
-                            handleObstacleCollision(hero, obstacle, dt);
-                        }
-                    }
-
 
                     updateRoadSegments(scene, heroBaseY, hero, roadBox, roadSegmentPool, roadInPath, segmentLength);
                     updateSky(sky, dt);

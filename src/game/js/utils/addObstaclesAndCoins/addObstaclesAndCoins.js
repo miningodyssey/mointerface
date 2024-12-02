@@ -28,11 +28,12 @@ export function addObstaclesAndCoins(
     rampPool,
     occupiedPositions,
     SpatialGrid,
-    handleObstacleCollision
+    handleObstacleCollision,
+    ammo
 ) {
     if (gamePaused) return;
     const MINIMUM_WAGON_DISTANCE = 3.19;
-    const OBSTACLE_DISTANCE = -1;
+    const OBSTACLE_DISTANCE = 5;
     const MINIMUM_COIN_DISTANCE = 1;
     const FIXED_RAMP_DISTANCE = 3.3;
     const MAX_OBSTACLES_PER_CALL = 9;
@@ -77,6 +78,7 @@ export function addObstaclesAndCoins(
         obstaclePool,
         isFirstSpawn ? null : rampPool,
         handleObstacleCollision,
+        ammo,
         () => {
             createCoins(
                 taskQueue,
