@@ -14,4 +14,5 @@ interface Telegram {
 interface Window {
     Telegram?: Telegram;
     TelegramWebviewProxy?
+    onTelegramAuth?: (user: any) => void;
 }

@@ -4,7 +4,7 @@ export const fetchReferals = async (userId: number, token: any) => {
     try {
 
         const userResponse = await axios.get(
-            `https://miningodyssey.pw/users/${userId}/referals`,
+            `${process.env.NEXT_PUBLIC_BACKEND}/users/${userId}/referals`,
             {
                 headers: {
                     'Authorization': `Bearer ${token}`,

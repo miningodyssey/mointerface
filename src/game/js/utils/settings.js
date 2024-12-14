@@ -1,4 +1,4 @@
-export function setupRenderingPipeline(engine, scene, camera, settings) {
+export default function setupRenderingPipeline(engine, scene, camera, settings) {
     const { graphicsQuality, antiAliasingEnabled, textureResolution } = settings;
 
     // Масштабирование

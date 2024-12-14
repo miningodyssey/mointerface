@@ -5,7 +5,7 @@ export const addEnergyRequest = async (userId: number, amount: number) => {
         const token = sessionStorage.getItem("token");
 
         const response = await axios.post(
-            `https://miningodyssey.pw/users/${userId}/add-energy`,
+            `${process.env.NEXT_PUBLIC_BACKEND}/users/${userId}/add-energy`,
             { amount: amount }, // Передаем количество добавляемой энергии
             {
                 headers: {

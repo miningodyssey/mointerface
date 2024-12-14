@@ -8,7 +8,6 @@
     align-items: flex-start;
     min-width: 30%;
     box-sizing: border-box;
-    max-width: 50vw;
     transition: border-color 0.3s ease;
 }
 
@@ -18,6 +17,10 @@
 
 .selected {
     border-color: var(--tgui--button_color);
+}
+
+.notselectable {
+    width: 100%;
 }
 
 .cardImage {

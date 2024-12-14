@@ -9,7 +9,7 @@ export async function updateTopAfterRun(userId: string, coinsEarned: number, rec
         }
 
         const response = await axios.put(
-            `https://miningodyssey.pw/users/updatetop/${userId}`,
+            `${process.env.NEXT_PUBLIC_BACKEND}/users/updatetop/${userId}`,
             { coins: coinsEarned, record: record },
             {
                 headers: {

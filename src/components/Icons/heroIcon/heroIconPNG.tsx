@@ -1,9 +1,13 @@
 import React from 'react';
-import screenshotImage from './heroImage.png'; // Убедись, что путь корректен
 
-const HeroIconPNG: React.FC = () => {
+interface HeroIconPNGProps {
+    imagePath: string;
+    altText?: string; // Дополнительно: для гибкости можно задать текст для атрибута alt
+}
+
+const HeroIconPNG: React.FC<HeroIconPNGProps> = ({ imagePath, altText = "Image" }) => {
     return (
-        <img src={'./heroImage.png'} alt="Screenshot" />
+        <img src={imagePath} alt={altText} />
     );
 };
 

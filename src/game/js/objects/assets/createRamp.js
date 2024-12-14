@@ -10,25 +10,25 @@ export function createRamp(scene, x, y, z, modelCache) {
     rampClone.setEnabled(false);
 
     // Устанавливаем масштабирование рампы
-    rampClone.scaling = new BABYLON.Vector3(7, 5.5, 14);
+    rampClone.scaling = new BABYLON.Vector3(7, 5.5, 18);
 
     // Создаем коллизионную коробку
     const collisionBox = BABYLON.MeshBuilder.CreateBox("rampCollisionBox", {
       width: 0.5,
-      height: 3.5 / 3, // Подстраиваем под высоту рампы
+      height: 3.5 / 3.2, // Подстраиваем под высоту рампы
       depth: 3.27
     }, scene);
 
     // Устанавливаем позицию и поворот коллизионной коробки
     collisionBox.position = new BABYLON.Vector3(x, y, z);
-    collisionBox.rotation.x = -Math.PI / 8; // Поворачиваем коллизионную коробку, как требовалось
+    collisionBox.rotation.x = -Math.PI / 12; // Поворачиваем коллизионную коробку, как требовалось
     collisionBox.isVisible = false; // Коллизионная коробка невидима
 
     // Делаем rampClone дочерним элементом коллизионной коробки
     rampClone.parent = collisionBox;
 
     // Поворачиваем саму рампу относительно родительской коллизионной коробки
-    rampClone.rotation = new BABYLON.Vector3(-Math.PI / 16, Math.PI, 0);
+    rampClone.rotation = new BABYLON.Vector3(-Math.PI / 24, Math.PI, 0);
 
     // Устанавливаем физический импостер для коллизионной коробкис 
     collisionBox.physicsImpostor = new BABYLON.PhysicsImpostor(

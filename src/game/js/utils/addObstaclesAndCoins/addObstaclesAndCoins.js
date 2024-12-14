@@ -96,6 +96,7 @@ export function addObstaclesAndCoins(
                 coinPool,
                 () => {
                     createJumpObstacles(
+                        hero,
                         taskQueue,
                         scene,
                         heroBaseY,
@@ -108,8 +109,10 @@ export function addObstaclesAndCoins(
                         occupiedPositions,
                         MINIMUM_WAGON_DISTANCE,
                         jumpObstaclePool,
+                        handleObstacleCollision,
                         () => {
                             createSlideObstacles(
+                                hero,
                                 taskQueue,
                                 scene,
                                 heroBaseY + 0.05,
@@ -122,6 +125,7 @@ export function addObstaclesAndCoins(
                                 occupiedPositions,
                                 MINIMUM_WAGON_DISTANCE,
                                 slideObstaclePool,
+                                handleObstacleCollision,
                                 undefined
                             );
                         }

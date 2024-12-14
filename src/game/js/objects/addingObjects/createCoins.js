@@ -9,7 +9,7 @@ export function createCoins(
     coinsInPath,
     roadBox,
     modelCache,
-    spatialGrid, // Вместо occupiedPositions используем SpatialGrid
+    spatialGrid,
     MINIMUM_COIN_DISTANCE,
     MAX_COINS_PER_CALL,
     obstaclesInPath,
@@ -24,10 +24,14 @@ export function createCoins(
         for (let i = 0; i < numCoins; i++) {
             const coinPositionZ = startZ + i * MINIMUM_COIN_DISTANCE;
 
-            // Проверка на пересечение с препятствием
+            // Проверка на пересечение с препятствиями
             let overlap = false;
             for (const obstacle of obstaclesInPath) {
-                if (obstacle.position.x === lane && Math.abs(obstacle.position.z - coinPositionZ) < 0.1) {
+                if (
+                    obstacle.position.x === lane &&
+                    Math.abs(obstacle.position.z - coinPositionZ) < MINIMUM_COIN_DISTANCE &&
+                    obstacle.type === "obstacle"
+                ) {
                     overlap = true;
                     break;
                 }
@@ -38,7 +42,7 @@ export function createCoins(
                 tasks.push(() => {
                     const newCoin = coinPool.acquire();
                     if (newCoin) {
-                        const position = newCoin.position.clone()
+                        const position = newCoin.position.clone();
                         newCoin.position.set(lane, position.y, coinPositionZ);
                         newCoin.setEnabled(true);
                         coinsInPath.push(newCoin);

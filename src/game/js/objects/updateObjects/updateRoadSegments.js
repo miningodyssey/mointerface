@@ -19,7 +19,7 @@ export function updateRoadSegments(scene, heroBaseY, hero, roadBox, roadSegmentP
     // Удаление сегментов, которые вышли за пределы видимости
     for (let i = roadInPath.length - 1; i >= 0; i--) {
         const segment = roadInPath[i];
-        if (segment.position.z < 1) {
+        if (segment.position.z < -1) {
             roadInPath.splice(i, 1);
             roadSegmentPool.release(segment);
         }

@@ -1,10 +1,28 @@
-export type user = {
-    balance: number
-    referals: number
-    referer: string | number
-    upgrades: string
-    personalRecord: number
-    tgUserData: string
-    registrationDate: Date
-    completedTaskIds: number[]
+export type UserType = {
+    id: string;
+    nickname?: string; // nullable
+    balance: number;
+    registrationDate: string;
+    referals: number;
+    referer: string;
+    energy: number;
+    tgUserdata?: string; // nullable
+    ownedWagons: string[];
+    ownedSlideObstacles: string[];
+    ownedJumpObstacles: string[];
+    ownedRoads: string[];
+    ownedSkins: string[];
+    lastUpdated: number;
+    personalRecord: number;
+    completedTaskIds: string[];
+    earnedMoney: number;
+    earnedByReferer: number;
+    selectedWagon: string;
+    selectedSkin: string;
+    selectedSlideObstacle: string;
+    selectedJumpObstacle: string;
+    selectedRoad: string;
+    settings?: any;
+    admin: boolean;
+    remainingTime?: number;
 };

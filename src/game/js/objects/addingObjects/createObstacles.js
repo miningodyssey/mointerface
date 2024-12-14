@@ -38,7 +38,11 @@ export function createObstacles(
                     newRamp.setEnabled(true);
                     if (newRamp.physicsImpostor && !newRamp.collisionHandlerAdded) {
                         newRamp.physicsImpostor.registerOnPhysicsCollide(hero.physicsImpostor, (main, collided) => {
-                            handleObstacleCollision(hero, newRamp)
+
+                            hero.physicsImpostor.setLinearVelocity(BABYLON.Vector3.Zero());
+
+                            // Вызываем обработчик коллизий для рампы
+                            handleObstacleCollision(hero, newRamp);
                         });
                         newRamp.collisionHandlerAdded = true;  // Устанавливаем флаг, чтобы не добавлять обработчик повторно
                     }
@@ -82,6 +86,7 @@ export function createObstacles(
                         if (newObstacle) {
                             if (newObstacle.physicsImpostor && !newObstacle.collisionHandlerAdded) {
                                 newObstacle.physicsImpostor.registerOnPhysicsCollide(hero.physicsImpostor, (main, collided) => {
+
                                     handleObstacleCollision(hero, newObstacle)
                                 });
                                 newObstacle.collisionHandlerAdded = true;  // Устанавливаем флаг

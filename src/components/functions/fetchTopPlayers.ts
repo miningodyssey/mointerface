@@ -4,7 +4,7 @@ export const fetchTopPlayers = async (userId: number, token: any) => {
     try {
 
         const userResponse = await axios.get(
-            `https://miningodyssey.pw/users/top/${userId}`,
+            `${process.env.NEXT_PUBLIC_BACKEND}/users/top/${userId}`,
             {
                 headers: {
                     'Authorization': `Bearer ${token}`,

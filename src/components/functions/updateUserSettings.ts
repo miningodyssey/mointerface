@@ -5,7 +5,7 @@ export const updateUserSettings = async (userId: number, newSettings: Record<str
         const token = sessionStorage.getItem("token");
 
         const response = await axios.put(
-            `https://miningodyssey.pw/users/${userId}/settings`,
+            `${process.env.NEXT_PUBLIC_BACKEND}/users/${userId}/settings`,
             newSettings,
             {
                 headers: {

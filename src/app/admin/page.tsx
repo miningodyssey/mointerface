@@ -4,20 +4,25 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useForm } from "react-hook-form";
 import styles from './admin.module.css';
-import { Button, Input, Spinner } from "@telegram-apps/telegram-ui";
-import { fetchDataAndInitialize } from "@/components/functions/fetchDataAndInitialize";
+import { Button, Input } from "@telegram-apps/telegram-ui";
 import { useRouter } from 'next/navigation';
+import TelegramLoginWidget from "@/components/TelegramLoginWidget/TelegramLoginWidget";
+import { fetchDataAndInitializeForAdmin } from "@/components/functions/fetchDataAndInitializeForAdmin";
 
 const CreateTaskPage = () => {
     const { register, handleSubmit, reset } = useForm();
     const router = useRouter();
     const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
     const [loading, setLoading] = useState(true);
-    const [userData, setUserData] = useState(null);
+    const [userData, setUserData] = useState<any>();
+    const [telegramUser, setTelegramUser] = useState<any>(null);
 
+    // Этот useEffect срабатывает только после того, как telegramUser не равен null
     useEffect(() => {
+        if (!telegramUser) return; // Если данных пользователя нет, то ничего не делаем
+
         const initializeData = async () => {
-            const data = await fetchDataAndInitialize();
+            const data = await fetchDataAndInitializeForAdmin(telegramUser);
             const admin = data.fetchedUserData.admin;
             setUserData(data.fetchedUserData);
             setIsAdmin(admin);
@@ -25,7 +30,7 @@ const CreateTaskPage = () => {
         };
 
         initializeData();
-    }, []);
+    }, [telegramUser]); // Следим только за изменением telegramUser
 
     useEffect(() => {
         if (loading) return;
@@ -36,7 +41,7 @@ const CreateTaskPage = () => {
 
     const onSubmit = async (data: any) => {
         try {
-            const response = await axios.post('https://miningodyssey.pw/tasks', data, {
+            const response = await axios.post('https://mobackend.vercel.app/tasks', data, {
                 headers: {
                     Authorization: `Bearer ${sessionStorage.getItem('token')}`,
                 },
@@ -53,7 +58,7 @@ const CreateTaskPage = () => {
     if (isAdmin === null || !userData || loading) {
         return (
             <div>
-                <Spinner size='m' />
+                <TelegramLoginWidget telegramUser={telegramUser} setTelegramUser={setTelegramUser} />
             </div>
         );
     }

@@ -1,12 +1,12 @@
 export function createJumpObstacle(scene, x, y, z, modelCache) {
     try {
         // Создаем коллизионную коробку
-        const collisionBox = BABYLON.MeshBuilder.CreateBox("collisionBox", { width: 0.5, height: 0.8, depth: 0.6 }, scene);
+        const collisionBox = BABYLON.MeshBuilder.CreateBox("collisionBox", { width: 0.5, height: 0.6, depth: 0.4 }, scene);
         collisionBox.position = new BABYLON.Vector3(x, y, z);
         collisionBox.isVisible = false; // Устанавливаем коллизионную коробку невидимой
 
         // Настраиваем физику для коллизионной коробки
-        new BABYLON.PhysicsImpostor(collisionBox, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, restitution: 0, friction: 0.5 }, scene);
+        collisionBox.physicsImpostor = new BABYLON.PhysicsImpostor(collisionBox, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, restitution: 0, friction: 0.5 }, scene);
 
 
         modelCache.forEach(mesh => {

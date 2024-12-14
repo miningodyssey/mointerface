@@ -13,12 +13,9 @@ import {PATTERN_WEIGHTS} from "../js/variables/PATTERN_WEIGHTS.js";
 import {clearTaskQueue} from "../js/utils/queue.js";
 import * as BABYLON from 'babylonjs';
 import {updateScoreDisplay} from "@/game/js/utils/updateScoreDisplay";
-import {isHeroOnRamp} from "@/game/js/utils/isHeroOnRamp";
 import {endGame} from "@/game/js/utils/endGame";
-import {isHeroOnTopOfObstacle} from "@/game/js/utils/isHeroOnTopOfObstacle";
-import {
-    setupRenderingPipeline
-} from "@/game/js/utils/settings";
+import '@babylonjs/loaders/glTF/2.0/glTFLoader';
+import setupRenderingPipeline from "@/game/js/utils/settings.js";
 import {releaseObstacle} from "@/game/js/utils/releaseObstacle";
 import {Button, Spinner} from "@telegram-apps/telegram-ui";
 import styles from './GameComponent.module.css'
@@ -77,22 +74,31 @@ export const GameComponent: React.FC<GameComponentInterface> = ({
     };
     useEffect(() => {
         const loadBabylonScripts = async () => {
-            return new Promise((resolve) => {
-                const gltfLoaderScript = document.createElement('script');
-                gltfLoaderScript.src = 'https://cdn.babylonjs.com/loaders/babylon.glTF2FileLoader.js';
-                gltfLoaderScript.async = true;
-                gltfLoaderScript.onload = () => {
-                    const generalLoaderScript = document.createElement('script');
-                    generalLoaderScript.src = 'https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js';
-                    generalLoaderScript.async = true;
-                    generalLoaderScript.onload = resolve;
-                    document.body.appendChild(generalLoaderScript);
-                };
-                document.body.appendChild(gltfLoaderScript);
-            });
+            try {
+                // Возвращаем Promise для загрузки скрипта
+                await new Promise<void>((resolve, reject) => {
+                    const gltfLoaderScript = document.createElement('script');
+                    gltfLoaderScript.src = 'https://cdn.babylonjs.com/loaders/babylon.glTF2FileLoader.js';
+                    gltfLoaderScript.async = true;
+
+                    // Устанавливаем обработчики событий
+                    gltfLoaderScript.onload = () => resolve(); // Вызываем resolve при успешной загрузке
+                    gltfLoaderScript.onerror = () => reject(new Error('Failed to load Babylon glTF loader script'));
+
+                    // Добавляем элемент в DOM
+                    document.body.appendChild(gltfLoaderScript);
+                });
+
+                // Скрипт успешно загружен, обновляем состояние
+                setScriptsLoaded(true);
+            } catch (error) {
+                console.error('Error loading Babylon scripts:', error);
+            }
         };
-        loadBabylonScripts().then(() => setScriptsLoaded(true))
+
+        loadBabylonScripts();
     }, []);
+
 
     useEffect(() => {
         let canvas = canvasRef.current;
@@ -139,7 +145,6 @@ export const GameComponent: React.FC<GameComponentInterface> = ({
             jumpObstacleModel: null,
             slideObstacleModel: null,
             roadModel: null,
-            skyModel: null
         };
         let lastObstacleReleaseTime: any;
         let obstacleSpawnTimer: any;
@@ -154,48 +159,38 @@ export const GameComponent: React.FC<GameComponentInterface> = ({
         }
 
         async function createScene(ammoLoaded: boolean) {
+            // Создание сцены
             scene = new BABYLON.Scene(engine);
             scene.clearColor = new BABYLON.Color4(0, 0, 0, 1);
 
-            // Создание камеры
+            // Камера
             camera = new BABYLON.FreeCamera("camera1", new BABYLON.Vector3(0, 2, -6), scene);
             camera.setTarget(new BABYLON.Vector3(0, 2, 0));
             camera.rotation.x = 0.15;
             camera.rotationAutoUpdate = false;
-            camera.position = new BABYLON.Vector3(0, 1.45, 2.65);
+            camera.position = new BABYLON.Vector3(0, 1.45, 4);
 
             const hemiLight = new BABYLON.HemisphericLight("hemiLight", new BABYLON.Vector3(0, 1, 0), scene);
-            hemiLight.intensity = 0.8;
+            hemiLight.intensity = 1.5;
 
             const sunLight = new BABYLON.DirectionalLight("sunLight", new BABYLON.Vector3(-1, -1, 0), scene);
             sunLight.position = new BABYLON.Vector3(0, 6, 0);
             sunLight.intensity = 1.5;
-            // Определение размера карты
-            mapSize = (device === 'mobile') ? 128 : 1024;
-
-            // Настройка графики для мобильных устройств
-            setupRenderingPipeline(engine, scene, camera, settings)
-
-            Ammo = await initializePhysics(scene, ammoLoaded); // Инициализация физики
+            sunLight.diffuse = new BABYLON.Color3(1, 1, 0);
+            // Остальная часть вашего кода...
+            Ammo = await initializePhysics(scene, ammoLoaded);
             modelCache = await loadAllMeshes(scene, userData.selectedWagon, userData.selectedSlideObstacle, userData.selectedJumpObstacle, userData.selectedRoad);
-            ({
-                coinPool,
-                slideObstaclePool,
-                jumpObstaclePool,
-                obstaclePool,
-                rampPool,
-                roadSegmentPool
-            } = await initializePools(scene, modelCache));
-
+            setupRenderingPipeline(engine, scene, camera, settings)
+            // Инициализация других объектов
+            ({ coinPool, slideObstaclePool, jumpObstaclePool, obstaclePool, rampPool, roadSegmentPool } = await initializePools(scene, modelCache));
             create = await createHero(scene, userData.selectedSkin);
             sky = await createSky(scene);
-            createRoadSegments(
-                scene, 0.45, -1, 20, roadSegmentPool, roadInPath, 4.5
-            );
-            initGame().then(() => {
-                setSceneCreated(true)
-            });
+            createRoadSegments(scene, 0.45, -1, 20, roadSegmentPool, roadInPath, 4.5);
+
+            // Запуск игры
+            initGame()
         }
+
 
 
         const handleBackToMenuClick = () => {
@@ -243,10 +238,13 @@ export const GameComponent: React.FC<GameComponentInterface> = ({
             const gameObjects = new Set();
             let isSliding = false;
             let middleLane = 0;
+            let lastSpeedOnRoad = rollingSpeed;
             let currentLane = middleLane;
             let jumpCooldown = 0.5;
             let lastJumpTime = 0;
             let previousLane = middleLane;
+            let transitionSpeed = 10;
+            let rampRollingSpeed = rollingSpeed * 0.8;
             let isFirstSpawn = true;
             lastObstacleReleaseTime = 0;
             let score = 0;
@@ -263,7 +261,7 @@ export const GameComponent: React.FC<GameComponentInterface> = ({
             previousLane = middleLane;  // Initialize previous lane
 
             var roadBox = BABYLON.MeshBuilder.CreateBox("ground", {
-                width: 3, depth: 100
+                width: 3, depth: 10
             }, scene);
             const groundImpostor = roadBox.physicsImpostor = new BABYLON.PhysicsImpostor(
                 roadBox,
@@ -273,8 +271,12 @@ export const GameComponent: React.FC<GameComponentInterface> = ({
             );
             const addJumpPhysics = () => {
                 hero.physicsImpostor.registerOnPhysicsCollide(groundImpostor, () => {
+                    if (lastSpeedOnRoad > rollingSpeed) {
+                        rollingSpeed = lastSpeedOnRoad
+                    }
                     isGrounded = true;
                     canJump = true;
+                    lastSpeedOnRoad = rollingSpeed
                 });
             }
             addJumpPhysics();
@@ -314,6 +316,7 @@ export const GameComponent: React.FC<GameComponentInterface> = ({
 
             }
             firstSpawn();
+
             function startSlide() {
                 // Остановить все другие анимации героя
                 if (!isSliding) {
@@ -417,31 +420,45 @@ export const GameComponent: React.FC<GameComponentInterface> = ({
             function renderLoop() {
                 if (!gamePaused) {
                     let dt = engine.getDeltaTime() / 1000; // Время с последнего кадра
-
                     updateHeroPosition(dt)
                     scene.render();
                 }
             }
 
 
-
-
             function handleObstacleCollision(hero: any, obstacle: any, dt: any) {
+                if (!obstacle.isEnabled()) {
+                    return;
+                }
+
                 if (obstacle.type === 'ramp') {
+                    rollingSpeed = BABYLON.Scalar.Lerp(rollingSpeed, rampRollingSpeed, dt * transitionSpeed);
                     return
                 }
-                if (obstacle.type === 'jump' && !isJumping) {
-                    endGame(gameEnded, gamePaused, rollingSpeed, updateGame, create, hasAnimationEnded, scene, hero, setIsModalOpen, endMenu, pauseButton, userData, setUserData, (score - prevSessionScore), score);
+
+                if (obstacle.type === 'wagon' && (hero.position.y > 1)) {
+                    rollingSpeed = BABYLON.Scalar.Lerp(rollingSpeed, lastSpeedOnRoad, dt * transitionSpeed);
+                    canJump = true;
+                    isGrounded = true;
+                    if (rollingSpeed > lastSpeedOnRoad) {
+                        lastSpeedOnRoad = rollingSpeed
+                    }
+                }
+
+                if (obstacle.type === 'jump' && (hero.position.y < 0.7)) {
+                    endGame(gameEnded, gamePaused, rollingSpeed, updateGame, create, hasAnimationEnded, scene, engine, hero, setIsModalOpen, endMenu, pauseButton, userData, setUserData, (score - prevSessionScore), score, renderLoop);
                     prevSessionScore = score;
                     removeAllEventListeners(canvas, onKeyDown, onPointerDown, onPointerUp, onPointerMove)
+
                 } else if (obstacle.type === 'slide' && !isSliding) {
-                        endGame(gameEnded, gamePaused, rollingSpeed, updateGame, create, hasAnimationEnded, scene, hero, setIsModalOpen, endMenu, pauseButton, userData, setUserData, (score - prevSessionScore), score);
-                        prevSessionScore = score;
-                        removeAllEventListeners(canvas, onKeyDown, onPointerDown, onPointerUp, onPointerMove)
+                    endGame(gameEnded, gamePaused, rollingSpeed, updateGame, create, hasAnimationEnded, scene, engine, hero, setIsModalOpen, endMenu, pauseButton, userData, setUserData, (score - prevSessionScore), score, renderLoop);
+                    prevSessionScore = score;
+                    removeAllEventListeners(canvas, onKeyDown, onPointerDown, onPointerUp, onPointerMove)
+
                 } else if (obstacle.type === 'wagon' && (hero.position.y < 1)) {
                     hero.physicsImpostor.setLinearVelocity(BABYLON.Vector3.Zero());
                     hero.physicsImpostor.setAngularVelocity(BABYLON.Vector3.Zero());
-                    endGame(gameEnded, gamePaused, rollingSpeed, updateGame, create, hasAnimationEnded, scene, hero, setIsModalOpen, endMenu, pauseButton, userData, setUserData, (score - prevSessionScore), score);
+                    endGame(gameEnded, gamePaused, rollingSpeed, updateGame, create, hasAnimationEnded, scene, engine, hero, setIsModalOpen, endMenu, pauseButton, userData, setUserData, (score - prevSessionScore), score, renderLoop);
                     prevSessionScore = score;
                     removeAllEventListeners(canvas, onKeyDown, onPointerDown, onPointerUp, onPointerMove)
 
@@ -499,14 +516,15 @@ export const GameComponent: React.FC<GameComponentInterface> = ({
                 for (let i = objects.length - 1; i >= 0; i--) {
                     const obj = objects[i];
                     obj.position.z += speed * dt;
+
                     if (obj.type === 'coin') {
                         obj.rotate(BABYLON.Axis.Y, coinRotationSpeed, BABYLON.Space.LOCAL);
                         if (BABYLON.Vector3.Distance(hero.position, obj.position) < 0.4) {
                             score += 1;
                             setScore(score);
                             updateScoreDisplay(scoreDisplay, score);
-                            coinPool.release(obj);  // Возвращаем монету в пул coinPool
-                            objects.splice(i, 1);   // Удаляем из массива объектов
+                            coinPool.release(obj);
+                            objects.splice(i, 1);
                         }
                     } else if (obj.type === 'ramp') {
                         if (obj.position.z < threshold && obj.isEnabled()) {
@@ -583,6 +601,11 @@ export const GameComponent: React.FC<GameComponentInterface> = ({
             function updateGame() {
                 let dt = engine.getDeltaTime() / 1000;
                 try {
+                    if (rollingSpeed > 18) {
+                        rampRollingSpeed = rollingSpeed * 0.7;
+                    } else {
+                        rampRollingSpeed = rollingSpeed
+                    }
                     if (endMenu) {
                         endMenu.style.display = 'none'
                     }
@@ -601,8 +624,8 @@ export const GameComponent: React.FC<GameComponentInterface> = ({
 
                     hero.position.z = 4;
                     frameCount += 1
-                    if ((!isFirstSpawn && newObstacles.length !== 0 && newObstacles[newObstacles.length - 1].position.z < 40 && frameCount % 60 === 0)
-                        || (isFirstSpawn && newObstacles.length !== 0 && newObstacles[newObstacles.length - 1].position.z < 30 && frameCount % 60 === 0)) {
+                    if ((!isFirstSpawn && newObstacles.length !== 0 && newObstacles[newObstacles.length - 1].position.z < 47.5 && frameCount % 60 === 0)
+                        || (isFirstSpawn && newObstacles.length !== 0 && newObstacles[newObstacles.length - 1].position.z < 40 && frameCount % 60 === 0)) {
                         if (isAddingObstacle) return;
                         isAddingObstacle = true;
                         for (let i = 0; i < newObstacles.length; i++) {
@@ -651,7 +674,7 @@ export const GameComponent: React.FC<GameComponentInterface> = ({
                         }
                         frameCount = 0
                     }
-                    if (obstaclesInPath.length === 0 && coinsInPath.length === 0 && newObstacles.length === 0 && newCoins.length === 0 && !isFirstSpawn) {
+                    if (obstaclesInPath.length === 0 && coinsInPath.length === 0 && newObstacles.length === 0 && newCoins.length === 0 && (!isFirstSpawn && frameCount > 120)) {
                         if (!hasCreatedObstacles) {
                             addObstaclesAndCoins(
                                 gamePaused,
@@ -778,22 +801,35 @@ export const GameComponent: React.FC<GameComponentInterface> = ({
             }
             restartGame = async () => {
                 {
-                    if (((userData.energy - 1) < 0) && userData.admin === false) {
+                    const animationGroup = create[1][5];
+                    animationGroup.onAnimationGroupEndObservable.clear();
+                    if (((userData.energy - 1) === 0) && !userData.admin) {
                         return;
                     }
-                    for (const coin of coinsInPath) {
-                        coinPool.release(coin);
+                    for (let i = coinsInPath.length - 1; i >= 0; i--) {
+                        coinPool.release(coinsInPath[i]);
+                        coinsInPath[i].position.z = 50
+                        coinsInPath.splice(i, 1);
+
                     }
-                    for (const obstacle of obstaclesInPath) {
+                    for (let i = obstaclesInPath.length - 1; i >= 0; i--) {
+                        const obstacle = obstaclesInPath[i]
                         spatialGrid.clearZone(obstacle.position.x, obstacle.position.z, obstacle.radius);
                         releaseObstacle(obstacle, obstaclePool, jumpObstaclePool, slideObstaclePool, rampPool);
+                        obstacle.position.z = 50
+                        obstaclesInPath.splice(i, 1);
                     }
-                    for (const coin of newCoins) {
-                        coinPool.release(coin);
+                    for (let i = newCoins.length - 1; i >= 0; i--) {
+                        coinPool.release(newCoins[i]);
+                        newCoins[i].position.z = 50
+                        newCoins.splice(i, 1);
                     }
-                    for (const obstacle of newObstacles) {
+                    for (let i = newObstacles.length - 1; i >= 0; i--) {
+                        const obstacle = newObstacles[i]
                         spatialGrid.clearZone(obstacle.position.x, obstacle.position.z, obstacle.radius);
                         releaseObstacle(obstacle, obstaclePool, jumpObstaclePool, slideObstaclePool, rampPool);
+                        obstacle.position.z = 50
+                        newObstacles.splice(i, 1);
                     }
                     obstaclesInPath.length = 0;
                     coinsInPath.length = 0;
@@ -818,11 +854,11 @@ export const GameComponent: React.FC<GameComponentInterface> = ({
                         setUserData(updatedData);
                         setIsModalOpen(false);
                     });
-                    refreshGameState()
                     currentLane = middleLane
                     previousLane = middleLane
                     scene.registerBeforeRender(updateGame);
-
+                    engine.runRenderLoop(renderLoop);
+                    rollingSpeed = 14;
                     if (pauseButton) {
                         pauseButton.style.display = 'block';
                     }
@@ -830,11 +866,12 @@ export const GameComponent: React.FC<GameComponentInterface> = ({
             }
 
             if (restartButton) {
-                restartButton.addEventListener('click', restartGame);
-                rollingSpeed = 14;
+                restartButton.addEventListener('click', () => {
+                    restartGame();
+                });
 
             }
-
+            setSceneCreated(true);
         }
 
 

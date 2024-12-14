@@ -1,34 +1,27 @@
 export function createObstacle(scene, x, y, z, modelCache) {
   try {
-    // Клонируем оригинальный меш
-    modelCache.forEach((mesh) => {
-      mesh.isReusable = true;
-    });
     const obstacleTop = modelCache[0].clone("clonedSubwayModel");
-
-    // Отключаем объект, чтобы он был невидим и неактивен
     obstacleTop.setEnabled(false);
-
     obstacleTop.scaling = new BABYLON.Vector3(5, 6.4, 9);
 
-    // Создаем коллизионную коробку и настраиваем ее позицию
-    const collisionBox = BABYLON.MeshBuilder.CreateBox("collisionBox", { width: 0.5, height: 1.67, depth: 5.8 }, scene);
+    const collisionBox = BABYLON.MeshBuilder.CreateBox(
+        "collisionBox",
+        { width: 0.5, height: 1.67, depth: 5.8 },
+        scene
+    );
     collisionBox.rotation.y = Math.PI;
     collisionBox.position = new BABYLON.Vector3(x, y, z);
     collisionBox.isVisible = false;
 
-    const boxMaterial = new BABYLON.StandardMaterial("boxMaterial", scene);
-    boxMaterial.diffuseColor = new BABYLON.Color3(1, 0, 0); // Задаем красный цвет (RGB)
-    collisionBox.material = boxMaterial;
+    collisionBox.physicsImpostor = new BABYLON.PhysicsImpostor(
+        collisionBox,
+        BABYLON.PhysicsImpostor.BoxImpostor,
+        { mass: 0, restitution: 0, friction: 0.5 },
+        scene
+    );
 
-    // Делаем obstacleTop дочерним элементом collisionBox
     obstacleTop.parent = collisionBox;
-
-    collisionBox.physicsImpostor = new BABYLON.PhysicsImpostor(collisionBox, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, restitution: 0, friction: 0.5 }, scene);
-
-    collisionBox.physicsImpostor.physicsBody.setCcdMotionThreshold(1e-7);
-    collisionBox.physicsImpostor.physicsBody.setCcdSweptSphereRadius(4);
-    collisionBox.type = 'wagon';
+    collisionBox.type = "wagon";
     collisionBox.isReusable = true;
     return collisionBox;
   } catch (error) {

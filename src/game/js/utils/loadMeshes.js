@@ -8,7 +8,6 @@ export async function loadAllMeshes(scene, wagon, slideObstacle, jumpObstacle, r
         { name: 'jumpObstacles', file: `${jumpObstacle}.glb`, cacheKey: 'jumpObstacleModel' },
         { name: 'ramps', file: 'ramp.glb', cacheKey: 'rampModel' },
         { name: 'roads', file: `${road}.glb`, cacheKey: 'roadModel' },
-        { name: 'sky', file: 'SKY(SPEHE1).glb', cacheKey: 'skyModel' }
     ];
 
     let modelCache = {
@@ -18,7 +17,6 @@ export async function loadAllMeshes(scene, wagon, slideObstacle, jumpObstacle, r
         jumpObstacleModel: null,
         slideObstacleModel: null,
         roadModel: null,
-        skyModel: null
     };
 
     await Promise.all(meshNames.map(async ({ name, file, cacheKey }) => {

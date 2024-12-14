@@ -129,108 +129,94 @@ const MainCategory: React.FC<MainCategoryProps> = ({
     };
 
     return (
-            <motion.div
-                initial="hidden"
-                animate="visible"
-                variants={fadeIn}
-                className={styles.mainContainer}>
-                <div>
-                    <div className={styles.logoContainer}>
-                        {userData.admin ? (
-                            <Link href="/admin" style={{width:'100%', height: '100%', textAlign: 'center'}}>
-                                <motion.img
-                                    src="/text.svg"
-                                    alt="text"
-                                    className={styles.logo}
-                                    initial="hidden"
-                                    animate={isImagesLoaded ? "visible" : "hidden"}
-                                    variants={fadeIn}
-                                    onLoad={() => setIsLogoLoaded(true)}
-                                />
-                            </Link>
-                        ) : (
-                            <motion.img
-                                src="/text.svg"
-                                alt="text"
-                                className={styles.logo}
-                                initial="hidden"
-                                animate={isImagesLoaded ? "visible" : "hidden"}
-                                variants={fadeIn}
-                                onLoad={() => setIsLogoLoaded(true)}
-                            />
-                        )}
-                    </div>
+        <motion.div
+            initial="hidden"
+            animate="visible"
+            variants={fadeIn}
+            className={styles.mainContainer}>
+            <div>
+                <div className={styles.logoContainer}>
+                        <motion.img
+                            src="/text.svg"
+                            alt="text"
+                            className={styles.logo}
+                            initial="hidden"
+                            animate={isImagesLoaded ? "visible" : "hidden"}
+                            variants={fadeIn}
+                            onLoad={() => setIsLogoLoaded(true)}
+                        />
                 </div>
-                <div className={styles.startButton}>
-                    <Button
-                        mode="filled"
-                        size="l"
-                        stretched
-                        onClick={startGame}
-                        disabled={Number(userData.energy) === 0 && userData.admin === false}
+            </div>
+            <div className={styles.startButton}>
+                <Button
+                    mode="filled"
+                    size="l"
+                    stretched
+                    onClick={startGame}
+                    disabled={Number(userData.energy) === 0 && userData.admin === false}
+                >
+                    {t('startRun')}
+                </Button>
+            </div>
+            <div className={styles.EnergyContainer}>
+                <div className={styles.EnergyCountContainer}>
+                    <p className={styles.EnergyCount}><LightningIcon/>{userData.energy}/1</p>
+                    <p className={styles.EnergyCountTimer} style={{display:'none'}}>{formatTime(timeLeft)}</p>
+                </div>
+                <Button mode={'bezeled'} disabled>
+                    {t('WatchAd')}
+                </Button>
+            </div>
+            <div className={styles.DailyContainer}>
+                <h1 className={styles.DailyTasksH1}>{t("Daily tasks")}</h1>
+                <div className={styles.DailyTasksList} ref={dailyTasksListRef}>
+                    <Cell
+                        className={styles.Cell}
+                        before={
+                            <div>
+                                <CoinIcon/>
+                            </div>
+                        }
+                        subtitle={<div style={{color: 'green'}}>5,000 pts</div>}
                     >
-                        {t('startRun')}
-                    </Button>
-                </div>
-                <div className={styles.EnergyContainer}>
-                    <div className={styles.EnergyCountContainer}>
-                        <p className={styles.EnergyCount}><LightningIcon/>{userData.energy}/1</p>
-                        <p className={styles.EnergyCountTimer} style={{display:'none'}}>{formatTime(timeLeft)}</p>
-                    </div>
-                    <Button mode={'bezeled'} disabled>
-                        {t('WatchAd')}
-                    </Button>
-                </div>
-                <div className={styles.DailyContainer}>
-                    <h1 className={styles.DailyTasksH1}>{t("Daily tasks")}</h1>
-                    <div className={styles.DailyTasksList} ref={dailyTasksListRef}>
-                        <Cell
-                            className={styles.Cell}
-                            before={
-                                <div>
-                                    <CoinIcon/>
-                                </div>
-                            }
-                            subtitle={<div style={{color: 'green'}}>5,000 pts</div>}
-                        >
-                            <div className={styles.DailyTaskName}>
-                                <p>Invite friend</p>
-                                <p>2/10</p>
+                        <div className={styles.DailyTaskName}>
+                            <p>Invite friend</p>
+                            <p>2/10</p>
+                        </div>
+                    </Cell>
+                    <Cell
+                        className={styles.Cell}
+                        before={
+                            <div>
+                                <LightningIcon/>
                             </div>
-                        </Cell>
-                        <Cell
-                            className={styles.Cell}
-                            before={
-                                <div>
-                                    <LightningIcon/>
-                                </div>
-                            }
-                            subtitle={<div style={{color: 'green'}}>5,000 pts</div>}
-                        >
-                            <div className={styles.DailyTaskName}>
-                                <p>Invite friend</p>
-                                <p>2/10</p>
-                            </div>
-                        </Cell>
+                        }
+                        subtitle={<div style={{color: 'green'}}>5,000 pts</div>}
+                    >
+                        <div className={styles.DailyTaskName}>
+                            <p>Invite friend</p>
+                            <p>2/10</p>
+                        </div>
+                    </Cell>
 
-                        <Cell
-                            className={styles.Cell}
-                            before={
-                                <div>
-                                    <CoinIcon/>
-                                </div>
-                            }
-                            subtitle={<div style={{color: 'green'}}>5,000 pts</div>}
-                        >
-                            <div className={styles.DailyTaskName}>
-                                <p>Invite friend</p>
-                                <p>2/10</p>
+                    <Cell
+                        className={styles.Cell}
+                        before={
+                            <div>
+                                <CoinIcon/>
                             </div>
-                        </Cell>
+                        }
+                        subtitle={<div style={{color: 'green'}}>5,000 pts</div>}
+                    >
+                        <div className={styles.DailyTaskName}>
+                            <p>Invite friend</p>
+                            <p>2/10</p>
+                        </div>
+                    </Cell>
 
-                    </div>
                 </div>
-            </motion.div>
+            </div>
+        </motion.div>
     );
 };
 

@@ -25,7 +25,7 @@ const Card: React.FC<CardProps> = ({ image, title, subtitle, selected = false, s
     const purchasedLocalization = t("Purchased" as any)
     return (
         <div
-            className={`${styles.card} ${selected ? styles.selected : ''} ${selectable ? styles.selectable : ''}`}
+            className={`${styles.card} ${selected ? styles.selected : ''} ${selectable ? styles.selectable : styles.notselectable}`}
             onClick={handleClick}
         >
             <div className={styles.cardImageContainer}>

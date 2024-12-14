@@ -2,7 +2,7 @@ import axios from "axios";
 
 export const updateCacheWithSelection = async (userId: any, selection: any, token: any) => {
     try {
-        await axios.put(`https://miningodyssey.pw/users/${userId}/selection`, selection, {
+        await axios.put(`${process.env.NEXT_PUBLIC_BACKEND}/users/${userId}/selection`, selection, {
             headers: {
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json',

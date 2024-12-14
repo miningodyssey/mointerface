@@ -15,7 +15,7 @@ export async function initializePools(scene, modelCache) {
     let roadSegmentPool = new ObjectPool(null, 0);
 
     coinPool.setCreateFunction(() => createCoin(scene, 0, 0.68, 0, modelCache.coinModel));
-    slideObstaclePool.setCreateFunction(() => createSlideObstacle(scene, 0, 0.5, 0, modelCache.slideObstacleModel));
+    slideObstaclePool.setCreateFunction(() => createSlideObstacle(scene, 0, 0.9, 0, modelCache.slideObstacleModel));
     jumpObstaclePool.setCreateFunction(() => createJumpObstacle(scene, 0, 0.45, 0, modelCache.jumpObstacleModel));
     obstaclePool.setCreateFunction(() => createObstacle(scene, 0, 0.45, 0, modelCache.subwayModel));
     rampPool.setCreateFunction(() => createRamp(scene, 0, 0.35, 0, modelCache));

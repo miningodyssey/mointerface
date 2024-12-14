@@ -9,7 +9,7 @@ export const updateUser = async (updatedUserData: any) => {
         }
 
         const response = await axios.put(
-            `https://miningodyssey.pw/users/update/${updatedUserData.id}`,
+            `${process.env.NEXT_PUBLIC_BACKEND}/users/update/${updatedUserData.id}`,
             updatedUserData,
             {
                 headers: {

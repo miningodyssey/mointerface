@@ -34,6 +34,7 @@ import {SettingsModal} from "@/components/menus/SettingsModal/SettingsModal";
 import {updateUserSettings} from "@/components/functions/updateUserSettings";
 import {detectPlatform} from "@/game/js/utils/detectPlatforms";
 import {useTonConnect} from "@/hooks/useTonConnect";
+import {restorePurchases} from "@/components/functions/restorePurchases";
 
 
 type TopPlayersType = {
@@ -57,11 +58,15 @@ export default function HomeComponent() {
     const [friends, setFriends] = useState([]);
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
     const [gameButtonClicked, setGameButtonClicked] = useState(false);
+    const [hasRestoredPurchases, setHasRestoredPurchases] = useState(false);
     const { sender, walletAddress, tonClient, network } = useTonConnect();
     const [tonConnectUI, setOptions] = useTonConnectUI();
     const userFriendlyAddress = useTonAddress();
     const audioRef = useRef<HTMLAudioElement>(null);
-    const categoryRef = useRef<HTMLDivElement>(null)
+    const categoryRef = useRef<HTMLDivElement>(null);
+    const encryptionKey = '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef';
+    const key = Buffer.from(encryptionKey.slice(0, 32));
+
     const [settings, setSettings] = useState({
         graphicsQuality: 50,
         antiAliasingEnabled: true,
@@ -133,6 +138,12 @@ export default function HomeComponent() {
         updateUserSettings(userId, settings)
     }
     useEffect(() => {
+        if (walletAddress && !hasRestoredPurchases) {
+            restorePurchases(userId, walletAddress, key, tonClient, userData, setUserData)
+            setHasRestoredPurchases(true);
+        }
+    }, [walletAddress, hasRestoredPurchases]);
+    useEffect(() => {
         const initialize = async () => {
             try {
                 const {userId, token, fetchedUserData} = await fetchDataAndInitialize();
@@ -142,6 +153,7 @@ export default function HomeComponent() {
                 if (fetchedUserData.settings) {
                     setSettings(fetchedUserData.settings)
                 }
+
                 const [top, refTop, friends] = await Promise.all([
                     fetchTopPlayers(userId, token),
                     fetchReferals(userId, token),

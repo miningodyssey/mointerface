@@ -27,7 +27,7 @@ export async function fetchTasks() {
         }
 
         // Запрашиваем задачи для пользователя
-        const response = await axios.get<TaskType[]>(`https://miningodyssey.pw/tasks/get/${userId}`, {
+        const response = await axios.get<TaskType[]>(`${process.env.NEXT_PUBLIC_BACKEND}/tasks/get/${userId}`, {
             headers: {
                 'Authorization': `Bearer ${token}`,
             },

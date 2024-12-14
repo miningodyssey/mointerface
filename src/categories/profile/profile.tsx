@@ -29,13 +29,7 @@ interface ProfileCategoryProps {
     ref: any;
 }
 
-interface RestoredItems {
-    ownedSkins: string[],
-    ownedWagons: string[],
-    ownedRoads: string[],
-    ownedJumpObstacles: string[],
-    ownedSlideObstacles: string[],
-}
+
 
 interface CardData {
     id: string
@@ -48,12 +42,16 @@ interface CardData {
     cost: number;
 }
 
-interface ParsedComment {
-    cardId: string;
-    cost: number;
-    wallet: string;
-    userid: string;
+function getIconPathById(id: string, categories: any[]): string {
+    for (const category of categories) {
+        const item = category.items.find((item: any) => item.id === id);
+        if (item) {
+            return item.iconPath;
+        }
+    }
+    return './skinPreviews/Original.png'
 }
+
 
 
 const ProfileCategory: React.FC<ProfileCategoryProps> = ({fadeIn, userData, setUserData, token, t, ref, userid}) => {
@@ -66,7 +64,7 @@ const ProfileCategory: React.FC<ProfileCategoryProps> = ({fadeIn, userData, setU
 
     const [currentTab, setCurrentTab] = useState(0);
     const [isEditing, setIsEditing] = useState(false);
-    const [selectedSkin, setSelectedSkin] = useState(userData.selectedSkin);
+    const [selectedSkin, setSelectedSkin] = useState<string>(userData.selectedSkin);
     const [selectedWagon, setSelectedWagon] = useState(userData.selectedWagon);
     const [selectedRoad, setSelectedRoad] = useState(userData.selectedRoad);
     const [selectedJumpObstacle, setSelectedJumpObstacle] = useState(userData.selectedJumpObstacle);
@@ -76,7 +74,6 @@ const ProfileCategory: React.FC<ProfileCategoryProps> = ({fadeIn, userData, setU
     const [tonConnectUI] = useTonConnectUI();
     const [cardData, setCardData] = useState<CardData[]>([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const orderId = useGenerateId();
     const { open } = useTonConnectModal();
     const [isInsufficientFundsModalOpen, setIsInsufficientFundsModalOpen] = useState(false); // Для недостатка средств
     const [selectedCard, setSelectedCard] = useState<CardData | null>(null);
@@ -91,11 +88,11 @@ const ProfileCategory: React.FC<ProfileCategoryProps> = ({fadeIn, userData, setU
             name: t("Skins"),
             tag: 'Skins',
             items: [
-                { id: "defaultSkin", title: t("Default"), cost: 0, purchased: true },
-                { id: "blackSkin", title: "Black", cost: 5000, purchased: userData.ownedSkins?.includes("blackSkin") },
-                { id: "blueSkin", title: "Blue", cost: 5000, purchased: userData.ownedSkins?.includes("blueSkin") },
-                { id: "telegramSkin", title: "Telegram", cost: 10000, purchased: userData.ownedSkins?.includes("telegramSkin") },
-                { id: "pinkSkin", title: "Pink", cost: 10000, purchased: userData.ownedSkins?.includes("pinkSkin") },
+                { id: "defaultSkin", title: t("Default"), cost: 0, purchased: true, iconPath: "./skinPreviews/Original.png" },
+                { id: "blackSkin", title: "Black", cost: 5000, purchased: userData.ownedSkins?.includes("blackSkin"), iconPath: "./skinPreviews/Black.png" },
+                { id: "blueSkin", title: "Blue", cost: 5000, purchased: userData.ownedSkins?.includes("blueSkin"), iconPath: "./skinPreviews/Telegram.png" },
+                { id: "telegramSkin", title: "Telegram", cost: 10000, purchased: userData.ownedSkins?.includes("telegramSkin"), iconPath: "./skinPreviews/Telegram.png" },
+                { id: "pinkSkin", title: "Pink", cost: 10000, purchased: userData.ownedSkins?.includes("pinkSkin"), iconPath: "./skinPreviews/Pink.png" },
             ],
             selected: selectedSkin || "defaultSkin",
             setSelected: (id: string) => {
@@ -107,8 +104,8 @@ const ProfileCategory: React.FC<ProfileCategoryProps> = ({fadeIn, userData, setU
             name: t("Wagons"),
             tag: 'Wagons',
             items: [
-                { id: "defaultWagon", title: t("Default"), cost: 0, purchased: true },
-                { id: "orangeWagon", title: t("Orange"), cost: 5000, purchased: userData.ownedWagons?.includes("orangeWagon") },
+                { id: "defaultWagon", title: t("Default"), cost: 0, purchased: true, iconPath: "./skinPreviews/defaultWagon.png" },
+                { id: "orangeWagon", title: t("Orange"), cost: 5000, purchased: userData.ownedWagons?.includes("orangeWagon"), iconPath: "./skinPreviews/orangeWagon.png" },
             ],
             selected: selectedWagon || "defaultWagon",
             setSelected: (id: string) => setSelectedWagon(id),
@@ -117,8 +114,8 @@ const ProfileCategory: React.FC<ProfileCategoryProps> = ({fadeIn, userData, setU
             name: t("Roads"),
             tag: 'Roads',
             items: [
-                { id: "defaultRoad", title: t("Default"), cost: 0, purchased: true },
-                { id: "forestRoad", title: t("Forest"), cost: 5000, purchased: userData.ownedRoads?.includes("forestRoad") },
+                { id: "defaultRoad", title: t("Default"), cost: 0, purchased: true, iconPath: "./skinPreviews/Standart.png" },
+                { id: "forestRoad", title: t("Forest"), cost: 5000, purchased: userData.ownedRoads?.includes("forestRoad"), iconPath: "skinPreviews/Forest.png" },
             ],
             selected: selectedRoad || "defaultRoad",
             setSelected: (id: string) => setSelectedRoad(id),
@@ -127,7 +124,7 @@ const ProfileCategory: React.FC<ProfileCategoryProps> = ({fadeIn, userData, setU
             name: t("Jump Obstacles"),
             tag: 'JumpObstacles',
             items: [
-                { id: "defaultJumpObstacle", title: t("Default"), cost: 0, purchased: true },
+                { id: "defaultJumpObstacle", title: t("Default"), cost: 0, purchased: true, iconPath: "./heroImage.png" },
             ],
             selected: selectedJumpObstacle || "defaultJumpObstacle",
             setSelected: (id: string) => setSelectedJumpObstacle(id),
@@ -136,12 +133,13 @@ const ProfileCategory: React.FC<ProfileCategoryProps> = ({fadeIn, userData, setU
             name: t("Slide Obstacles"),
             tag: 'SlideObstacles',
             items: [
-                { id: "defaultSlideObstacle", title: t("Default"), cost: 0, purchased: true },
+                { id: "defaultSlideObstacle", title: t("Default"), cost: 0, purchased: true, iconPath: "./heroImage.png" },
             ],
             selected: selectedSlideObstacle || "defaultSlideObstacle",
             setSelected: (id: string) => setSelectedSlideObstacle(id),
         },
     ];
+
 
     useEffect(() => {
         const initializedUserData = {
@@ -171,7 +169,7 @@ const ProfileCategory: React.FC<ProfileCategoryProps> = ({fadeIn, userData, setU
         setCardData(
             currentCategory.items.map((item) => ({
                 id: item.id, // Добавляем id в данные карточек
-                image: <HeroIconPNG />,
+                image: <HeroIconPNG imagePath={item.iconPath} />,
                 title: item.title,
                 subtitle: item.purchased ? t("Purchased") : `${item.cost} PTS`,
                 selected: currentCategory.selected === item.id, // Сравниваем по id
@@ -230,60 +228,11 @@ const ProfileCategory: React.FC<ProfileCategoryProps> = ({fadeIn, userData, setU
             setUserData(updatedUserData)
             // Отправляем обновленный объект на сервер
             updateCacheWithSelection(userData.id, updatedSelection, token);
-        } else if (!card.purchased && userData.balance >= card.cost) {
+        } else if (!card.purchased) {
             setSelectedCard(card);
             setIsModalOpen(true);
-        } else {
-            setIsInsufficientFundsModalOpen(true);
         }
     };
-    const decodeHexToString = (hex: string): string => {
-        try {
-            const cleanHex = hex.replace(/^0+/, ''); // Убираем ведущие нули
-            const asciiString = cleanHex.match(/.{2}/g)?.map(byte => String.fromCharCode(parseInt(byte, 16))).join('');
-            return asciiString || '';
-        } catch (error) {
-            console.error("Failed to decode hex string:", error);
-            return ''; // Возвращаем пустую строку при ошибке
-        }
-    };
-
-    const processHexBlocks = (input: string): string[] => {
-        try {
-            // Ищем блоки формата x{...}
-            const blocks = input.match(/x\{[0-9A-Fa-f]+\}/g) || [];
-            const sortedBlocks = blocks
-                .map(block => block.slice(2, -1)) // Убираем 'x{' и '}'
-                .map(decodeHexToString) // Декодируем каждую строку
-            return sortedBlocks
-        } catch (error) {
-            console.error("Failed to process hex blocks:", error);
-            return [];
-        }
-    };
-
-    function joinEncryptedParts(array: string[]): string {
-        const regex = /^[a-fA-F0-9]+:[a-fA-F0-9]+$/;
-
-        let foundIndex = -1;
-
-        // Найти индекс первого элемента, который удовлетворяет условию
-        for (let i = 0; i < array.length; i++) {
-            if (regex.test(array[i])) {
-                foundIndex = i;
-                break;
-            }
-        }
-
-        // Если ничего не найдено, вернуть массив как есть
-        if (foundIndex === -1) {
-            return '';
-        }
-
-        // Объединяем все элементы начиная с найденного
-        // Возвращаем массив с неизменённой начальной частью и сконкатенированной строкой
-        return array.slice(foundIndex).join('');
-    }
 
 
     function encryptComment(text: string, key: Buffer): string {
@@ -294,109 +243,6 @@ const ProfileCategory: React.FC<ProfileCategoryProps> = ({fadeIn, userData, setU
         return `${iv.toString("hex")}:${encrypted}`; // Корректная конкатенация IV и зашифрованного текста
     }
 
-    function decryptComment(encryptedData: string, key: Buffer): string {
-        try {
-            const [ivHex, encryptedText] = encryptedData.split(":");
-            if (!ivHex || !encryptedText) {
-                throw new Error("Invalid encrypted data format");
-            }
-            const iv = Buffer.from(ivHex, 'hex');
-            const decipher = crypto.createDecipheriv("aes-256-cbc", key, iv);
-            let decrypted = decipher.update(encryptedText, "hex", "utf8");
-            decrypted += decipher.final("utf8");
-            return decrypted;
-        } catch (error) {
-            return "skip";
-        }
-    }
-
-
-    const getCommentsFromTransactions = async (address: Address, key: Buffer) => {
-        try {
-            if (!tonClient) {
-                console.error("TON Client is not initialized");
-                return;
-            }
-            if (!walletAddress) {
-                console.error("Wallet address is missing");
-                return;
-            }
-            const transactions = await tonClient.getTransactions(address, { limit: 100 });
-            let result: string[] = []
-            transactions.forEach((transaction: any) => {
-                if (transaction.inMessage && transaction.inMessage.body) {
-                    const slice = transaction.inMessage.body.toString();
-                    const comments = processHexBlocks(slice);
-                    const comment = joinEncryptedParts(comments);
-                    const decryptedComment = decryptComment(comment, key)
-                    if (decryptedComment !== 'skip') {
-                        result.push(decryptedComment);
-                    }
-                }
-            });
-            return result
-        } catch (error) {
-            console.error("Error fetching transactions:", error);
-        }
-    };
-
-
-    const restorePurchases = (comments: string[]) => {
-        const restoredItems: RestoredItems = {
-            ownedSkins: [],
-            ownedWagons: [],
-            ownedRoads: [],
-            ownedJumpObstacles: [],
-            ownedSlideObstacles: [],
-        };
-
-        const currentUserId = userid;
-        comments.forEach((comment) => {
-            try {
-                const parsedComment: ParsedComment = JSON.parse(comment);
-                if ((parsedComment.userid !== currentUserId) || (parsedComment.userid === undefined)) {
-                    return;
-                }
-
-                const { cardId } = parsedComment;
-
-                if (cardId.includes("Skin")) {
-                    restoredItems.ownedSkins.push(cardId);
-                } else if (cardId.includes("Wagon")) {
-                    restoredItems.ownedWagons.push(cardId);
-                } else if (cardId.includes("Road")) {
-                    restoredItems.ownedRoads.push(cardId);
-                } else if (cardId.includes("JumpObstacle")) {
-                    restoredItems.ownedJumpObstacles.push(cardId);
-                } else if (cardId.includes("SlideObstacle")) {
-                    restoredItems.ownedSlideObstacles.push(cardId);
-                }
-            } catch (error) {
-                console.error("Ошибка при обработке комментария:", comment, error);
-            }
-        });
-
-        // Обновление данных пользователя, если были восстановлены покупки
-        if (Object.values(restoredItems).some((items) => items.length > 0)) {
-            const updatedUserData = {
-                ...userData,
-                ...Object.keys(restoredItems).reduce((acc, key) => {
-                    // Указываем, что key будет ключом типа RestoredItems
-                    const itemKey = key as keyof RestoredItems;
-                    return {
-                        ...acc,
-                        [itemKey]: Array.from(new Set([...(userData[itemKey] || []), ...restoredItems[itemKey]])), // Уникальные элементы
-                    };
-                }, {}),
-            };
-
-            setUserData(updatedUserData);
-            updateUser(updatedUserData);
-            console.log("Покупки успешно восстановлены:", restoredItems);
-        } else {
-            console.log("Нет новых покупок для восстановления.");
-        }
-    };
 
 
 
@@ -428,11 +274,7 @@ const ProfileCategory: React.FC<ProfileCategoryProps> = ({fadeIn, userData, setU
                 key,
             );
             setIsModalOpen(false);
-            const comments = await getCommentsFromTransactions(walletAddress, key)
-            console.log(comments)
-            if (comments !== undefined && comments.length !== 0) {
-                await restorePurchases(comments);
-            }
+
             await jettonWallet.sendTransfer(sender, {
                 fwdAmount: BigInt(1),
                 comment: encryptedComment,
@@ -441,11 +283,9 @@ const ProfileCategory: React.FC<ProfileCategoryProps> = ({fadeIn, userData, setU
                 value: toNano('0.01'),
             });
 
-            console.log("Transfer sent successfully");
 
             const updatedUserData = {
                 ...userData,
-                balance: userData.balance - selectedCard.cost,
                 [`owned${categories[currentTab].tag}`]: [...userData[`owned${categories[currentTab].tag}`], selectedCard.id],
                 [`selected${categories[currentTab].tag.slice(0, -1)}`]: selectedCard.id,
             };
@@ -494,8 +334,8 @@ const ProfileCategory: React.FC<ProfileCategoryProps> = ({fadeIn, userData, setU
             </div>
             <div className={styles.skinContainer}>
                 <Card
-                    image={<HeroIconPNG/>}
-                    title={`Skin ${selectedSkin}`}
+                    image={<HeroIconPNG imagePath={getIconPathById(selectedSkin, categories)}/>}
+                    title={`${selectedSkin}`}
                     subtitle={t('Current skin')}
                     selectable={false}
                     purchased={true} // Текущий скин всегда куплен
@@ -553,7 +393,7 @@ const ProfileCategory: React.FC<ProfileCategoryProps> = ({fadeIn, userData, setU
                 {categories[currentTab].items.map((item, index) => (
                     <Card
                         key={index}
-                        image={<HeroIconPNG/>}
+                        image={<HeroIconPNG imagePath={item.iconPath}/>}
                         title={item.title}
                         subtitle={item.purchased ? t("Purchased") : `${item.cost} PTS`}
                         selected={categories[currentTab].selected === item.id}

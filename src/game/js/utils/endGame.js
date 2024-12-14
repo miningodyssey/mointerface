@@ -1,14 +1,14 @@
 import {gameOver} from "./gameOver";
 import {updateTopAfterRun} from "@/components/functions/updateTopAfterRun";
 
-export function endGame(gameEnded, gamePaused, rollingSpeed, updateGame, create, hasAnimationEnded, scene, hero, setIsModalOpen, endMenu, pauseButton, userData, setUserData, score, record) {
+export function endGame(gameEnded, gamePaused, rollingSpeed, updateGame, create, hasAnimationEnded, scene, engine, hero, setIsModalOpen, endMenu, pauseButton, userData, setUserData, score, record, renderLoop) {
     gameOver(gamePaused, rollingSpeed);
     setIsModalOpen(true);
     endMenu.style.display = 'block';
     pauseButton.style.display = 'none';
     const animationGroup = create[1][5];
     if ("vibrate" in navigator) {
-        navigator.vibrate(200); // Вибрация на 200 мс
+        navigator.vibrate(2); // Вибрация на 200 мс
     }
 
     if (!hasAnimationEnded) {
@@ -18,16 +18,11 @@ export function endGame(gameEnded, gamePaused, rollingSpeed, updateGame, create,
             const lastFrame = animationGroup.to;
             animationGroup.goToFrame(lastFrame);
             scene.stopAnimation(hero);
+            engine.stopRenderLoop(renderLoop);
         });
     }
     create[1][0].stop();
     scene.unregisterBeforeRender(updateGame);
 
-    if (score > 0) {
-        updateTopAfterRun(userData.id, score, record).then(updatedUserData => {
-            setUserData(updatedUserData);
-        }).catch(error => {
-            console.error("Ошибка при обновлении данных:", error);
-        });
-    }
+
 }

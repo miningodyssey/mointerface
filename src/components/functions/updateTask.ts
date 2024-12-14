@@ -19,7 +19,7 @@ export async function updateTask(taskId: string, progress: number) {
         };
 
         const response = await axios.patch(
-            `https://miningodyssey.pw/tasks/progress/${taskId}`,
+            `${process.env.NEXT_PUBLIC_BACKEND}/tasks/progress/${taskId}`,
             {
                 userId,
                 increment: progress,
